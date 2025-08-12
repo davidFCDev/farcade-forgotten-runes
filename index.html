@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,             img: priestImg,
+            animations: animationsPriest,
+            frameW: 44,
+            frameH: 64,
+            size: 100,al-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>RPG Battle Game</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-family: "Press Start 2P", monospace;
+      }
+      canvas {
+        display: block;
+        image-rendering: pixelated;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const designWidth = 360;
+      const designHeight = 640;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = designWidth * dpr;
+      canvas.height = designHeight * dpr;
+      ctx.scale(dpr, dpr);
+      canvas.style.width = designWidth + "px";
+      canvas.style.height = designHeight + "px";
+
+      // Load images
+      const backgroundImg = new Image();
+      backgroundImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/ChatGPT%20Image%2010%20ago%202025%2C%2001_31_21-11GclhftpsCG06vNEd4ri4gVBVUY8o.png?aymA";
+      const mageImg = new Image();
+      mageImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/mage-R1FzSs3v2fq902hArb7OWABq36m2DG.png?gfP1";
+      const priestImg = new Image();
+      priestImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/priest-JsnicYxz2xmZ8tPVxrBNTIr9PVAPpg.png?sWnv";
+      const warlockImg = new Image();
+      warlockImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/warlock-pooFrJzffnBpm22fnFFOxvSIm5MWQG.png?E8pk";
+      const enemyImg = new Image();
+      enemyImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/beast_gigasChad-jHhAfiqtBGKuiIHRZJ0MkWs0W5uFQ5.png?9LBT";
+
+      // Animations
+      const animationsMage = {
+        selected: { row: 0, frames: 6, duration: 0.6 },
+        idle: { row: 1, frames: 6, duration: 0.6 },
+        fireblast: { row: 2, frames: 7, duration: 1 },
+        conflagration: { row: 3, frames: 7, duration: 1 },
+        healing: { row: 4, frames: 6, duration: 0.6 },
+      };
+      const animationsPriest = {
+        selected: { row: 0, frames: 6, duration: 0.6 },
+        idle: { row: 1, frames: 6, duration: 0.6 },
+        holywave: { row: 2, frames: 7, duration: 1 },
+        rejuvenation: { row: 3, frames: 6, duration: 1 },
+        healing: { row: 4, frames: 6, duration: 0.6 },
+      };
+      const animationsWarlock = {
+        selected: { row: 0, frames: 6, duration: 0.6 },
+        idle: { row: 1, frames: 6, duration: 0.6 },
+        slash: { row: 2, frames: 7, duration: 1 },
+        protection: { row: 3, frames: 6, duration: 0.5 }, // Instantáneo
+        healing: { row: 4, frames: 6, duration: 0.6 },
+      };
+
+      let score = 0;
+      let wave = 0;
+      let heroes = [];
+      let enemies = [];
+      let state = "select_hero";
+      let selectedHero = null;
+      let selectedAction = null;
+      let turnPhase = "player";
+      let currentEnemyIndex = 0;
+      let slashStreak = 0;
+      let currentTime = 0;
+      let hitNumbers = []; // Array para almacenar los números de golpe flotantes
+      let visualEffects = []; // Array para efectos visuales especiales
+
+      function init() {
+        heroes = [
+          {
+            clazz: "mage",
+            hp: 100,
+            maxhp: 100,
+            def: 3, // Poca defensa
+            charge: 0, // Start empty
+            maxcharge: 100,
+            posx: 80,
+            posy: 450,
+            anim: "idle",
+            frame: 0,
+            animTime: 0,
+            acted: false,
+            buffs: [],
+            img: mageImg,
+            animations: animationsMage,
+            frameW: 100, // Nuevo tamaño de frame
+            frameH: 100, // Nuevo tamaño de frame
+            size: 100,
+          },
+          {
+            clazz: "warlock",
+            hp: 100,
+            maxhp: 100,
+            def: 15, // Buena defensa
+            charge: 0, // Start empty
+            maxcharge: 100,
+            posx: 180,
+            posy: 380,
+            anim: "idle",
+            frame: 0,
+            animTime: 0,
+            acted: false,
+            buffs: [],
+            img: warlockImg,
+            animations: animationsWarlock,
+            frameW: 100, // Nuevo tamaño de frame
+            frameH: 100, // Nuevo tamaño de frame
+            size: 100,
+          },
+          {
+            clazz: "priest",
+            hp: 100,
+            maxhp: 100,
+            def: 3, // Poca defensa
+            charge: 0, // Start empty
+            maxcharge: 100,
+            posx: 280,
+            posy: 450,
+            anim: "idle",
+            frame: 0,
+            animTime: 0,
+            acted: false,
+            buffs: [],
+            img: priestImg,
+            animations: animationsPriest,
+            frameW: 100, // Nuevo tamaño de frame
+            frameH: 100, // Nuevo tamaño de frame
+            size: 100,
+          },
+        ];
+        enemies = [];
+        score = 0;
+        wave = 0;
+        state = "select_hero";
+        turnPhase = "player";
+        slashStreak = 0;
+        startWave();
+      }
+
+      function startWave() {
+        let enemyPositions = [];
+        if (wave % 3 === 0) {
+          // 2 enemies
+          enemies = [
+            createEnemy(100, 200, 80, "normal"),
+            createEnemy(260, 200, 80, "normal"),
+          ];
+        } else if (wave % 3 === 1) {
+          // 3 enemies
+          enemies = [
+            createEnemy(80, 200, 80, "normal"),
+            createEnemy(180, 200, 80, "normal"),
+            createEnemy(280, 200, 80, "normal"),
+          ];
+        } else {
+          // boss
+          enemies = [createEnemy(180, 200, 200, "boss")];
+        }
+        wave++;
+        heroes.forEach((h) => (h.acted = false));
+      }
+
+      function createEnemy(x, y, hp, type) {
+        return {
+          hp,
+          maxhp: hp,
+          charge: 0,
+          maxcharge: 100,
+          posx: x,
+          posy: y,
+          type,
+          animTime: 0,
+          def: type === "boss" ? 10 : 5,
+          size: type === "boss" ? 140 : 90,
+        };
+      }
+
+      const classActions = {
+        mage: {
+          fireblast: {
+            name: "Fireblast",
+            reqCharge: 50, // Primera barra (50%)
+            type: "single_enemy",
+            damage: 35, // Mucho daño
+            anim: "fireblast",
+          },
+          conflagration: {
+            name: "Conflagration",
+            reqCharge: 100, // Segunda barra completa (100%)
+            type: "all_enemy",
+            damage: 18, // Menos daño pero a todos
+            anim: "conflagration",
+          },
+        },
+        priest: {
+          holywave: {
+            name: "Holy Wave",
+            reqCharge: 50, // Primera barra (50%)
+            type: "single_ally",
+            heal: 45, // Cura bastante
+            anim: "holywave",
+          },
+          rejuvenation: {
+            name: "Rejuvenation",
+            reqCharge: 100, // Segunda barra completa (100%)
+            type: "all_ally",
+            heal: 12, // Varios ticks pequeños
+            ticks: 3,
+            anim: "rejuvenation",
+          },
+        },
+        warlock: {
+          slash: {
+            name: "Slash",
+            reqCharge: 50, // Primera barra (50%)
+            type: "single_enemy",
+            damage: 25, // Daño medio, aumenta con streak
+            anim: "slash",
+          },
+          protection: {
+            name: "Protection",
+            reqCharge: 100, // Segunda barra completa (100%)
+            type: "all_ally", // Protege a todo el grupo
+            defBonus: 25, // Buena defensa adicional
+            duration: 3,
+            anim: "protection",
+          },
+        },
+      };
+
+      function checkGameOver() {
+        if (heroes.every((h) => h.hp <= 0)) {
+          alert("Game Over! Score: " + score);
+          resetGame();
+          return true;
+        }
+        return false;
+      }
+
+      function checkWaveCleared() {
+        if (enemies.every((e) => e.hp <= 0)) {
+          enemies.forEach((e) => {
+            score += e.type === "boss" ? 10 : 1;
+          });
+          startWave();
+          return true;
+        }
+        return false;
+      }
+
+      function advanceTurn() {
+        if (turnPhase === "player") {
+          if (heroes.every((h) => h.acted || h.hp <= 0)) {
+            // Add bonus charge at end of turn (in addition to gradual charging)
+            heroes.forEach((h) => {
+              if (h.hp > 0) h.charge = Math.min(h.maxcharge, h.charge + 20);
+            });
+            turnPhase = "enemy";
+            currentEnemyIndex = 0;
+            enemyAct();
+            return;
+          }
+          state = "select_hero";
+        } else if (turnPhase === "enemy") {
+          // Add bonus charge for enemies at end of their turn
+          enemies.forEach((e) => {
+            if (e.hp > 0) e.charge = Math.min(e.maxcharge, e.charge + 20);
+          });
+          turnPhase = "player";
+          heroes.forEach((h) => (h.acted = false));
+          state = "select_hero";
+        }
+      }
+
+      function executeAction(hero, action, targets) {
+        const actionData = classActions[hero.clazz][action];
+
+        // Check if we have enough charge before executing
+        let requiredCharge = actionData.reqCharge;
+
+        if (hero.charge < requiredCharge) {
+          console.log(
+            "Not enough charge for action:",
+            action,
+            "Required:",
+            requiredCharge,
+            "Current:",
+            hero.charge
+          );
+          return false;
+        }
+
+        // Always reset charge to 0 when using any ability
+        hero.charge = 0;
+
+        hero.anim = actionData.anim;
+        hero.frame = 0;
+        hero.animTime = 0;
+        hero.targets = Array.isArray(targets) ? targets : [targets];
+        hero.action = action;
+        state = "animate";
+
+        console.log(
+          "Executing action:",
+          action,
+          "for hero:",
+          hero.clazz,
+          "charge reset to 0"
+        );
+        return true;
+      }
+
+      function applyEffect(hero, action, targets) {
+        const actionData = classActions[hero.clazz][action];
+        console.log(
+          "Applying effect:",
+          action,
+          "to targets:",
+          targets.length,
+          "type:",
+          actionData.type
+        );
+
+        if (actionData.type.includes("enemy")) {
+          targets.forEach((target) => {
+            if (target.hp > 0) {
+              let damage = actionData.damage;
+              if (action === "slash") {
+                damage += slashStreak * 5;
+                slashStreak++;
+              }
+              const effectiveDamage = Math.max(1, damage - target.def);
+              console.log(
+                "Dealing",
+                effectiveDamage,
+                "damage to enemy with",
+                target.hp,
+                "HP"
+              );
+              target.hp = Math.max(0, target.hp - effectiveDamage);
+              console.log("Enemy now has", target.hp, "HP");
+              // Mostrar número de daño
+              showHitNumber(
+                target.posx,
+                target.posy - 20,
+                effectiveDamage,
+                false
+              );
+
+              // Efectos visuales especiales
+              if (action === "conflagration") {
+                addLavaEffect(target.posx, target.posy);
+              } else if (action === "fireblast") {
+                addMeteorEffect(target.posx, target.posy);
+              }
+            }
+          });
+        } else if (
+          actionData.type.includes("ally") ||
+          actionData.type === "self"
+        ) {
+          targets.forEach((target) => {
+            if (target.hp > 0) {
+              if (actionData.heal) {
+                console.log(
+                  "Healing",
+                  actionData.heal,
+                  "to",
+                  target.clazz || "enemy"
+                );
+                target.hp = Math.min(target.maxhp, target.hp + actionData.heal);
+                playHealingAnim(target);
+                // Mostrar número de curación
+                showHitNumber(
+                  target.posx,
+                  target.posy - 20,
+                  actionData.heal,
+                  true
+                );
+              }
+              if (actionData.ticks) {
+                target.buffs.push({
+                  type: "rejuvenation",
+                  endTime: currentTime + actionData.ticks,
+                  nextTick: currentTime + 1,
+                  heal: actionData.heal,
+                });
+              }
+              if (actionData.defBonus) {
+                console.log(
+                  "Adding protection buff to",
+                  target.clazz || "target"
+                );
+                target.buffs.push({
+                  type: "protection",
+                  endTime: currentTime + actionData.duration,
+                  defBonus: actionData.defBonus,
+                });
+
+                // Efecto visual para protección
+                if (action === "protection") {
+                  addProtectionEffect(targets);
+                }
+              }
+            }
+          });
+        }
+        checkWaveCleared();
+        checkGameOver();
+      }
+
+      function playHealingAnim(target) {
+        if (target.anim === "idle") {
+          target.anim = "healing";
+          target.frame = 0;
+          target.animTime = 0;
+        }
+      }
+
+      function showHitNumber(x, y, value, isHealing = false) {
+        hitNumbers.push({
+          x: x,
+          y: y,
+          value: value,
+          isHealing: isHealing,
+          opacity: 1.0,
+          startTime: currentTime,
+          duration: 1.5, // duración en segundos
+        });
+      }
+
+      function addLavaEffect(x, y) {
+        visualEffects.push({
+          type: "lava",
+          x: x,
+          y: y + 30, // Debajo del enemigo
+          startTime: currentTime,
+          duration: 0.5, // 1/2 segundo
+          particles: [],
+        });
+      }
+
+      function addProtectionEffect(heroes) {
+        heroes.forEach((hero) => {
+          if (hero.hp > 0) {
+            visualEffects.push({
+              type: "protection",
+              x: hero.posx,
+              y: hero.posy,
+              startTime: currentTime,
+              duration: 1.0, // 1 segundo
+              radius: 0,
+            });
+          }
+        });
+      }
+
+      function addMeteorEffect(x, y) {
+        visualEffects.push({
+          type: "meteor",
+          x: x,
+          y: y - 150, // Empezar desde arriba
+          targetX: x,
+          targetY: y,
+          startTime: currentTime,
+          duration: 0.8, // 0.8 segundos para caer
+          trail: [], // Estela del meteorito
+          impacted: false,
+        });
+      }
+
+      function updateHitNumbers(dt) {
+        for (let i = hitNumbers.length - 1; i >= 0; i--) {
+          const hitNum = hitNumbers[i];
+          const elapsed = currentTime - hitNum.startTime;
+
+          // Mover hacia arriba
+          hitNum.y -= 30 * dt;
+
+          // Fade out
+          hitNum.opacity = Math.max(0, 1 - elapsed / hitNum.duration);
+
+          // Eliminar cuando termine la animación
+          if (elapsed >= hitNum.duration) {
+            hitNumbers.splice(i, 1);
+          }
+        }
+      }
+
+      function updateVisualEffects(dt) {
+        for (let i = visualEffects.length - 1; i >= 0; i--) {
+          const effect = visualEffects[i];
+          const elapsed = currentTime - effect.startTime;
+
+          if (effect.type === "lava") {
+            // Generar más partículas de lava (más intenso)
+            if (Math.random() < 0.6) {
+              // Era 0.3, ahora es 0.6
+              effect.particles.push({
+                x: effect.x + (Math.random() - 0.5) * 80, // Área más grande
+                y: effect.y,
+                vy: -40 - Math.random() * 50, // Velocidad más alta
+                life: 0.5 + Math.random() * 0.4, // Vida más larga
+                maxLife: 0.5 + Math.random() * 0.4,
+              });
+            }
+
+            // Actualizar partículas
+            for (let j = effect.particles.length - 1; j >= 0; j--) {
+              const particle = effect.particles[j];
+              particle.y += particle.vy * dt;
+              particle.life -= dt;
+              if (particle.life <= 0) {
+                effect.particles.splice(j, 1);
+              }
+            }
+          } else if (effect.type === "protection") {
+            // Expandir el escudo
+            effect.radius = (elapsed / effect.duration) * 50;
+          } else if (effect.type === "meteor") {
+            // Animación del meteorito cayendo
+            const progress = Math.min(elapsed / effect.duration, 1);
+            const easeProgress = 1 - Math.pow(1 - progress, 3); // Easing para aceleración
+
+            effect.x = effect.targetX;
+            effect.y = effect.targetY - 150 + 150 * easeProgress;
+
+            // Agregar punto a la estela
+            effect.trail.push({ x: effect.x, y: effect.y, life: 0.3 });
+
+            // Actualizar estela
+            for (let j = effect.trail.length - 1; j >= 0; j--) {
+              effect.trail[j].life -= dt;
+              if (effect.trail[j].life <= 0) {
+                effect.trail.splice(j, 1);
+              }
+            }
+
+            // Impacto al llegar al suelo
+            if (progress >= 1 && !effect.impacted) {
+              effect.impacted = true;
+              // Crear efecto de explosión
+              for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2;
+                effect.trail.push({
+                  x: effect.targetX + Math.cos(angle) * 20,
+                  y: effect.targetY + Math.sin(angle) * 20,
+                  life: 0.5,
+                });
+              }
+            }
+          }
+
+          // Eliminar efecto cuando termine
+          if (elapsed >= effect.duration) {
+            visualEffects.splice(i, 1);
+          }
+        }
+      }
+
+      function renderHitNumbers() {
+        ctx.save();
+        ctx.font = "bold 20px monospace"; // Aumentado de 14px a 20px
+        ctx.textAlign = "center";
+
+        hitNumbers.forEach((hitNum) => {
+          ctx.globalAlpha = hitNum.opacity;
+          ctx.fillStyle = hitNum.isHealing ? "#00ff00" : "#ff0000";
+
+          // Sombra para mejor visibilidad
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 3; // Aumentado para mejor visibilidad
+          const text = hitNum.isHealing
+            ? `+${hitNum.value}`
+            : `-${hitNum.value}`;
+          ctx.strokeText(text, hitNum.x, hitNum.y);
+          ctx.fillText(text, hitNum.x, hitNum.y);
+        });
+
+        ctx.restore();
+      }
+
+      function renderVisualEffects() {
+        ctx.save();
+
+        visualEffects.forEach((effect) => {
+          const elapsed = currentTime - effect.startTime;
+          const progress = elapsed / effect.duration;
+
+          if (effect.type === "lava") {
+            // Renderizar partículas de lava
+            effect.particles.forEach((particle) => {
+              const alpha = particle.life / particle.maxLife;
+              ctx.globalAlpha = alpha;
+
+              // Gradiente de colores más intenso: rojo-naranja-amarillo-blanco
+              const colors = [
+                "#ff0000",
+                "#ff2200",
+                "#ff4500",
+                "#ff6600",
+                "#ffa500",
+                "#ffcc00",
+                "#ffff00",
+                "#ffffff",
+              ];
+              const colorIndex = Math.floor((1 - alpha) * (colors.length - 1));
+              ctx.fillStyle = colors[colorIndex];
+
+              ctx.beginPath();
+              ctx.arc(particle.x, particle.y, 4, 0, Math.PI * 2); // Partículas más grandes
+              ctx.fill();
+
+              // Brillo adicional
+              ctx.globalAlpha = alpha * 0.5;
+              ctx.beginPath();
+              ctx.arc(particle.x, particle.y, 6, 0, Math.PI * 2);
+              ctx.fill();
+            });
+
+            // Base de lava burbujeante más intensa
+            ctx.globalAlpha = 1 - progress;
+            ctx.fillStyle = "#ff2200";
+            for (let i = 0; i < 8; i++) {
+              // Más burbujas
+              const bubbleX = effect.x + (Math.random() - 0.5) * 70; // Área más grande
+              const bubbleY = effect.y + Math.random() * 15;
+              const bubbleSize = 3 + Math.random() * 6; // Burbujas más grandes
+              ctx.beginPath();
+              ctx.arc(bubbleX, bubbleY, bubbleSize, 0, Math.PI * 2);
+              ctx.fill();
+            }
+
+            // Resplandor de base
+            ctx.globalAlpha = (1 - progress) * 0.3;
+            ctx.fillStyle = "#ff4500";
+            ctx.beginPath();
+            ctx.arc(effect.x, effect.y, 30, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (effect.type === "protection") {
+            // Renderizar escudo de protección
+            ctx.globalAlpha = Math.max(0, 1 - progress);
+            ctx.strokeStyle = "#8A2BE2"; // Púrpura neón
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Brillo interior
+            ctx.globalAlpha = Math.max(0, (1 - progress) * 0.3);
+            ctx.fillStyle = "#9370DB"; // Púrpura más claro para el interior
+            ctx.beginPath();
+            ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (effect.type === "meteor") {
+            // Renderizar estela del meteorito
+            effect.trail.forEach((point, index) => {
+              const alpha = point.life / 0.5;
+              ctx.globalAlpha = alpha;
+              const size = 2 + alpha * 3;
+
+              // Colores de fuego para la estela
+              const colors = ["#ff0000", "#ff4500", "#ffa500", "#ffff00"];
+              const colorIndex = Math.floor((1 - alpha) * (colors.length - 1));
+              ctx.fillStyle = colors[colorIndex];
+
+              ctx.beginPath();
+              ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+              ctx.fill();
+            });
+
+            // Renderizar el meteorito en sí
+            if (!effect.impacted) {
+              ctx.globalAlpha = 1;
+
+              // Núcleo del meteorito
+              ctx.fillStyle = "#ffaa00";
+              ctx.beginPath();
+              ctx.arc(effect.x, effect.y, 8, 0, Math.PI * 2);
+              ctx.fill();
+
+              // Brillo exterior
+              ctx.fillStyle = "#ff4500";
+              ctx.beginPath();
+              ctx.arc(effect.x, effect.y, 12, 0, Math.PI * 2);
+              ctx.fill();
+
+              // Resplandor
+              ctx.globalAlpha = 0.6;
+              ctx.fillStyle = "#ff0000";
+              ctx.beginPath();
+              ctx.arc(effect.x, effect.y, 16, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        });
+
+        ctx.restore();
+      }
+
+      function getDistance(a, b) {
+        const dx = a.posx - b.posx;
+        const dy = a.posy - b.posy;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+
+      function getClosestHero(enemy, heroes) {
+        const aliveHeroes = heroes.filter((h) => h.hp > 0);
+        if (aliveHeroes.length === 0) return null;
+
+        let closest = aliveHeroes[0];
+        let minDistance = getDistance(enemy, closest);
+
+        for (let i = 1; i < aliveHeroes.length; i++) {
+          const distance = getDistance(enemy, aliveHeroes[i]);
+          if (distance < minDistance) {
+            minDistance = distance;
+            closest = aliveHeroes[i];
+          }
+        }
+
+        return closest;
+      }
+
+      function enemyAct() {
+        if (currentEnemyIndex >= enemies.length) {
+          advanceTurn();
+          return;
+        }
+        const enemy = enemies[currentEnemyIndex];
+        if (enemy.hp <= 0) {
+          currentEnemyIndex++;
+          enemyAct();
+          return;
+        }
+
+        // Check if enemy should attack automatically when charged
+        let damage = 15;
+        let shouldAttack = false;
+
+        if (enemy.charge >= 100) {
+          damage = 25;
+          enemy.charge = 0; // Reset charge after attack
+          shouldAttack = true;
+        } else if (enemy.charge >= 50) {
+          damage = 20;
+          enemy.charge = 0; // Reset charge after attack
+          shouldAttack = true;
+        }
+
+        if (!shouldAttack) {
+          currentEnemyIndex++;
+          enemyAct();
+          return;
+        }
+
+        const aliveHeroes = heroes.filter((h) => h.hp > 0);
+        if (aliveHeroes.length === 0) {
+          currentEnemyIndex++;
+          enemyAct();
+          return;
+        }
+        const target = getClosestHero(enemy, heroes);
+        if (!target) {
+          currentEnemyIndex++;
+          enemyAct();
+          return;
+        }
+        enemy.animTime = 0.5;
+        setTimeout(() => {
+          if (target.hp > 0) {
+            const currentDef =
+              target.def +
+              target.buffs.reduce(
+                (sum, b) => (b.type === "protection" ? sum + b.defBonus : sum),
+                0
+              );
+            const effectiveDamage = Math.max(1, damage - currentDef);
+            target.hp = Math.max(0, target.hp - effectiveDamage);
+            // Mostrar número de daño del enemigo
+            showHitNumber(
+              target.posx,
+              target.posy - 20,
+              effectiveDamage,
+              false
+            );
+          }
+          checkGameOver();
+          currentEnemyIndex++;
+          enemyAct();
+        }, 500);
+      }
+
+      let lastTime = 0;
+      function loop(time) {
+        const delta = (time - lastTime) / 1000;
+        lastTime = time;
+        currentTime += delta;
+
+        // Update hit numbers
+        updateHitNumbers(delta);
+
+        // Update visual effects
+        updateVisualEffects(delta);
+
+        // Update buffs
+        heroes.forEach((h) => {
+          h.buffs = h.buffs.filter((b) => {
+            if (b.endTime <= currentTime) return false;
+            if (b.type === "rejuvenation" && b.nextTick <= currentTime) {
+              h.hp = Math.min(h.maxhp, h.hp + b.heal);
+              playHealingAnim(h);
+              // Mostrar número de curación por rejuvenation
+              showHitNumber(h.posx, h.posy - 20, b.heal, true);
+              b.nextTick += 1;
+            }
+            return true;
+          });
+        });
+
+        // Update animations
+        heroes.forEach((h) => {
+          if (h.hp <= 0) return;
+          const animData = h.animations[h.anim];
+          h.animTime += delta;
+          const frameDuration = animData.duration / animData.frames;
+          if (h.animTime >= frameDuration) {
+            h.animTime -= frameDuration;
+            h.frame = (h.frame + 1) % animData.frames;
+            if (h.frame === 0 && h.anim !== "idle" && h.anim !== "selected") {
+              if (state === "animate") {
+                console.log(
+                  "Applying effect for hero:",
+                  h.clazz,
+                  "action:",
+                  h.action
+                );
+                applyEffect(h, h.action, h.targets);
+                state = "select_hero"; // Volver inmediatamente a selección sin avanzar turno
+              }
+              h.anim = "idle";
+            }
+          }
+        });
+
+        // Update enemy charge and check for automatic attacks
+        enemies.forEach((e) => {
+          if (e.hp > 0) {
+            // Charge enemies always
+            e.charge = Math.min(e.maxcharge, e.charge + delta * 20); // Charge over time
+
+            // Auto attack when fully charged
+            if (e.charge >= 100 && e.animTime <= 0) {
+              const target = getClosestHero(e, heroes);
+              if (target) {
+                const damage = 25;
+                e.charge = 0; // Reset charge
+                e.animTime = 0.5;
+
+                setTimeout(() => {
+                  if (target.hp > 0) {
+                    const currentDef =
+                      target.def +
+                      target.buffs.reduce(
+                        (sum, b) =>
+                          b.type === "protection" ? sum + b.defBonus : sum,
+                        0
+                      );
+                    const effectiveDamage = Math.max(1, damage - currentDef);
+                    target.hp = Math.max(0, target.hp - effectiveDamage);
+                    // Mostrar número de daño del enemigo auto-attack
+                    showHitNumber(
+                      target.posx,
+                      target.posy - 20,
+                      effectiveDamage,
+                      false
+                    );
+                    checkGameOver();
+                  }
+                }, 100);
+              }
+            }
+          }
+
+          if (e.animTime > 0) e.animTime -= delta;
+        });
+
+        // Update hero charge over time
+        heroes.forEach((h) => {
+          if (h.hp > 0) {
+            // Charge heroes gradually always
+            h.charge = Math.min(h.maxcharge, h.charge + delta * 15); // Charge over time
+          }
+        });
+
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, designWidth, designHeight);
+
+        // Draw background
+        ctx.drawImage(backgroundImg, 0, 0, designWidth, designHeight);
+
+        // Draw header
+        drawHeader();
+
+        heroes.forEach((h) => {
+          const animData = h.animations[h.anim];
+          const sx = h.frame * h.frameW;
+          const sy = animData.row * h.frameH;
+          const size = h.size || 80;
+
+          // Aplicar efecto de sombra/transparencia si está muerto
+          if (h.hp <= 0) {
+            ctx.save();
+            ctx.globalAlpha = 0.6; // Menos transparente (era 0.4)
+            ctx.filter = "brightness(0.3) contrast(0.8)"; // Más oscuro
+          }
+
+          ctx.drawImage(
+            h.img,
+            sx,
+            sy,
+            h.frameW,
+            h.frameH,
+            h.posx - size / 2,
+            h.posy - size / 2,
+            size,
+            size
+          );
+
+          if (h.hp <= 0) {
+            ctx.restore(); // Restaurar efectos
+          }
+
+          // HP bar background
+          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+          ctx.fillRect(h.posx - 40, h.posy + 55, 80, 10);
+
+          // HP bar red
+          ctx.fillStyle = "red";
+          const hpWidth = 80 * (h.hp / h.maxhp);
+          ctx.fillRect(h.posx - 40, h.posy + 55, hpWidth, 10);
+
+          // Texto de HP en el centro de la barra
+          ctx.fillStyle = "white";
+          ctx.font = "8px 'Press Start 2P'"; // Reducido de 10px a 8px
+          ctx.textAlign = "center";
+          if (h.hp <= 0) {
+            ctx.fillText("DEAD", h.posx, h.posy + 62); // Ajustado posición
+          } else {
+            ctx.fillText(`${h.hp}`, h.posx, h.posy + 62); // Ajustado posición
+          }
+          ctx.textAlign = "left"; // Resetear alineación
+
+          // Charge bar background - dividido en 2 bloques (solo si está vivo)
+          if (h.hp > 0) {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            ctx.fillRect(h.posx - 40, h.posy + 68, 80, 8);
+
+            // Charge bar yellow - primer bloque (50%)
+            ctx.fillStyle = "#FFD700";
+            const firstBlockWidth = Math.min(40, 40 * (h.charge / 50));
+            if (h.charge > 0) {
+              ctx.fillRect(h.posx - 40, h.posy + 68, firstBlockWidth, 8);
+            }
+
+            // Segundo bloque (siguiente 50%)
+            if (h.charge > 50) {
+              const secondBlockWidth = 40 * ((h.charge - 50) / 50);
+              ctx.fillRect(h.posx, h.posy + 68, secondBlockWidth, 8);
+            }
+
+            // Separador entre bloques
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(h.posx, h.posy + 68);
+            ctx.lineTo(h.posx, h.posy + 76);
+            ctx.stroke();
+
+            // Borde de la barra de carga
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(h.posx - 40, h.posy + 68, 80, 8);
+          }
+
+          // Borde de la barra de HP
+          ctx.strokeStyle = "black";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(h.posx - 40, h.posy + 55, 80, 10);
+        });
+
+        enemies.forEach((e) => {
+          if (e.hp <= 0) return;
+          ctx.fillStyle = e.animTime > 0 ? "yellow" : "red";
+          const size = e.size || 80;
+          ctx.drawImage(
+            enemyImg,
+            e.posx - size / 2,
+            e.posy - size / 2,
+            size,
+            size
+          );
+
+          // HP bar background
+          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+          ctx.fillRect(e.posx - 40, e.posy + size / 2 + 5, 80, 10);
+
+          // HP bar red
+          ctx.fillStyle = "red";
+          const hpWidth = 80 * (e.hp / e.maxhp);
+          ctx.fillRect(e.posx - 40, e.posy + size / 2 + 5, hpWidth, 10);
+
+          // Charge bar background
+          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+          ctx.fillRect(e.posx - 40, e.posy + size / 2 + 18, 80, 8);
+
+          // Charge bar yellow
+          ctx.fillStyle = "#FFA500";
+          const chargeWidth = 80 * (e.charge / e.maxcharge);
+          ctx.fillRect(e.posx - 40, e.posy + size / 2 + 18, chargeWidth, 8);
+
+          // Bordes
+          ctx.strokeStyle = "black";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(e.posx - 40, e.posy + size / 2 + 5, 80, 10);
+          ctx.strokeRect(e.posx - 40, e.posy + size / 2 + 18, 80, 8);
+        });
+
+        // Footer estilo D&D
+        drawFooter();
+
+        // Mostrar indicador de selección de objetivo
+        if (state === "select_target_enemy") {
+          ctx.fillStyle = "white";
+          ctx.font = "12px 'Press Start 2P'";
+          ctx.textAlign = "center";
+          ctx.fillText("SELECT ENEMY", designWidth / 2, 80);
+
+          // Botón de cancelar
+          ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
+          ctx.fillRect(10, 90, 80, 25);
+          ctx.fillStyle = "white";
+          ctx.font = "8px 'Press Start 2P'";
+          ctx.textAlign = "center";
+          ctx.fillText("CANCEL", 50, 105);
+        } else if (state === "select_target_ally") {
+          ctx.fillStyle = "white";
+          ctx.font = "12px 'Press Start 2P'";
+          ctx.textAlign = "center";
+          ctx.fillText("SELECT ALLY", designWidth / 2, 80);
+
+          // Botón de cancelar
+          ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
+          ctx.fillRect(10, 90, 80, 25);
+          ctx.fillStyle = "white";
+          ctx.font = "8px 'Press Start 2P'";
+          ctx.textAlign = "center";
+          ctx.fillText("CANCEL", 50, 105);
+        }
+        ctx.textAlign = "left"; // Resetear alineación
+
+        // Indicador visual removido - ya no necesario sin sistema de turnos
+
+        // Renderizar efectos visuales especiales
+        renderVisualEffects();
+
+        // Renderizar números de golpe flotantes
+        renderHitNumbers();
+      }
+
+      function drawHeader() {
+        // Fondo del header
+        ctx.fillStyle = "rgba(40, 30, 20, 0.9)";
+        ctx.fillRect(0, 0, designWidth, 60);
+
+        // Borde inferior del header
+        ctx.strokeStyle = "#8B4513";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(0, 60);
+        ctx.lineTo(designWidth, 60);
+        ctx.stroke();
+
+        // Score centrado
+        ctx.fillStyle = "#FFD700";
+        ctx.font = "16px 'Press Start 2P'";
+        ctx.textAlign = "center";
+        ctx.fillText(`SCORE: ${score}`, designWidth / 2, 35);
+        ctx.textAlign = "left"; // Resetear alineación
+
+        // Wave info (opcional)
+        ctx.fillStyle = "white";
+        ctx.font = "10px 'Press Start 2P'";
+        ctx.textAlign = "right";
+        ctx.fillText(`WAVE ${wave}`, designWidth - 10, 20);
+        ctx.textAlign = "left"; // Resetear alineación
+      }
+
+      function drawFooter() {
+        // Fondo del footer
+        ctx.fillStyle = "rgba(40, 30, 20, 0.9)";
+        ctx.fillRect(0, 560, designWidth, 80); // Reducido de 120 a 80 y movido de 520 a 560
+
+        // Borde superior del footer
+        ctx.strokeStyle = "#8B4513";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(0, 560); // Movido de 520 a 560
+        ctx.lineTo(designWidth, 560);
+        ctx.stroke();
+
+        // Dividir en 3 columnas
+        const columnWidth = designWidth / 3;
+        const aliveHeroes = heroes.filter((h) => h.hp > 0);
+
+        aliveHeroes.forEach((hero, heroIndex) => {
+          const actions = Object.keys(classActions[hero.clazz]);
+          const columnX = heroIndex * columnWidth;
+          const centerX = columnX + columnWidth / 2;
+
+          // Título del héroe con estilo retro
+          ctx.fillStyle = "#FFD700";
+          ctx.font = "10px 'Press Start 2P'"; // Reducido de 12px a 10px
+          ctx.textAlign = "center";
+          ctx.fillText(hero.clazz.toUpperCase(), centerX, 580); // Ajustado posición
+
+          // Botón habilidad principal (primera)
+          const primaryAction = actions[0];
+          const primaryData = classActions[hero.clazz][primaryAction];
+          const primaryY = 585; // Ajustado posición
+          const buttonWidth = columnWidth; // Sin padding, ocupa todo el ancho
+          const buttonHeight = 20; // Reducido de 25 a 20
+          const primaryX = columnX; // Sin padding
+
+          // Color del botón basado en carga - fondo más oscuro
+          const canUsePrimary = hero.charge >= primaryData.reqCharge;
+          ctx.fillStyle = canUsePrimary ? "#2E7D32" : "#3E2723"; // Colores más oscuros
+          ctx.fillRect(primaryX, primaryY, buttonWidth, buttonHeight);
+
+          // Borde del botón
+          ctx.strokeStyle = "#333";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(primaryX, primaryY, buttonWidth, buttonHeight);
+
+          // Texto del botón - más pequeño y solo primera letra mayúscula
+          ctx.fillStyle = "white";
+          ctx.font = "6px 'Press Start 2P'"; // Reducido de 8px a 6px
+          ctx.textAlign = "center";
+          const primaryText = primaryData.name.charAt(0).toUpperCase() + primaryData.name.slice(1).toLowerCase();
+          ctx.fillText(primaryText, centerX, primaryY + 13); // Ajustado posición
+
+          // Botón habilidad secundaria (segunda)
+          const secondaryAction = actions[1];
+          const secondaryData = classActions[hero.clazz][secondaryAction];
+          const secondaryY = 610; // Ajustado posición
+
+          // Color del botón basado en carga - fondo más oscuro
+          const canUseSecondary = hero.charge >= secondaryData.reqCharge;
+          ctx.fillStyle = canUseSecondary ? "#D84315" : "#3E2723"; // Colores más oscuros
+          ctx.fillRect(primaryX, secondaryY, buttonWidth, buttonHeight);
+
+          // Borde del botón
+          ctx.strokeStyle = "#333";
+          ctx.lineWidth = 2;
+          ctx.strokeRect(primaryX, secondaryY, buttonWidth, buttonHeight);
+
+          // Texto del botón - más pequeño y solo primera letra mayúscula
+          ctx.fillStyle = "white";
+          ctx.font = "6px 'Press Start 2P'"; // Reducido de 8px a 6px
+          ctx.textAlign = "center";
+          const secondaryText = secondaryData.name.charAt(0).toUpperCase() + secondaryData.name.slice(1).toLowerCase();
+          ctx.fillText(secondaryText, centerX, secondaryY + 13); // Ajustado posición
+
+          // Líneas separadoras entre columnas
+          if (heroIndex < aliveHeroes.length - 1) {
+            ctx.strokeStyle = "#8B4513";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(columnX + columnWidth, 560); // Ajustado posición
+            ctx.lineTo(columnX + columnWidth, 640);
+            ctx.stroke();
+          }
+        });
+
+        ctx.textAlign = "left"; // Resetear alineación
+      }
+
+      canvas.addEventListener("touchstart", handleInput);
+      canvas.addEventListener("click", handleInput);
+
+      function handleInput(e) {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        let clientX, clientY;
+
+        if (e.type === "touchstart") {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+
+        const touchX = (clientX - rect.left) * (designWidth / rect.width);
+        const touchY = (clientY - rect.top) * (designHeight / rect.height);
+
+        // Footer buttons
+        if (touchY >= 560 && state === "select_hero") { // Cambiado de 520 a 560
+          const columnWidth = designWidth / 3;
+          const aliveHeroes = heroes.filter((h) => h.hp > 0);
+
+          aliveHeroes.forEach((hero, heroIndex) => {
+            const actions = Object.keys(classActions[hero.clazz]);
+            const columnX = heroIndex * columnWidth;
+            const buttonWidth = columnWidth; // Sin padding, ocupa todo el ancho
+            const buttonHeight = 20; // Reducido de 25 a 20
+            const buttonX = columnX; // Sin padding
+
+            // Botón habilidad principal
+            const primaryY = 585; // Ajustado posición
+            if (
+              touchX >= buttonX &&
+              touchX <= buttonX + buttonWidth &&
+              touchY >= primaryY &&
+              touchY <= primaryY + buttonHeight
+            ) {
+              const action = actions[0];
+              const actionData = classActions[hero.clazz][action];
+              const canUse = hero.charge >= actionData.reqCharge && hero.hp > 0;
+
+              if (canUse) {
+                selectedHero = hero;
+                selectedAction = action;
+
+                const actionType = actionData.type;
+                if (actionType === "single_enemy") {
+                  state = "select_target_enemy";
+                  hero.anim = "selected";
+                  hero.frame = 0;
+                  hero.animTime = 0;
+                } else if (actionType === "single_ally") {
+                  state = "select_target_ally";
+                  hero.anim = "selected";
+                  hero.frame = 0;
+                  hero.animTime = 0;
+                } else if (actionType === "all_enemy") {
+                  if (
+                    executeAction(
+                      selectedHero,
+                      action,
+                      enemies.filter((e) => e.hp > 0)
+                    )
+                  ) {
+                    selectedHero = null;
+                    selectedAction = null;
+                  }
+                } else if (actionType === "all_ally") {
+                  if (
+                    executeAction(
+                      selectedHero,
+                      action,
+                      heroes.filter((h) => h.hp > 0)
+                    )
+                  ) {
+                    selectedHero = null;
+                    selectedAction = null;
+                  }
+                } else if (actionType === "self") {
+                  if (executeAction(selectedHero, action, selectedHero)) {
+                    selectedHero = null;
+                    selectedAction = null;
+                  }
+                }
+              }
+            }
+
+            // Botón habilidad secundaria
+            const secondaryY = 610; // Ajustado posición
+            if (
+              touchX >= buttonX &&
+              touchX <= buttonX + buttonWidth &&
+              touchY >= secondaryY &&
+              touchY <= secondaryY + buttonHeight
+            ) {
+              const action = actions[1];
+              const actionData = classActions[hero.clazz][action];
+              const canUse = hero.charge >= actionData.reqCharge && hero.hp > 0;
+
+              if (canUse) {
+                selectedHero = hero;
+                selectedAction = action;
+
+                const actionType = actionData.type;
+                if (actionType === "single_enemy") {
+                  state = "select_target_enemy";
+                  hero.anim = "selected";
+                  hero.frame = 0;
+                  hero.animTime = 0;
+                } else if (actionType === "single_ally") {
+                  state = "select_target_ally";
+                  hero.anim = "selected";
+                  hero.frame = 0;
+                  hero.animTime = 0;
+                } else if (actionType === "all_enemy") {
+                  if (
+                    executeAction(
+                      selectedHero,
+                      action,
+                      enemies.filter((e) => e.hp > 0)
+                    )
+                  ) {
+                    selectedHero = null;
+                    selectedAction = null;
+                  }
+                } else if (actionType === "all_ally") {
+                  if (
+                    executeAction(
+                      selectedHero,
+                      action,
+                      heroes.filter((h) => h.hp > 0)
+                    )
+                  ) {
+                    selectedHero = null;
+                    selectedAction = null;
+                  }
+                } else if (actionType === "self") {
+                  if (executeAction(selectedHero, action, selectedHero)) {
+                    selectedHero = null;
+                    selectedAction = null;
+                  }
+                }
+              }
+            }
+          });
+          return;
+        }
+
+        // Botón cancelar
+        if (
+          (state === "select_target_enemy" || state === "select_target_ally") &&
+          touchX >= 10 &&
+          touchX <= 90 &&
+          touchY >= 90 &&
+          touchY <= 115
+        ) {
+          state = "select_hero";
+          if (selectedHero) {
+            selectedHero.anim = "idle"; // Resetear animación a idle
+            selectedHero.frame = 0;
+            selectedHero.animTime = 0;
+          }
+          selectedHero = null;
+          selectedAction = null;
+          return;
+        }
+
+        if (state === "select_hero") {
+          heroes.forEach((h) => {
+            if (
+              h.hp > 0 &&
+              Math.abs(touchX - h.posx) < 40 &&
+              Math.abs(touchY - h.posy) < 40
+            ) {
+              // No necesitamos cambiar el estado aquí, solo usamos los botones del footer
+              console.log("Hero clicked:", h.clazz);
+            }
+          });
+        } else if (state === "select_target_enemy") {
+          enemies.forEach((e) => {
+            const size = e.size || 80;
+            if (
+              e.hp > 0 &&
+              Math.abs(touchX - e.posx) < size / 2 &&
+              Math.abs(touchY - e.posy) < size / 2
+            ) {
+              if (executeAction(selectedHero, selectedAction, e)) {
+                selectedHero = null;
+                selectedAction = null;
+                state = "select_hero";
+              }
+            }
+          });
+        } else if (state === "select_target_ally") {
+          heroes.forEach((h) => {
+            if (
+              h.hp > 0 &&
+              Math.abs(touchX - h.posx) < 40 &&
+              Math.abs(touchY - h.posy) < 40
+            ) {
+              if (executeAction(selectedHero, selectedAction, h)) {
+                selectedHero = null;
+                selectedAction = null;
+                state = "select_hero";
+              }
+            }
+          });
+        }
+      }
+
+      function resetGame() {
+        init();
+      }
+
+      Promise.all([
+        new Promise((r) => (backgroundImg.onload = r)),
+        new Promise((r) => (mageImg.onload = r)),
+        new Promise((r) => (priestImg.onload = r)),
+        new Promise((r) => (warlockImg.onload = r)),
+        new Promise((r) => (enemyImg.onload = r)),
+      ]).then(() => {
+        init();
+        requestAnimationFrame(loop);
+      });
+    </script>
+  </body>
+</html>
