@@ -50,38 +50,71 @@
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/ChatGPT%20Image%2010%20ago%202025%2C%2001_31_21-11GclhftpsCG06vNEd4ri4gVBVUY8o.png?aymA";
       const mageImg = new Image();
       mageImg.src =
-        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/mage-R1FzSs3v2fq902hArb7OWABq36m2DG.png?gfP1";
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/mage-TnWuIwL8nfQgfspUHLdQb117UZpBR3.png?ddSR";
       const priestImg = new Image();
       priestImg.src =
-        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/priest-JsnicYxz2xmZ8tPVxrBNTIr9PVAPpg.png?sWnv";
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/priest-DZKVrCXOeqMuQCe0Rid7DctIkoe4m0.png?XbMV";
       const warlockImg = new Image();
       warlockImg.src =
-        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/warlock-pooFrJzffnBpm22fnFFOxvSIm5MWQG.png?E8pk";
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/warlock-ufYIrOZWd5mtgudqtQ8Yd34rteekHt.png?6IzB";
       const enemyImg = new Image();
       enemyImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/beast_gigasChad-jHhAfiqtBGKuiIHRZJ0MkWs0W5uFQ5.png?9LBT";
 
-      // Animations
+      // Nuevos sprites de goblin
+      const goblinIdleImg = new Image();
+      goblinIdleImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/IDLE-V90NoEl8WQxdfu93X92hoipQtHfW7y.png?O0Ak";
+      const goblinDieImg = new Image();
+      goblinDieImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/DEATH-r9w4VgFSi93NjgHhRKFPjbBK3x4XYS.png?VLXN";
+
+      // Sprites de efectos de habilidades
+      const effectsImg = new Image();
+      effectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/Red%20Effect%20Bullet%20Impact%20Explosion%2032x32-NnvGEsfH13xUZuEqmJAXk2oelYwGoV.png?b5e9";
+
+      // Sprites de efectos púrpura para warlock
+      const purpleEffectsImg = new Image();
+      purpleEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/Purple%20Effect%20Bullet%20Impact%20Explosion%2032x32-tBftQaSwItblEIfJStK8fGzQZEaFvQ.png?7m6v";
+
+      // Sprite de efectos de curación
+      const healingEffectsImg = new Image();
+      healingEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/Regen-IsFeOv1fkkRBrdZ1wZqoyhE5DrXPmz.png?22AH";
+
+      // Sprite de efectos de rayo para Smite
+      const lightningEffectsImg = new Image();
+      lightningEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/Lightning-JDFXQsYo47LoZYiuRiYJRnGOxeYgZc.png?8HcK";
+
+      // Sprite de efectos de Dark Bolt para Inmolation
+      const darkBoltEffectsImg = new Image();
+      darkBoltEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/Dark-Bolt-XsHZlOlUknjRLKGCm3oDIfLlJimYCf.png?Lpbv";
+
+      // Animations - actualizadas con nuevas habilidades
       const animationsMage = {
         selected: { row: 0, frames: 6, duration: 0.6 },
         idle: { row: 1, frames: 6, duration: 0.6 },
         fireblast: { row: 2, frames: 7, duration: 1 },
-        conflagration: { row: 3, frames: 7, duration: 1 },
-        healing: { row: 4, frames: 6, duration: 0.6 },
+        combustion: { row: 3, frames: 7, duration: 1 },
+        inferno: { row: 4, frames: 6, duration: 1 },
       };
       const animationsPriest = {
         selected: { row: 0, frames: 6, duration: 0.6 },
         idle: { row: 1, frames: 6, duration: 0.6 },
         holywave: { row: 2, frames: 7, duration: 1 },
-        rejuvenation: { row: 3, frames: 6, duration: 1 },
-        healing: { row: 4, frames: 6, duration: 0.6 },
+        smite: { row: 3, frames: 6, duration: 1 },
+        regrowth: { row: 4, frames: 6, duration: 1 },
       };
       const animationsWarlock = {
         selected: { row: 0, frames: 6, duration: 0.6 },
         idle: { row: 1, frames: 6, duration: 0.6 },
-        slash: { row: 2, frames: 7, duration: 1 },
-        protection: { row: 3, frames: 6, duration: 0.5 }, // Instantáneo
-        healing: { row: 4, frames: 6, duration: 0.6 },
+        darkslash: { row: 2, frames: 7, duration: 1 },
+        agony: { row: 3, frames: 6, duration: 0.5 }, // Instantáneo
+        inmolation: { row: 4, frames: 7, duration: 1 },
       };
 
       let score = 0;
@@ -114,6 +147,8 @@
             animTime: 0,
             acted: false,
             buffs: [],
+            targets: [],
+            action: null,
             img: mageImg,
             animations: animationsMage,
             frameW: 100, // Nuevo tamaño de frame
@@ -134,6 +169,8 @@
             animTime: 0,
             acted: false,
             buffs: [],
+            targets: [],
+            action: null,
             img: warlockImg,
             animations: animationsWarlock,
             frameW: 100, // Nuevo tamaño de frame
@@ -154,6 +191,8 @@
             animTime: 0,
             acted: false,
             buffs: [],
+            targets: [],
+            action: null,
             img: priestImg,
             animations: animationsPriest,
             frameW: 100, // Nuevo tamaño de frame
@@ -171,6 +210,7 @@
       }
 
       function startWave() {
+        console.log("Starting wave", wave + 1);
         let enemyPositions = [];
         if (wave % 3 === 0) {
           // 2 enemies
@@ -190,6 +230,7 @@
           enemies = [createEnemy(180, 200, 200, "boss")];
         }
         wave++;
+        console.log("Wave", wave, "started with", enemies.length, "enemies");
         heroes.forEach((h) => (h.acted = false));
       }
 
@@ -205,6 +246,30 @@
           animTime: 0,
           def: type === "boss" ? 10 : 5,
           size: type === "boss" ? 140 : 90,
+          anim: "idle",
+          frame: 0,
+          animStartTime: 0,
+          isDying: false,
+          deathAnimComplete: false,
+          // Propiedades específicas del sprite de goblin
+          frameWidth: 81,
+          frameHeight: 71,
+          idleFrames: 4,
+          deathFrames: 6,
+        };
+      }
+
+      // Función para calcular si un golpe es crítico
+      function calculateCritical(baseDamage, customCritChance = 15) {
+        const criticalChance = customCritChance / 100; // Convertir porcentaje a decimal
+        const isCritical = Math.random() < criticalChance;
+        const finalDamage = isCritical
+          ? Math.floor(baseDamage * 1.5)
+          : baseDamage;
+
+        return {
+          damage: finalDamage,
+          isCritical: isCritical,
         };
       }
 
@@ -212,51 +277,75 @@
         mage: {
           fireblast: {
             name: "Fireblast",
-            reqCharge: 50, // Primera barra (50%)
+            reqCharge: 33.33, // 1 carga (33.33% de 100%)
             type: "single_enemy",
-            damage: 35, // Mucho daño
+            damage: 35,
             anim: "fireblast",
           },
-          conflagration: {
-            name: "Conflagration",
-            reqCharge: 100, // Segunda barra completa (100%)
+          combustion: {
+            name: "Combustion",
+            reqCharge: 66.66, // 2 cargas (66.66% de 100%)
+            type: "self",
+            critBonus: 50, // Aumenta críticos 50%
+            duration: 30, // 30 segundos
+            anim: "combustion",
+          },
+          inferno: {
+            name: "Inferno",
+            reqCharge: 100, // 3 cargas (100%)
             type: "all_enemy",
-            damage: 18, // Menos daño pero a todos
-            anim: "conflagration",
+            damage: 25, // Menos que fireblast pero a todos
+            anim: "inferno",
           },
         },
         priest: {
           holywave: {
             name: "Holy Wave",
-            reqCharge: 50, // Primera barra (50%)
+            reqCharge: 33.33, // 1 carga
             type: "single_ally",
-            heal: 45, // Cura bastante
+            heal: 45,
             anim: "holywave",
           },
-          rejuvenation: {
-            name: "Rejuvenation",
-            reqCharge: 100, // Segunda barra completa (100%)
+          smite: {
+            name: "Smite",
+            reqCharge: 66.66, // 2 cargas
+            type: "single_enemy",
+            damage: 20, // Poco daño
+            anim: "smite",
+          },
+          regrowth: {
+            name: "Regrowth",
+            reqCharge: 100, // 3 cargas
             type: "all_ally",
-            heal: 12, // Varios ticks pequeños
-            ticks: 3,
-            anim: "rejuvenation",
+            heal: 8, // Ticks pequeños
+            ticks: 3, // 3 segundos
+            anim: "regrowth",
           },
         },
         warlock: {
-          slash: {
-            name: "Slash",
-            reqCharge: 50, // Primera barra (50%)
+          darkslash: {
+            name: "Dark Slash",
+            reqCharge: 33.33, // 1 carga
             type: "single_enemy",
-            damage: 25, // Daño medio, aumenta con streak
-            anim: "slash",
+            damage: 25,
+            anim: "darkslash",
           },
-          protection: {
-            name: "Protection",
-            reqCharge: 100, // Segunda barra completa (100%)
-            type: "all_ally", // Protege a todo el grupo
-            defBonus: 25, // Buena defensa adicional
-            duration: 3,
-            anim: "protection",
+          agony: {
+            name: "Agony",
+            reqCharge: 66.66, // 2 cargas
+            type: "all_ally",
+            defBonus: 15, // Buena defensa
+            damageReflect: 10, // 10% reflejo
+            duration: 20, // 20 segundos
+            anim: "agony",
+          },
+          inmolation: {
+            name: "Inmolation",
+            reqCharge: 100, // 3 cargas
+            type: "all_enemy",
+            damage: 45, // Mucho daño
+            selfDamage: 60, // 60% de su vida
+            anim: "inmolation",
           },
         },
       };
@@ -272,11 +361,19 @@
 
       function checkWaveCleared() {
         if (enemies.every((e) => e.hp <= 0)) {
-          enemies.forEach((e) => {
-            score += e.type === "boss" ? 10 : 1;
-          });
-          startWave();
-          return true;
+          // Verificar si todos los enemigos han completado su animación de muerte
+          const allDeathAnimationsComplete = enemies.every(
+            (e) => e.hp > 0 || e.deathAnimComplete
+          );
+
+          if (allDeathAnimationsComplete) {
+            console.log("Wave cleared! Starting next wave...");
+            enemies.forEach((e) => {
+              score += e.type === "boss" ? 10 : 1;
+            });
+            startWave();
+            return true;
+          }
         }
         return false;
       }
@@ -329,6 +426,8 @@
         hero.anim = actionData.anim;
         hero.frame = 0;
         hero.animTime = 0;
+        // Limpiar targets anteriores antes de asignar nuevos
+        hero.targets = [];
         hero.targets = Array.isArray(targets) ? targets : [targets];
         hero.action = action;
         state = "animate";
@@ -338,53 +437,220 @@
           action,
           "for hero:",
           hero.clazz,
+          "with targets:",
+          hero.targets.length,
           "charge reset to 0"
         );
         return true;
       }
 
       function applyEffect(hero, action, targets) {
+        // Validar que tenemos todos los datos necesarios
+        if (
+          !action ||
+          !hero.clazz ||
+          !classActions[hero.clazz] ||
+          !classActions[hero.clazz][action]
+        ) {
+          console.error("ERROR: Datos inválidos para applyEffect", {
+            hero: hero.clazz,
+            action: action,
+            hasClassActions: !!classActions[hero.clazz],
+            hasAction: !!(
+              classActions[hero.clazz] && classActions[hero.clazz][action]
+            ),
+          });
+          return;
+        }
+
         const actionData = classActions[hero.clazz][action];
         console.log(
           "Applying effect:",
           action,
+          "from hero:",
+          hero.clazz,
           "to targets:",
           targets.length,
-          "type:",
+          "action type:",
           actionData.type
         );
 
-        if (actionData.type.includes("enemy")) {
+        // Validación adicional para prevenir contaminación de targets
+        if (actionData.type.includes("enemy") && targets.some((t) => t.clazz)) {
+          console.error(
+            "ERROR: Acción de enemigo aplicada a héroes!",
+            action,
+            targets
+          );
+          return;
+        }
+        if (actionData.type.includes("ally") && targets.some((t) => !t.clazz)) {
+          console.error(
+            "ERROR: Acción de aliado aplicada a enemigos!",
+            action,
+            targets
+          );
+          return;
+        }
+
+        // Nuevas mecánicas específicas por habilidad
+        if (action === "combustion") {
+          // Combustion: buff de críticos al mago
+          hero.buffs.push({
+            type: "combustion",
+            endTime: currentTime + actionData.duration,
+            critBonus: actionData.critBonus,
+          });
+          console.log(
+            "Combustion buff applied to",
+            hero.clazz,
+            "for",
+            actionData.duration,
+            "seconds"
+          );
+          // Agregar efecto visual de combustion en el propio mago
+          addCombustionEffect(hero.posx, hero.posy);
+        } else if (action === "agony") {
+          // Agony: protección y reflejo de daño a todos los aliados
+          targets.forEach((target) => {
+            if (target.hp > 0) {
+              target.buffs.push({
+                type: "agony",
+                endTime: currentTime + actionData.duration,
+                defBonus: actionData.defBonus,
+                damageReflect: actionData.damageReflect,
+              });
+              console.log("Agony buff applied to", target.clazz);
+              addProtectionEffect([target]);
+            }
+          });
+        } else if (action === "inmolation") {
+          // Inmolation: daño a todos los enemigos + auto-daño al warlock
           targets.forEach((target) => {
             if (target.hp > 0) {
               let damage = actionData.damage;
-              if (action === "slash") {
-                damage += slashStreak * 5;
-                slashStreak++;
-              }
-              const effectiveDamage = Math.max(1, damage - target.def);
-              console.log(
-                "Dealing",
-                effectiveDamage,
-                "damage to enemy with",
-                target.hp,
-                "HP"
-              );
+              const criticalResult = calculateCritical(damage);
+              const finalDamage = criticalResult.damage;
+              const isCritical = criticalResult.isCritical;
+              const effectiveDamage = Math.max(1, finalDamage - target.def);
+
+              target.anim = "hurt";
+              target.frame = 0;
+              target.animStartTime = currentTime;
               target.hp = Math.max(0, target.hp - effectiveDamage);
-              console.log("Enemy now has", target.hp, "HP");
-              // Mostrar número de daño
+
+              if (target.hp <= 0) {
+                target.isDying = true;
+                target.anim = "die";
+                target.frame = 0;
+                target.animStartTime = currentTime;
+              }
+
               showHitNumber(
                 target.posx,
                 target.posy - 20,
                 effectiveDamage,
-                false
+                false,
+                isCritical
+              );
+              clearEffectsByTypeAndPosition(
+                "inmolation",
+                target.posx,
+                target.posy
+              );
+              addInmolationEffect(target.posx, target.posy);
+            }
+          });
+
+          // Auto-daño al warlock (60% de su vida)
+          const selfDamage = Math.floor(
+            hero.maxhp * (actionData.selfDamage / 100)
+          );
+          hero.hp = Math.max(0, hero.hp - selfDamage); // Puede autodestruirse
+          showHitNumber(hero.posx, hero.posy - 20, selfDamage, false, false);
+          console.log("Inmolation self-damage:", selfDamage, "to", hero.clazz);
+        } else if (action === "regrowth") {
+          // Regrowth: curación por ticks a todos los aliados
+          targets.forEach((target) => {
+            if (target.hp > 0) {
+              target.buffs.push({
+                type: "regrowth",
+                endTime: currentTime + actionData.ticks,
+                nextTick: currentTime + 1,
+                heal: actionData.heal,
+              });
+              playHealingAnim(target);
+              console.log("Regrowth applied to", target.clazz);
+            }
+          });
+        } else if (actionData.type.includes("enemy")) {
+          // Habilidades de daño normales
+          targets.forEach((target) => {
+            if (target.hp > 0) {
+              let damage = actionData.damage;
+
+              // Aplicar buff de combustion si existe
+              let criticalChance = 15; // Base 15%
+              if (hero.buffs.some((b) => b.type === "combustion")) {
+                criticalChance += hero.buffs.find(
+                  (b) => b.type === "combustion"
+                ).critBonus;
+              }
+
+              const criticalResult = calculateCritical(damage, criticalChance);
+              const finalDamage = criticalResult.damage;
+              const isCritical = criticalResult.isCritical;
+              const effectiveDamage = Math.max(1, finalDamage - target.def);
+
+              target.anim = "hurt";
+              target.frame = 0;
+              target.animStartTime = currentTime;
+              target.hp = Math.max(0, target.hp - effectiveDamage);
+
+              if (target.hp <= 0) {
+                target.isDying = true;
+                target.anim = "die";
+                target.frame = 0;
+                target.animStartTime = currentTime;
+              }
+
+              showHitNumber(
+                target.posx,
+                target.posy - 20,
+                effectiveDamage,
+                false,
+                isCritical
               );
 
-              // Efectos visuales especiales
-              if (action === "conflagration") {
-                addLavaEffect(target.posx, target.posy);
-              } else if (action === "fireblast") {
-                addMeteorEffect(target.posx, target.posy);
+              // Efectos visuales específicos por habilidad
+              if (action === "fireblast") {
+                clearEffectsByTypeAndPosition(
+                  "fireblast",
+                  target.posx,
+                  target.posy
+                );
+                addFireblastEffect(target.posx, target.posy);
+              } else if (action === "inferno") {
+                clearEffectsByTypeAndPosition(
+                  "conflagration",
+                  target.posx,
+                  target.posy
+                );
+                addConflagrationEffect(target.posx, target.posy);
+              } else if (action === "darkslash") {
+                clearEffectsByTypeAndPosition(
+                  "slash",
+                  target.posx,
+                  target.posy
+                );
+                addSlashEffect(target.posx, target.posy);
+              } else if (action === "smite") {
+                clearEffectsByTypeAndPosition(
+                  "smite",
+                  target.posx,
+                  target.posy
+                );
+                addSmiteEffect(target.posx, target.posy);
               }
             }
           });
@@ -392,73 +658,209 @@
           actionData.type.includes("ally") ||
           actionData.type === "self"
         ) {
+          // Habilidades de curación normales
           targets.forEach((target) => {
-            if (target.hp > 0) {
-              if (actionData.heal) {
-                console.log(
-                  "Healing",
-                  actionData.heal,
-                  "to",
-                  target.clazz || "enemy"
-                );
-                target.hp = Math.min(target.maxhp, target.hp + actionData.heal);
-                playHealingAnim(target);
-                // Mostrar número de curación
-                showHitNumber(
-                  target.posx,
-                  target.posy - 20,
-                  actionData.heal,
-                  true
-                );
-              }
-              if (actionData.ticks) {
-                target.buffs.push({
-                  type: "rejuvenation",
-                  endTime: currentTime + actionData.ticks,
-                  nextTick: currentTime + 1,
-                  heal: actionData.heal,
-                });
-              }
-              if (actionData.defBonus) {
-                console.log(
-                  "Adding protection buff to",
-                  target.clazz || "target"
-                );
-                target.buffs.push({
-                  type: "protection",
-                  endTime: currentTime + actionData.duration,
-                  defBonus: actionData.defBonus,
-                });
-
-                // Efecto visual para protección
-                if (action === "protection") {
-                  addProtectionEffect(targets);
-                }
-              }
+            if (target.hp > 0 && actionData.heal) {
+              target.hp = Math.min(target.maxhp, target.hp + actionData.heal);
+              playHealingAnim(target);
+              showHitNumber(
+                target.posx,
+                target.posy - 20,
+                actionData.heal,
+                true
+              );
+              console.log(
+                "Healing",
+                actionData.heal,
+                "to",
+                target.clazz || "target"
+              );
             }
           });
         }
+
         checkWaveCleared();
         checkGameOver();
+
+        // Resetear selección después de aplicar efectos
+        selectedHero = null;
+        selectedAction = null;
       }
 
       function playHealingAnim(target) {
-        if (target.anim === "idle") {
-          target.anim = "healing";
-          target.frame = 0;
-          target.animTime = 0;
-        }
+        // En lugar de cambiar la animación del héroe, crear un efecto visual separado
+        console.log("Creando efecto visual de curación para", target.clazz);
+        addHealingEffect(target.posx, target.posy);
       }
 
-      function showHitNumber(x, y, value, isHealing = false) {
+      function showHitNumber(
+        x,
+        y,
+        value,
+        isHealing = false,
+        isCritical = false
+      ) {
         hitNumbers.push({
           x: x,
           y: y,
           value: value,
           isHealing: isHealing,
+          isCritical: isCritical,
           opacity: 1.0,
           startTime: currentTime,
           duration: 1.5, // duración en segundos
+        });
+      }
+
+      function clearEffectsByTypeAndPosition(effectType, x, y) {
+        // Eliminar solo los efectos del tipo especificado en la posición específica (mismo enemigo)
+        const initialCount = visualEffects.length;
+        for (let i = visualEffects.length - 1; i >= 0; i--) {
+          const effect = visualEffects[i];
+          if (
+            effect.type === effectType &&
+            Math.abs(effect.x - x) < 10 &&
+            Math.abs(effect.y - y) < 10
+          ) {
+            visualEffects.splice(i, 1);
+          }
+        }
+        const removedCount = initialCount - visualEffects.length;
+        if (removedCount > 0) {
+          console.log(
+            `Eliminados ${removedCount} efectos de tipo ${effectType} en posición ${x},${y}`
+          );
+        }
+      }
+
+      function addFireblastEffect(x, y) {
+        visualEffects.push({
+          type: "fireblast",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 0.4, // Duración original
+          frame: 0,
+          frameCount: 4,
+          frameWidth: 32,
+          frameHeight: 32,
+          size: 64, // Tamaño más grande
+          repeat: 0, // Contador de repeticiones
+          maxRepeats: 2, // Se repetirá 2 veces (total 3 reproducciones)
+          endTime: currentTime + 0.4 * 3, // Tiempo absoluto de finalización (3 repeticiones)
+        });
+      }
+
+      function addConflagrationEffect(x, y) {
+        visualEffects.push({
+          type: "conflagration",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 0.4, // Duración original
+          frame: 0,
+          frameCount: 4,
+          frameWidth: 32,
+          frameHeight: 32,
+          size: 64, // Tamaño más grande
+          repeat: 0, // Contador de repeticiones
+          maxRepeats: 2, // Se repetirá 2 veces (total 3 reproducciones)
+          endTime: currentTime + 0.4 * 3, // Tiempo absoluto de finalización (3 repeticiones)
+        });
+      }
+
+      function addSlashEffect(x, y) {
+        console.log("Añadiendo efecto slash en posición", x, y);
+        visualEffects.push({
+          type: "slash",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 0.4, // Duración original
+          frame: 0,
+          frameCount: 4, // Frames 17, 18, 19, 20
+          frameWidth: 32,
+          frameHeight: 32,
+          size: 64, // Tamaño más grande
+          repeat: 0, // Contador de repeticiones
+          maxRepeats: 2, // Se repetirá 2 veces (total 3 reproducciones)
+          endTime: currentTime + 0.4 * 3, // Tiempo absoluto de finalización (3 repeticiones)
+        });
+      }
+
+      function addHealingEffect(x, y) {
+        console.log("Añadiendo efecto visual de curación en posición", x, y);
+        visualEffects.push({
+          type: "healing",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 1.0, // Duración más larga para aprovechar todos los frames
+          frame: 0,
+          frameCount: 7, // 7 frames totales (5 en primera fila + 2 en segunda)
+          frameWidth: 96, // Nuevo tamaño de frame
+          frameHeight: 96, // Nuevo tamaño de frame
+          size: 120, // Tamaño renderizado más grande para mejor visibilidad
+          repeat: 0,
+          maxRepeats: 0, // Solo se reproduce una vez
+          endTime: currentTime + 1.0,
+        });
+      }
+
+      function addCombustionEffect(x, y) {
+        console.log("Añadiendo efecto visual de combustion en posición", x, y);
+        visualEffects.push({
+          type: "combustion",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 0.8, // Duración para 4 frames
+          frame: 0,
+          frameCount: 4, // Frames 11, 12, 13, 14
+          frameWidth: 32,
+          frameHeight: 32,
+          size: 80, // Tamaño apropiado para el mago
+          repeat: 0,
+          maxRepeats: 1, // Se repite una vez (total 2 reproducciones)
+          endTime: currentTime + 0.8 * 2, // Tiempo absoluto de finalización
+        });
+      }
+
+      function addSmiteEffect(x, y) {
+        console.log("Añadiendo efecto visual de smite en posición", x, y);
+        visualEffects.push({
+          type: "smite",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 1.0, // Duración para 10 frames
+          frame: 0,
+          frameCount: 10, // 10 frames de lightning
+          frameWidth: 64,
+          frameHeight: 128,
+          size: 100, // Tamaño apropiado para el efecto de rayo
+          repeat: 0,
+          maxRepeats: 0, // Solo se reproduce una vez
+          endTime: currentTime + 1.0,
+        });
+      }
+
+      function addInmolationEffect(x, y) {
+        console.log("Añadiendo efecto visual de inmolation en posición", x, y);
+        visualEffects.push({
+          type: "inmolation",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 1.1, // Duración para 11 frames
+          frame: 0,
+          frameCount: 11, // 11 frames de dark bolt
+          frameWidth: 64,
+          frameHeight: 88,
+          size: 90, // Tamaño apropiado para el efecto de dark bolt
+          repeat: 0,
+          maxRepeats: 1, // Se repite una vez (total 2 reproducciones)
+          endTime: currentTime + 1.1 * 2, // Tiempo absoluto de finalización
         });
       }
 
@@ -525,7 +927,97 @@
           const effect = visualEffects[i];
           const elapsed = currentTime - effect.startTime;
 
-          if (effect.type === "lava") {
+          if (effect.type === "fireblast") {
+            // Actualizar frame del efecto de fireblast con repeticiones
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Si completó una animación, resetear para repetir
+            if (effect.frame >= effect.frameCount) {
+              if (effect.repeat < effect.maxRepeats) {
+                effect.repeat++;
+                effect.startTime = currentTime; // Reiniciar tiempo
+                effect.frame = 0;
+              }
+            }
+          } else if (effect.type === "conflagration") {
+            // Actualizar frame del efecto de conflagration con repeticiones
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Si completó una animación, resetear para repetir
+            if (effect.frame >= effect.frameCount) {
+              if (effect.repeat < effect.maxRepeats) {
+                effect.repeat++;
+                effect.startTime = currentTime; // Reiniciar tiempo
+                effect.frame = 0;
+              }
+            }
+          } else if (effect.type === "slash") {
+            // Actualizar frame del efecto de slash con repeticiones
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Si completó una animación, resetear para repetir
+            if (effect.frame >= effect.frameCount) {
+              if (effect.repeat < effect.maxRepeats) {
+                effect.repeat++;
+                effect.startTime = currentTime; // Reiniciar tiempo
+                effect.frame = 0;
+              }
+            }
+          } else if (effect.type === "healing") {
+            // Actualizar frame del efecto de curación
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Mantener en el último frame si se completa
+            if (effect.frame >= effect.frameCount) {
+              effect.frame = effect.frameCount - 1;
+            }
+          } else if (effect.type === "combustion") {
+            // Actualizar frame del efecto de combustion con repeticiones
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Si completó una animación, resetear para repetir
+            if (effect.frame >= effect.frameCount) {
+              if (effect.repeat < effect.maxRepeats) {
+                effect.repeat++;
+                effect.startTime = currentTime; // Reiniciar tiempo
+                effect.frame = 0;
+              }
+            }
+          } else if (effect.type === "smite") {
+            // Actualizar frame del efecto de smite
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Mantener en el último frame si se completa
+            if (effect.frame >= effect.frameCount) {
+              effect.frame = effect.frameCount - 1;
+            }
+          } else if (effect.type === "inmolation") {
+            // Actualizar frame del efecto de inmolation con repeticiones
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Si completó una animación, resetear para repetir
+            if (effect.frame >= effect.frameCount) {
+              if (effect.repeat < effect.maxRepeats) {
+                effect.repeat++;
+                effect.startTime = currentTime; // Reiniciar tiempo
+                effect.frame = 0;
+              }
+            }
+          } else if (effect.type === "lava") {
             // Generar más partículas de lava (más intenso)
             if (Math.random() < 0.6) {
               // Era 0.3, ahora es 0.6
@@ -584,8 +1076,20 @@
             }
           }
 
-          // Eliminar efecto cuando termine
-          if (elapsed >= effect.duration) {
+          // Eliminar efecto cuando termine (considerando repeticiones)
+          if (
+            effect.type === "fireblast" ||
+            effect.type === "conflagration" ||
+            effect.type === "slash" ||
+            effect.type === "combustion" ||
+            effect.type === "inmolation"
+          ) {
+            // Para efectos con repeticiones, eliminar cuando se haya superado el tiempo absoluto de finalización
+            if (currentTime >= effect.endTime) {
+              visualEffects.splice(i, 1);
+            }
+          } else if (elapsed >= effect.duration) {
+            // Para otros efectos (healing, smite, lava, protection, meteor), eliminar normalmente
             visualEffects.splice(i, 1);
           }
         }
@@ -593,19 +1097,38 @@
 
       function renderHitNumbers() {
         ctx.save();
-        ctx.font = "bold 20px monospace"; // Aumentado de 14px a 20px
         ctx.textAlign = "center";
 
         hitNumbers.forEach((hitNum) => {
           ctx.globalAlpha = hitNum.opacity;
-          ctx.fillStyle = hitNum.isHealing ? "#00ff00" : "#ff0000";
+
+          // Configurar estilo según el tipo de hit
+          if (hitNum.isCritical) {
+            ctx.font = "bold 28px monospace"; // Más grande para críticos
+            ctx.fillStyle = "#FFD700"; // Amarillo dorado para críticos
+            ctx.lineWidth = 4;
+          } else if (hitNum.isHealing) {
+            ctx.font = "bold 20px monospace";
+            ctx.fillStyle = "#00ff00"; // Verde para curación
+            ctx.lineWidth = 3;
+          } else {
+            ctx.font = "bold 20px monospace";
+            ctx.fillStyle = "#ff0000"; // Rojo para daño normal
+            ctx.lineWidth = 3;
+          }
 
           // Sombra para mejor visibilidad
           ctx.strokeStyle = "#000000";
-          ctx.lineWidth = 3; // Aumentado para mejor visibilidad
-          const text = hitNum.isHealing
-            ? `+${hitNum.value}`
-            : `-${hitNum.value}`;
+
+          let text;
+          if (hitNum.isCritical) {
+            text = `CRIT! -${hitNum.value}`;
+          } else if (hitNum.isHealing) {
+            text = `+${hitNum.value}`;
+          } else {
+            text = `-${hitNum.value}`;
+          }
+
           ctx.strokeText(text, hitNum.x, hitNum.y);
           ctx.fillText(text, hitNum.x, hitNum.y);
         });
@@ -620,7 +1143,157 @@
           const elapsed = currentTime - effect.startTime;
           const progress = elapsed / effect.duration;
 
-          if (effect.type === "lava") {
+          if (effect.type === "fireblast") {
+            // Renderizar efecto de fireblast usando sprites - más grande
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+              const sx = (7 + effect.frame) * effect.frameWidth; // Frames 8,9,10,11 (posiciones 7,8,9,10)
+              const sy = 15 * effect.frameHeight; // Fila 15 (empezando desde 0)
+
+              const renderSize = effect.size || 64;
+              ctx.drawImage(
+                effectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "conflagration") {
+            // Renderizar efecto de conflagration usando sprites - más grande
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+              const sx = (6 + effect.frame) * effect.frameWidth; // Frames 6,7,8,9 (posiciones 6,7,8,9)
+              const sy = 0 * effect.frameHeight; // Fila 0 (empezando desde 0)
+
+              const renderSize = effect.size || 64;
+              ctx.drawImage(
+                effectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "slash") {
+            // Renderizar efecto de slash usando sprites púrpura - más grande
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+              const sx = (17 + effect.frame) * effect.frameWidth; // Frames 17,18,19,20 (posiciones 17,18,19,20)
+              const sy = 11 * effect.frameHeight; // Fila 11 (empezando desde 0)
+
+              const renderSize = effect.size || 64;
+              ctx.drawImage(
+                purpleEffectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "healing") {
+            // Renderizar efecto de curación usando el nuevo sprite específico
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+
+              // Calcular posición del frame: 5 frames en primera fila, 2 en segunda
+              let sx, sy;
+              if (effect.frame < 5) {
+                // Primera fila (frames 0-4)
+                sx = effect.frame * effect.frameWidth;
+                sy = 0;
+              } else {
+                // Segunda fila (frames 5-6)
+                sx = (effect.frame - 5) * effect.frameWidth;
+                sy = effect.frameHeight;
+              }
+
+              const renderSize = effect.size || 120; // Tamaño por defecto más grande
+              ctx.drawImage(
+                healingEffectsImg, // Usar el nuevo sprite de curación
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "combustion") {
+            // Renderizar efecto de combustion usando sprites del mago
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+              const sx = (11 + effect.frame) * effect.frameWidth; // Frames 11,12,13,14 (posiciones 11,12,13,14)
+              const sy = 8 * effect.frameHeight; // Fila 8 (empezando desde 0)
+
+              const renderSize = effect.size || 80;
+              ctx.drawImage(
+                effectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "smite") {
+            // Renderizar efecto de smite usando sprite de lightning
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+              const sx = effect.frame * effect.frameWidth; // Frames 0-9
+              const sy = 0; // Solo una fila
+
+              const renderSize = effect.size || 100;
+              ctx.drawImage(
+                lightningEffectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "inmolation") {
+            // Renderizar efecto de inmolation usando sprite de dark bolt
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+              const sx = effect.frame * effect.frameWidth; // Frames 0-10
+              const sy = 0; // Solo una fila
+
+              const renderSize = effect.size || 90;
+              ctx.drawImage(
+                darkBoltEffectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "lava") {
             // Renderizar partículas de lava
             effect.particles.forEach((particle) => {
               const alpha = particle.life / particle.maxLife;
@@ -805,17 +1478,56 @@
             const currentDef =
               target.def +
               target.buffs.reduce(
-                (sum, b) => (b.type === "protection" ? sum + b.defBonus : sum),
+                (sum, b) =>
+                  b.type === "protection" || b.type === "agony"
+                    ? sum + b.defBonus
+                    : sum,
                 0
               );
-            const effectiveDamage = Math.max(1, damage - currentDef);
+
+            // Calcular crítico para el enemigo
+            const criticalResult = calculateCritical(damage);
+            const finalDamage = criticalResult.damage;
+            const isCritical = criticalResult.isCritical;
+
+            const effectiveDamage = Math.max(1, finalDamage - currentDef);
             target.hp = Math.max(0, target.hp - effectiveDamage);
-            // Mostrar número de daño del enemigo
+
+            // Verificar si el héroe tiene buff de agony para reflejo de daño
+            const agonyBuff = target.buffs.find((b) => b.type === "agony");
+            if (agonyBuff && agonyBuff.damageReflect) {
+              const reflectedDamage = Math.floor(
+                effectiveDamage * (agonyBuff.damageReflect / 100)
+              );
+              enemy.hp = Math.max(0, enemy.hp - reflectedDamage);
+              showHitNumber(
+                enemy.posx,
+                enemy.posy - 20,
+                reflectedDamage,
+                false,
+                false
+              );
+              console.log(
+                "Agony reflection: ",
+                reflectedDamage,
+                "damage to enemy"
+              );
+
+              if (enemy.hp <= 0) {
+                enemy.isDying = true;
+                enemy.anim = "die";
+                enemy.frame = 0;
+                enemy.animStartTime = currentTime;
+              }
+            }
+
+            // Mostrar número de daño del enemigo con indicador de crítico
             showHitNumber(
               target.posx,
               target.posy - 20,
               effectiveDamage,
-              false
+              false,
+              isCritical
             );
           }
           checkGameOver();
@@ -836,14 +1548,33 @@
         // Update visual effects
         updateVisualEffects(delta);
 
+        // Check wave cleared continuously
+        checkWaveCleared();
+
         // Update buffs
         heroes.forEach((h) => {
           h.buffs = h.buffs.filter((b) => {
             if (b.endTime <= currentTime) return false;
+
             if (b.type === "rejuvenation" && b.nextTick <= currentTime) {
               h.hp = Math.min(h.maxhp, h.hp + b.heal);
+              console.log(
+                "Rejuvenation tick para",
+                h.clazz,
+                "- creando efecto visual de curación"
+              );
               playHealingAnim(h);
-              // Mostrar número de curación por rejuvenation
+              showHitNumber(h.posx, h.posy - 20, b.heal, true);
+              b.nextTick += 1;
+            } else if (b.type === "regrowth" && b.nextTick <= currentTime) {
+              h.hp = Math.min(h.maxhp, h.hp + b.heal);
+              console.log(
+                "Regrowth tick para",
+                h.clazz,
+                "- curación de",
+                b.heal
+              );
+              playHealingAnim(h);
               showHitNumber(h.posx, h.posy - 20, b.heal, true);
               b.nextTick += 1;
             }
@@ -863,22 +1594,50 @@
             if (h.frame === 0 && h.anim !== "idle" && h.anim !== "selected") {
               if (state === "animate") {
                 console.log(
-                  "Applying effect for hero:",
+                  "Animation completed! Applying effect for hero:",
                   h.clazz,
                   "action:",
-                  h.action
+                  h.action,
+                  "targets:",
+                  h.targets ? h.targets.length : 0,
+                  "target types:",
+                  h.targets
+                    ? h.targets.map((t) => t.clazz || "enemy").join(",")
+                    : "none"
                 );
-                applyEffect(h, h.action, h.targets);
-                state = "select_hero"; // Volver inmediatamente a selección sin avanzar turno
+
+                // Verificar que tenemos una acción válida antes de aplicar efectos
+                if (h.action && h.targets && h.targets.length > 0) {
+                  applyEffect(h, h.action, h.targets);
+
+                  // Limpiar propiedades de acción SOLO para este héroe después de aplicar el efecto
+                  console.log("Limpiando propiedades de acción para", h.clazz);
+                  h.targets = [];
+                  h.action = null;
+
+                  state = "select_hero"; // Volver inmediatamente a selección sin avanzar turno
+                } else {
+                  console.warn(
+                    "Hero",
+                    h.clazz,
+                    "has no valid action or targets to apply. Action:",
+                    h.action,
+                    "Targets length:",
+                    h.targets ? h.targets.length : 0
+                  );
+                }
               }
-              h.anim = "idle";
+              // Solo cambiar a idle si no hay habilidades pendientes
+              if (state !== "animate") {
+                h.anim = "idle";
+              }
             }
           }
         });
 
         // Update enemy charge and check for automatic attacks
         enemies.forEach((e) => {
-          if (e.hp > 0) {
+          if (e.hp > 0 && !e.isDying) {
             // Charge enemies always
             e.charge = Math.min(e.maxcharge, e.charge + delta * 20); // Charge over time
 
@@ -896,23 +1655,89 @@
                       target.def +
                       target.buffs.reduce(
                         (sum, b) =>
-                          b.type === "protection" ? sum + b.defBonus : sum,
+                          b.type === "protection" || b.type === "agony"
+                            ? sum + b.defBonus
+                            : sum,
                         0
                       );
-                    const effectiveDamage = Math.max(1, damage - currentDef);
+
+                    // Calcular crítico para auto-ataque de enemigo
+                    const criticalResult = calculateCritical(damage);
+                    const finalDamage = criticalResult.damage;
+                    const isCritical = criticalResult.isCritical;
+
+                    const effectiveDamage = Math.max(
+                      1,
+                      finalDamage - currentDef
+                    );
                     target.hp = Math.max(0, target.hp - effectiveDamage);
-                    // Mostrar número de daño del enemigo auto-attack
+
+                    // Verificar si el héroe tiene buff de agony para reflejo de daño
+                    const agonyBuff = target.buffs.find(
+                      (b) => b.type === "agony"
+                    );
+                    if (agonyBuff && agonyBuff.damageReflect) {
+                      const reflectedDamage = Math.floor(
+                        effectiveDamage * (agonyBuff.damageReflect / 100)
+                      );
+                      enemy.hp = Math.max(0, enemy.hp - reflectedDamage);
+                      showHitNumber(
+                        enemy.posx,
+                        enemy.posy - 20,
+                        reflectedDamage,
+                        false,
+                        false
+                      );
+                      console.log(
+                        "Agony reflection (auto-attack): ",
+                        reflectedDamage,
+                        "damage to enemy"
+                      );
+
+                      if (enemy.hp <= 0) {
+                        enemy.isDying = true;
+                        enemy.anim = "die";
+                        enemy.frame = 0;
+                        enemy.animStartTime = currentTime;
+                      }
+                    }
+
+                    // Mostrar número de daño del enemigo auto-attack con crítico
                     showHitNumber(
                       target.posx,
                       target.posy - 20,
                       effectiveDamage,
-                      false
+                      false,
+                      isCritical
                     );
                     checkGameOver();
                   }
                 }, 100);
               }
             }
+          }
+
+          // Actualizar animaciones de enemigos - usando sprites de goblin
+          if (e.anim === "hurt") {
+            const elapsed = currentTime - e.animStartTime;
+            if (elapsed >= 0.3) {
+              // Duración del efecto de daño
+              e.anim = "idle";
+              e.frame = 0; // Reiniciar frame
+              e.animStartTime = currentTime;
+            }
+          } else if (e.anim === "die") {
+            const elapsed = currentTime - e.animStartTime;
+            const frameDuration = 0.15; // Duración por frame para muerte
+            e.frame = Math.floor(elapsed / frameDuration);
+            if (e.frame >= e.deathFrames) {
+              e.deathAnimComplete = true;
+              e.frame = e.deathFrames - 1; // Mantener en el último frame
+            }
+          } else if (e.anim === "idle" && e.hp > 0) {
+            const elapsed = currentTime - e.animStartTime;
+            const frameDuration = 0.25; // Duración por frame para idle
+            e.frame = Math.floor(elapsed / frameDuration) % e.idleFrames;
           }
 
           if (e.animTime > 0) e.animTime -= delta;
@@ -933,6 +1758,10 @@
       function draw() {
         ctx.clearRect(0, 0, designWidth, designHeight);
 
+        // Configurar interpolación de alta calidad para todos los sprites
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+
         // Draw background
         ctx.drawImage(backgroundImg, 0, 0, designWidth, designHeight);
 
@@ -941,7 +1770,9 @@
 
         heroes.forEach((h) => {
           const animData = h.animations[h.anim];
-          const sx = h.frame * h.frameW;
+          // El frameOffset ya no es necesario para conflagration ya que usa su propia fila
+          let frameOffset = 0;
+          const sx = (h.frame + frameOffset) * h.frameW;
           const sy = animData.row * h.frameH;
           const size = h.size || 80;
 
@@ -970,129 +1801,230 @@
 
           // HP bar background
           ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-          ctx.fillRect(h.posx - 40, h.posy + 55, 80, 10);
+          ctx.fillRect(h.posx - 40, h.posy + 55, 80, 12);
 
           // HP bar red
           ctx.fillStyle = "red";
           const hpWidth = 80 * (h.hp / h.maxhp);
-          ctx.fillRect(h.posx - 40, h.posy + 55, hpWidth, 10);
+          ctx.fillRect(h.posx - 40, h.posy + 55, hpWidth, 12);
 
-          // Texto de HP en el centro de la barra
+          // Texto de HP centrado perfectamente en la barra
           ctx.fillStyle = "white";
-          ctx.font = "8px 'Press Start 2P'"; // Reducido de 10px a 8px
+          ctx.font = "8px 'Press Start 2P'";
           ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
           if (h.hp <= 0) {
-            ctx.fillText("DEAD", h.posx, h.posy + 62); // Ajustado posición
+            ctx.fillText("DEAD", h.posx, h.posy + 55 + 6); // Centrado en Y
           } else {
-            ctx.fillText(`${h.hp}`, h.posx, h.posy + 62); // Ajustado posición
+            ctx.fillText(`${h.hp}`, h.posx, h.posy + 55 + 6); // Centrado en Y
           }
           ctx.textAlign = "left"; // Resetear alineación
+          ctx.textBaseline = "alphabetic"; // Resetear baseline
 
-          // Charge bar background - dividido en 2 bloques (solo si está vivo)
+          // Charge bar background - dividido en 3 bloques (solo si está vivo)
           if (h.hp > 0) {
             ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-            ctx.fillRect(h.posx - 40, h.posy + 68, 80, 8);
+            ctx.fillRect(h.posx - 40, h.posy + 70, 80, 8);
 
-            // Charge bar yellow - primer bloque (50%)
+            // Charge bar yellow - primer bloque (33.33%)
             ctx.fillStyle = "#FFD700";
-            const firstBlockWidth = Math.min(40, 40 * (h.charge / 50));
+            const firstBlockWidth = Math.min(26.67, 26.67 * (h.charge / 33.33));
             if (h.charge > 0) {
-              ctx.fillRect(h.posx - 40, h.posy + 68, firstBlockWidth, 8);
+              ctx.fillRect(h.posx - 40, h.posy + 70, firstBlockWidth, 8);
             }
 
-            // Segundo bloque (siguiente 50%)
-            if (h.charge > 50) {
-              const secondBlockWidth = 40 * ((h.charge - 50) / 50);
-              ctx.fillRect(h.posx, h.posy + 68, secondBlockWidth, 8);
+            // Segundo bloque (siguiente 33.33%)
+            if (h.charge > 33.33) {
+              const secondBlockWidth = 26.67 * ((h.charge - 33.33) / 33.33);
+              ctx.fillRect(h.posx - 13.33, h.posy + 70, secondBlockWidth, 8);
             }
 
-            // Separador entre bloques
+            // Tercer bloque (último 33.34%)
+            if (h.charge > 66.66) {
+              const thirdBlockWidth = 26.67 * ((h.charge - 66.66) / 33.34);
+              ctx.fillRect(h.posx + 13.33, h.posy + 70, thirdBlockWidth, 8);
+            }
+
+            // Separadores entre bloques
             ctx.strokeStyle = "black";
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(h.posx, h.posy + 68);
-            ctx.lineTo(h.posx, h.posy + 76);
+            // Primer separador (33.33%)
+            ctx.moveTo(h.posx - 13.33, h.posy + 70);
+            ctx.lineTo(h.posx - 13.33, h.posy + 78);
+            // Segundo separador (66.66%)
+            ctx.moveTo(h.posx + 13.33, h.posy + 70);
+            ctx.lineTo(h.posx + 13.33, h.posy + 78);
             ctx.stroke();
 
             // Borde de la barra de carga
             ctx.strokeStyle = "black";
             ctx.lineWidth = 1;
-            ctx.strokeRect(h.posx - 40, h.posy + 68, 80, 8);
+            ctx.strokeRect(h.posx - 40, h.posy + 70, 80, 8);
           }
 
           // Borde de la barra de HP
           ctx.strokeStyle = "black";
           ctx.lineWidth = 1;
-          ctx.strokeRect(h.posx - 40, h.posy + 55, 80, 10);
+          ctx.strokeRect(h.posx - 40, h.posy + 55, 80, 12);
         });
 
         enemies.forEach((e) => {
-          if (e.hp <= 0) return;
-          ctx.fillStyle = e.animTime > 0 ? "yellow" : "red";
+          if (e.hp <= 0 && e.deathAnimComplete) return; // No dibujar si completó animación de muerte
+
           const size = e.size || 80;
+
+          // Usar los nuevos sprites de goblin
+          ctx.save();
+
+          // Activar interpolación suave para mejor calidad
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = "high";
+
+          // Seleccionar sprite y calcular posición según animación
+          let spriteImg, sx, sy;
+
+          if (e.anim === "die") {
+            spriteImg = goblinDieImg;
+            sx = e.frame * e.frameWidth;
+            sy = 0;
+            // Efecto de desvanecimiento gradual al morir
+            const deathProgress = e.frame / (e.deathFrames - 1);
+            ctx.globalAlpha = 1 - deathProgress * 0.7;
+            ctx.filter = "grayscale(50%) brightness(0.5)";
+          } else if (e.anim === "hurt") {
+            // Para hurt, usar idle pero con efectos visuales
+            spriteImg = goblinIdleImg;
+            sx = e.frame * e.frameWidth;
+            sy = 0;
+            // Efecto de flash rojo cuando recibe daño
+            ctx.filter = "hue-rotate(0deg) contrast(1.5) brightness(1.2)";
+            ctx.globalAlpha = 0.8 + 0.2 * Math.sin(currentTime * 20); // Parpadeo
+          } else {
+            // idle
+            spriteImg = goblinIdleImg;
+            sx = e.frame * e.frameWidth;
+            sy = 0;
+          }
+
+          // Dibujar el sprite del goblin
           ctx.drawImage(
-            enemyImg,
+            spriteImg,
+            sx,
+            sy,
+            e.frameWidth,
+            e.frameHeight,
             e.posx - size / 2,
             e.posy - size / 2,
             size,
             size
           );
 
-          // HP bar background
-          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-          ctx.fillRect(e.posx - 40, e.posy + size / 2 + 5, 80, 10);
+          ctx.restore();
 
-          // HP bar red
-          ctx.fillStyle = "red";
-          const hpWidth = 80 * (e.hp / e.maxhp);
-          ctx.fillRect(e.posx - 40, e.posy + size / 2 + 5, hpWidth, 10);
+          // Solo mostrar HUD si no está muerto o aún no completó la animación
+          if (e.hp > 0 || !e.deathAnimComplete) {
+            // HP bar background - ahora encima del enemigo
+            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            ctx.fillRect(e.posx - 40, e.posy - size / 2 - 25, 80, 12);
 
-          // Charge bar background
-          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-          ctx.fillRect(e.posx - 40, e.posy + size / 2 + 18, 80, 8);
+            // HP bar red
+            ctx.fillStyle = "red";
+            const hpWidth = 80 * (e.hp / e.maxhp);
+            ctx.fillRect(e.posx - 40, e.posy - size / 2 - 25, hpWidth, 12);
 
-          // Charge bar yellow
-          ctx.fillStyle = "#FFA500";
-          const chargeWidth = 80 * (e.charge / e.maxcharge);
-          ctx.fillRect(e.posx - 40, e.posy + size / 2 + 18, chargeWidth, 8);
+            // Texto de HP centrado perfectamente en la barra
+            ctx.fillStyle = "white";
+            ctx.font = "8px 'Press Start 2P'";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(`${e.hp}`, e.posx, e.posy - size / 2 - 25 + 6); // Centrado en Y
+            ctx.textAlign = "left"; // Resetear alineación
+            ctx.textBaseline = "alphabetic"; // Resetear baseline
 
-          // Bordes
-          ctx.strokeStyle = "black";
-          ctx.lineWidth = 1;
-          ctx.strokeRect(e.posx - 40, e.posy + size / 2 + 5, 80, 10);
-          ctx.strokeRect(e.posx - 40, e.posy + size / 2 + 18, 80, 8);
+            // Charge bar background (solo si está vivo) - directamente debajo de la HP bar
+            if (e.hp > 0) {
+              ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+              ctx.fillRect(e.posx - 40, e.posy - size / 2 - 13, 80, 8);
+
+              // Charge bar orange - barra continua sin divisiones
+              ctx.fillStyle = "#FFA500";
+              const chargeWidth = 80 * (e.charge / e.maxcharge);
+              ctx.fillRect(e.posx - 40, e.posy - size / 2 - 13, chargeWidth, 8);
+
+              // Borde de charge bar
+              ctx.strokeStyle = "black";
+              ctx.lineWidth = 1;
+              ctx.strokeRect(e.posx - 40, e.posy - size / 2 - 13, 80, 8);
+            }
+
+            // Borde de HP bar
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(e.posx - 40, e.posy - size / 2 - 25, 80, 12);
+          }
         });
 
         // Footer estilo D&D
         drawFooter();
 
-        // Mostrar indicador de selección de objetivo
+        // Mostrar indicador de selección de objetivo con ventana modal
         if (state === "select_target_enemy") {
-          ctx.fillStyle = "white";
+          // Background que ocupa todo el ancho
+          const modalWidth = designWidth;
+          const modalHeight = 40;
+          const modalX = 0;
+          const modalY = 75;
+
+          ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+          ctx.fillRect(modalX, modalY, modalWidth, modalHeight);
+
+          // Texto principal - primera letra mayúscula, más pequeño, color menos fuerte
+          ctx.fillStyle = "#E0E0E0";
+          ctx.font = "10px 'Press Start 2P'";
+          ctx.textAlign = "center";
+          ctx.fillText(
+            "Select enemy",
+            designWidth / 2,
+            modalY + modalHeight / 2 + 3
+          );
+
+          // X de cerrar en la esquina superior derecha del modal
+          const closeX = modalX + modalWidth - 15;
+          const closeY = modalY + 10;
+
+          ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
           ctx.font = "12px 'Press Start 2P'";
           ctx.textAlign = "center";
-          ctx.fillText("SELECT ENEMY", designWidth / 2, 80);
-
-          // Botón de cancelar
-          ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
-          ctx.fillRect(10, 90, 80, 25);
-          ctx.fillStyle = "white";
-          ctx.font = "8px 'Press Start 2P'";
-          ctx.textAlign = "center";
-          ctx.fillText("CANCEL", 50, 105);
+          ctx.fillText("X", closeX, closeY);
         } else if (state === "select_target_ally") {
-          ctx.fillStyle = "white";
+          // Background que ocupa todo el ancho
+          const modalWidth = designWidth;
+          const modalHeight = 40;
+          const modalX = 0;
+          const modalY = 75;
+
+          ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+          ctx.fillRect(modalX, modalY, modalWidth, modalHeight);
+
+          // Texto principal - primera letra mayúscula, más pequeño, color menos fuerte
+          ctx.fillStyle = "#E0E0E0";
+          ctx.font = "10px 'Press Start 2P'";
+          ctx.textAlign = "center";
+          ctx.fillText(
+            "Select ally",
+            designWidth / 2,
+            modalY + modalHeight / 2 + 3
+          );
+
+          // X de cerrar en la esquina superior derecha del modal
+          const closeX = modalX + modalWidth - 15;
+          const closeY = modalY + 10;
+
+          ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
           ctx.font = "12px 'Press Start 2P'";
           ctx.textAlign = "center";
-          ctx.fillText("SELECT ALLY", designWidth / 2, 80);
-
-          // Botón de cancelar
-          ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
-          ctx.fillRect(10, 90, 80, 25);
-          ctx.fillStyle = "white";
-          ctx.font = "8px 'Press Start 2P'";
-          ctx.textAlign = "center";
-          ctx.fillText("CANCEL", 50, 105);
+          ctx.fillText("X", closeX, closeY);
         }
         ctx.textAlign = "left"; // Resetear alineación
 
@@ -1106,8 +2038,8 @@
       }
 
       function drawHeader() {
-        // Fondo del header
-        ctx.fillStyle = "rgba(40, 30, 20, 0.9)";
+        // Fondo del header - mismo color que footer
+        ctx.fillStyle = "rgba(30, 20, 10, 0.9)";
         ctx.fillRect(0, 0, designWidth, 60);
 
         // Borde inferior del header
@@ -1118,108 +2050,196 @@
         ctx.lineTo(designWidth, 60);
         ctx.stroke();
 
-        // Score centrado
-        ctx.fillStyle = "#FFD700";
-        ctx.font = "16px 'Press Start 2P'";
+        // Score centrado - primera fila
+        ctx.strokeStyle = "#3D2914"; // Borde marrón oscuro
+        ctx.lineWidth = 2;
+        ctx.fillStyle = "#F5DEB3"; // Texto beige
+        ctx.font = "12px 'Press Start 2P'"; // Más pequeño
         ctx.textAlign = "center";
-        ctx.fillText(`SCORE: ${score}`, designWidth / 2, 35);
-        ctx.textAlign = "left"; // Resetear alineación
+        ctx.strokeText(`SCORE: ${score}`, designWidth / 2, 20);
+        ctx.fillText(`SCORE: ${score}`, designWidth / 2, 20);
 
-        // Wave info (opcional)
-        ctx.fillStyle = "white";
+        // Calcular nivel y wave
+        const currentLevel = Math.floor((wave - 1) / 3) + 1;
+        const currentWaveInLevel = ((wave - 1) % 3) + 1;
+
+        // Segunda fila - Nivel y Wave separados
+        ctx.fillStyle = "#F5DEB3"; // Texto beige
         ctx.font = "10px 'Press Start 2P'";
-        ctx.textAlign = "right";
-        ctx.fillText(`WAVE ${wave}`, designWidth - 10, 20);
+
+        // Texto "Level" en beige y número en amarillo - lado izquierdo
+        ctx.textAlign = "left";
+        const levelText = "Level ";
+        const levelNumber = currentLevel.toString();
+        ctx.fillStyle = "#F5DEB3";
+        ctx.fillText(levelText, designWidth / 2 - 60, 40);
+        ctx.fillStyle = "#FFD700"; // Amarillo para el número
+        ctx.fillText(
+          levelNumber,
+          designWidth / 2 - 60 + ctx.measureText(levelText).width,
+          40
+        );
+
+        // Texto "Wave" en beige y fracción en amarillo - lado derecho
+        ctx.textAlign = "left";
+        const waveText = "Wave ";
+        const waveFraction = `${currentWaveInLevel}/3`;
+        ctx.fillStyle = "#F5DEB3";
+        ctx.fillText(waveText, designWidth / 2 + 20, 40);
+        ctx.fillStyle = "#FFD700"; // Amarillo para la fracción
+        ctx.fillText(
+          waveFraction,
+          designWidth / 2 + 20 + ctx.measureText(waveText).width,
+          40
+        );
         ctx.textAlign = "left"; // Resetear alineación
       }
 
       function drawFooter() {
-        // Fondo del footer
-        ctx.fillStyle = "rgba(40, 30, 20, 0.9)";
-        ctx.fillRect(0, 560, designWidth, 80); // Reducido de 120 a 80 y movido de 520 a 560
+        // Fondo del footer - más oscuro y más alto
+        ctx.fillStyle = "rgba(30, 20, 10, 0.9)";
+        ctx.fillRect(0, 540, designWidth, 100); // Aumentado de 80 a 100 y movido de 560 a 540
 
         // Borde superior del footer
         ctx.strokeStyle = "#8B4513";
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.moveTo(0, 560); // Movido de 520 a 560
-        ctx.lineTo(designWidth, 560);
+        ctx.moveTo(0, 540); // Movido de 560 a 540
+        ctx.lineTo(designWidth, 540);
         ctx.stroke();
 
         // Dividir en 3 columnas
         const columnWidth = designWidth / 3;
-        const aliveHeroes = heroes.filter((h) => h.hp > 0);
+        const heroOrder = ["mage", "warlock", "priest"];
 
-        aliveHeroes.forEach((hero, heroIndex) => {
-          const actions = Object.keys(classActions[hero.clazz]);
+        heroOrder.forEach((heroClass, heroIndex) => {
+          const hero = heroes.find((h) => h.clazz === heroClass);
+          if (!hero) return;
+
           const columnX = heroIndex * columnWidth;
           const centerX = columnX + columnWidth / 2;
 
-          // Título del héroe con estilo retro
-          ctx.fillStyle = "#FFD700";
-          ctx.font = "10px 'Press Start 2P'"; // Reducido de 12px a 10px
-          ctx.textAlign = "center";
-          ctx.fillText(hero.clazz.toUpperCase(), centerX, 580); // Ajustado posición
+          // Card background - más oscuro y más alto
+          ctx.fillStyle = "rgba(40, 25, 15, 0.9)";
+          ctx.fillRect(columnX + 5, 545, columnWidth - 10, 90); // Aumentado de 70 a 90
 
-          // Botón habilidad principal (primera)
-          const primaryAction = actions[0];
-          const primaryData = classActions[hero.clazz][primaryAction];
-          const primaryY = 585; // Ajustado posición
-          const buttonWidth = columnWidth; // Sin padding, ocupa todo el ancho
-          const buttonHeight = 20; // Reducido de 25 a 20
-          const primaryX = columnX; // Sin padding
+          // Card border
+          ctx.strokeStyle = "#8B4513";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(columnX + 5, 545, columnWidth - 10, 90);
 
-          // Color del botón basado en carga - fondo más oscuro
-          const canUsePrimary = hero.charge >= primaryData.reqCharge;
-          ctx.fillStyle = canUsePrimary ? "#2E7D32" : "#3E2723"; // Colores más oscuros
-          ctx.fillRect(primaryX, primaryY, buttonWidth, buttonHeight);
-
-          // Borde del botón
-          ctx.strokeStyle = "#333";
+          // Título del héroe - color beige con borde marrón oscuro
+          ctx.strokeStyle = "#3D2914"; // Marrón muy oscuro para el borde
           ctx.lineWidth = 2;
-          ctx.strokeRect(primaryX, primaryY, buttonWidth, buttonHeight);
-
-          // Texto del botón - más pequeño y solo primera letra mayúscula
-          ctx.fillStyle = "white";
-          ctx.font = "6px 'Press Start 2P'"; // Reducido de 8px a 6px
+          ctx.fillStyle = hero.hp > 0 ? "#F5DEB3" : "#666"; // Beige
+          ctx.font = "8px 'Press Start 2P'";
           ctx.textAlign = "center";
-          const primaryText = primaryData.name.charAt(0).toUpperCase() + primaryData.name.slice(1).toLowerCase();
-          ctx.fillText(primaryText, centerX, primaryY + 13); // Ajustado posición
+          ctx.strokeText(hero.clazz.toUpperCase(), centerX, 560);
+          ctx.fillText(hero.clazz.toUpperCase(), centerX, 560);
 
-          // Botón habilidad secundaria (segunda)
-          const secondaryAction = actions[1];
-          const secondaryData = classActions[hero.clazz][secondaryAction];
-          const secondaryY = 610; // Ajustado posición
+          if (hero.hp <= 0) {
+            // Mostrar "DEAD" en lugar de botones
+            ctx.fillStyle = "red";
+            ctx.font = "10px 'Press Start 2P'";
+            ctx.textAlign = "center";
+            ctx.fillText("DEAD", centerX, 595);
+          } else {
+            const actions = Object.keys(classActions[hero.clazz]);
 
-          // Color del botón basado en carga - fondo más oscuro
-          const canUseSecondary = hero.charge >= secondaryData.reqCharge;
-          ctx.fillStyle = canUseSecondary ? "#D84315" : "#3E2723"; // Colores más oscuros
-          ctx.fillRect(primaryX, secondaryY, buttonWidth, buttonHeight);
+            // Botón habilidad principal (1 carga - 33.33%)
+            const primaryAction = actions[0];
+            const primaryData = classActions[hero.clazz][primaryAction];
+            const buttonY1 = 565;
+            const buttonWidth = columnWidth - 15;
+            const buttonHeight = 22; // Aumentado para ocupar más espacio
+            const buttonX = columnX + 7;
 
-          // Borde del botón
-          ctx.strokeStyle = "#333";
-          ctx.lineWidth = 2;
-          ctx.strokeRect(primaryX, secondaryY, buttonWidth, buttonHeight);
+            // Fondo del botón principal - amarillo llamativo como las cargas
+            const canUsePrimary = hero.charge >= primaryData.reqCharge;
+            ctx.fillStyle = canUsePrimary
+              ? "rgba(255, 215, 0, 0.6)" // Amarillo más llamativo
+              : "rgba(80, 80, 80, 0.5)";
+            ctx.fillRect(buttonX, buttonY1, buttonWidth, buttonHeight);
 
-          // Texto del botón - más pequeño y solo primera letra mayúscula
-          ctx.fillStyle = "white";
-          ctx.font = "6px 'Press Start 2P'"; // Reducido de 8px a 6px
-          ctx.textAlign = "center";
-          const secondaryText = secondaryData.name.charAt(0).toUpperCase() + secondaryData.name.slice(1).toLowerCase();
-          ctx.fillText(secondaryText, centerX, secondaryY + 13); // Ajustado posición
+            // Borde del botón principal - amarillo más grueso
+            ctx.strokeStyle = canUsePrimary ? "#FFD700" : "#555"; // Amarillo
+            ctx.lineWidth = 2; // Más grueso
+            ctx.strokeRect(buttonX, buttonY1, buttonWidth, buttonHeight);
+
+            // Texto del botón principal - marrón oscuro en negrita
+            ctx.fillStyle = canUsePrimary ? "#3D2914" : "#888"; // Marrón oscuro
+            ctx.font = "bold 7px 'Press Start 2P'"; // Aumentado para mejor legibilidad
+            ctx.textAlign = "center";
+            const primaryText =
+              primaryData.name.charAt(0).toUpperCase() +
+              primaryData.name.slice(1).toLowerCase();
+            ctx.fillText(primaryText, centerX, buttonY1 + 14);
+
+            // Botón habilidad secundaria (2 cargas - 66.66%)
+            const secondaryAction = actions[1];
+            const secondaryData = classActions[hero.clazz][secondaryAction];
+            const buttonY2 = buttonY1 + buttonHeight + 1;
+
+            // Fondo del botón secundario - amarillo llamativo como las cargas
+            const canUseSecondary = hero.charge >= secondaryData.reqCharge;
+            ctx.fillStyle = canUseSecondary
+              ? "rgba(255, 215, 0, 0.6)" // Amarillo más llamativo
+              : "rgba(80, 80, 80, 0.5)";
+            ctx.fillRect(buttonX, buttonY2, buttonWidth, buttonHeight);
+
+            // Borde del botón secundario - amarillo más grueso
+            ctx.strokeStyle = canUseSecondary ? "#FFD700" : "#555"; // Amarillo
+            ctx.lineWidth = 2; // Más grueso
+            ctx.strokeRect(buttonX, buttonY2, buttonWidth, buttonHeight);
+
+            // Texto del botón secundario - marrón oscuro en negrita
+            ctx.fillStyle = canUseSecondary ? "#3D2914" : "#888"; // Marrón oscuro
+            ctx.font = "bold 7px 'Press Start 2P'"; // Aumentado para mejor legibilidad
+            ctx.textAlign = "center";
+            const secondaryText =
+              secondaryData.name.charAt(0).toUpperCase() +
+              secondaryData.name.slice(1).toLowerCase();
+            ctx.fillText(secondaryText, centerX, buttonY2 + 14);
+
+            // Botón habilidad terciaria (3 cargas - 100%)
+            const tertiaryAction = actions[2];
+            const tertiaryData = classActions[hero.clazz][tertiaryAction];
+            const buttonY3 = buttonY2 + buttonHeight + 1;
+
+            // Fondo del botón terciario - amarillo llamativo como las cargas
+            const canUseTertiary = hero.charge >= tertiaryData.reqCharge;
+            ctx.fillStyle = canUseTertiary
+              ? "rgba(255, 215, 0, 0.6)" // Amarillo más llamativo
+              : "rgba(80, 80, 80, 0.5)";
+            ctx.fillRect(buttonX, buttonY3, buttonWidth, buttonHeight);
+
+            // Borde del botón terciario - amarillo más grueso
+            ctx.strokeStyle = canUseTertiary ? "#FFD700" : "#555"; // Amarillo
+            ctx.lineWidth = 2; // Más grueso
+            ctx.strokeRect(buttonX, buttonY3, buttonWidth, buttonHeight);
+
+            // Texto del botón terciario - marrón oscuro en negrita
+            ctx.fillStyle = canUseTertiary ? "#3D2914" : "#888"; // Marrón oscuro
+            ctx.font = "bold 7px 'Press Start 2P'"; // Aumentado para mejor legibilidad
+            ctx.textAlign = "center";
+            const tertiaryText =
+              tertiaryData.name.charAt(0).toUpperCase() +
+              tertiaryData.name.slice(1).toLowerCase();
+            ctx.fillText(tertiaryText, centerX, buttonY3 + 14);
+          }
 
           // Líneas separadoras entre columnas
-          if (heroIndex < aliveHeroes.length - 1) {
+          if (heroIndex < 2) {
             ctx.strokeStyle = "#8B4513";
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(columnX + columnWidth, 560); // Ajustado posición
+            ctx.moveTo(columnX + columnWidth, 540); // Movido de 560 a 540
             ctx.lineTo(columnX + columnWidth, 640);
             ctx.stroke();
           }
         });
 
-        ctx.textAlign = "left"; // Resetear alineación
+        ctx.textAlign = "left";
       }
 
       canvas.addEventListener("touchstart", handleInput);
@@ -1242,19 +2262,23 @@
         const touchY = (clientY - rect.top) * (designHeight / rect.height);
 
         // Footer buttons
-        if (touchY >= 560 && state === "select_hero") { // Cambiado de 520 a 560
+        if (touchY >= 540 && state === "select_hero") {
+          // Cambiado de 560 a 540
           const columnWidth = designWidth / 3;
-          const aliveHeroes = heroes.filter((h) => h.hp > 0);
+          const heroOrder = ["mage", "warlock", "priest"]; // Orden fijo
 
-          aliveHeroes.forEach((hero, heroIndex) => {
+          heroOrder.forEach((heroClass, heroIndex) => {
+            const hero = heroes.find((h) => h.clazz === heroClass);
+            if (!hero || hero.hp <= 0) return; // Skip dead heroes
+
             const actions = Object.keys(classActions[hero.clazz]);
             const columnX = heroIndex * columnWidth;
-            const buttonWidth = columnWidth; // Sin padding, ocupa todo el ancho
-            const buttonHeight = 20; // Reducido de 25 a 20
-            const buttonX = columnX; // Sin padding
+            const buttonWidth = columnWidth;
+            const buttonHeight = 23; // Actualizado para coincidir con el nuevo tamaño
+            const buttonX = columnX;
 
-            // Botón habilidad principal
-            const primaryY = 585; // Ajustado posición
+            // Botón habilidad principal (1 carga)
+            const primaryY = 565;
             if (
               touchX >= buttonX &&
               touchX <= buttonX + buttonWidth &&
@@ -1311,8 +2335,8 @@
               }
             }
 
-            // Botón habilidad secundaria
-            const secondaryY = 610; // Ajustado posición
+            // Botón habilidad secundaria (2 cargas)
+            const secondaryY = primaryY + buttonHeight + 1;
             if (
               touchX >= buttonX &&
               touchX <= buttonX + buttonWidth &&
@@ -1368,27 +2392,92 @@
                 }
               }
             }
+
+            // Botón habilidad terciaria (3 cargas)
+            const tertiaryY = secondaryY + buttonHeight + 1;
+            if (
+              touchX >= buttonX &&
+              touchX <= buttonX + buttonWidth &&
+              touchY >= tertiaryY &&
+              touchY <= tertiaryY + buttonHeight
+            ) {
+              const action = actions[2];
+              const actionData = classActions[hero.clazz][action];
+              const canUse = hero.charge >= actionData.reqCharge && hero.hp > 0;
+
+              if (canUse) {
+                selectedHero = hero;
+                selectedAction = action;
+
+                const actionType = actionData.type;
+                if (actionType === "single_enemy") {
+                  state = "select_target_enemy";
+                  hero.anim = "selected";
+                  hero.frame = 0;
+                  hero.animTime = 0;
+                } else if (actionType === "single_ally") {
+                  state = "select_target_ally";
+                  hero.anim = "selected";
+                  hero.frame = 0;
+                  hero.animTime = 0;
+                } else if (actionType === "all_enemy") {
+                  if (
+                    executeAction(
+                      selectedHero,
+                      action,
+                      enemies.filter((e) => e.hp > 0)
+                    )
+                  ) {
+                    selectedHero = null;
+                    selectedAction = null;
+                  }
+                } else if (actionType === "all_ally") {
+                  if (
+                    executeAction(
+                      selectedHero,
+                      action,
+                      heroes.filter((h) => h.hp > 0)
+                    )
+                  ) {
+                    selectedHero = null;
+                    selectedAction = null;
+                  }
+                } else if (actionType === "self") {
+                  if (executeAction(selectedHero, action, selectedHero)) {
+                    selectedHero = null;
+                    selectedAction = null;
+                  }
+                }
+              }
+            }
           });
           return;
         }
 
-        // Botón cancelar
-        if (
-          (state === "select_target_enemy" || state === "select_target_ally") &&
-          touchX >= 10 &&
-          touchX <= 90 &&
-          touchY >= 90 &&
-          touchY <= 115
-        ) {
-          state = "select_hero";
-          if (selectedHero) {
-            selectedHero.anim = "idle"; // Resetear animación a idle
-            selectedHero.frame = 0;
-            selectedHero.animTime = 0;
+        // Botón X de cerrar - nueva posición en la esquina del modal
+        if (state === "select_target_enemy" || state === "select_target_ally") {
+          const modalWidth = designWidth;
+          const modalX = 0;
+          const modalY = 75;
+          const closeX = modalX + modalWidth - 15;
+          const closeY = modalY + 10;
+
+          if (
+            touchX >= closeX - 10 &&
+            touchX <= closeX + 10 &&
+            touchY >= closeY - 10 &&
+            touchY <= closeY + 10
+          ) {
+            state = "select_hero";
+            if (selectedHero) {
+              selectedHero.anim = "idle"; // Resetear animación a idle
+              selectedHero.frame = 0;
+              selectedHero.animTime = 0;
+            }
+            selectedHero = null;
+            selectedAction = null;
+            return;
           }
-          selectedHero = null;
-          selectedAction = null;
-          return;
         }
 
         if (state === "select_hero") {
@@ -1411,9 +2500,8 @@
               Math.abs(touchY - e.posy) < size / 2
             ) {
               if (executeAction(selectedHero, selectedAction, e)) {
-                selectedHero = null;
-                selectedAction = null;
-                state = "select_hero";
+                // No resetear selectedHero aquí, se resetea en applyEffect
+                state = "animate";
               }
             }
           });
@@ -1425,9 +2513,8 @@
               Math.abs(touchY - h.posy) < 40
             ) {
               if (executeAction(selectedHero, selectedAction, h)) {
-                selectedHero = null;
-                selectedAction = null;
-                state = "select_hero";
+                // No resetear selectedHero aquí, se resetea en applyEffect
+                state = "animate";
               }
             }
           });
@@ -1444,6 +2531,13 @@
         new Promise((r) => (priestImg.onload = r)),
         new Promise((r) => (warlockImg.onload = r)),
         new Promise((r) => (enemyImg.onload = r)),
+        new Promise((r) => (goblinIdleImg.onload = r)),
+        new Promise((r) => (goblinDieImg.onload = r)),
+        new Promise((r) => (effectsImg.onload = r)),
+        new Promise((r) => (purpleEffectsImg.onload = r)),
+        new Promise((r) => (healingEffectsImg.onload = r)),
+        new Promise((r) => (lightningEffectsImg.onload = r)),
+        new Promise((r) => (darkBoltEffectsImg.onload = r)),
       ]).then(() => {
         init();
         requestAnimationFrame(loop);
