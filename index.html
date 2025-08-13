@@ -48,6 +48,14 @@
       const backgroundImg = new Image();
       backgroundImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/ChatGPT%20Image%2010%20ago%202025%2C%2001_31_21-11GclhftpsCG06vNEd4ri4gVBVUY8o.png?aymA";
+
+      // Background para nivel 2
+      const backgroundLevel2Img = new Image();
+      backgroundLevel2Img.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/red_dunes-elmz1XktqRUANSNvvj8jYAoxXZsMkt.png?t9TH";
+
+      // Background dinámico que cambia según el nivel
+      let currentBackgroundImg = backgroundLevel2Img; // TEMPORAL: Red Dunes ahora es nivel 1
       const mageImg = new Image();
       mageImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/mage-TnWuIwL8nfQgfspUHLdQb117UZpBR3.png?ddSR";
@@ -57,11 +65,54 @@
       const warlockImg = new Image();
       warlockImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/warlock-ufYIrOZWd5mtgudqtQ8Yd34rteekHt.png?6IzB";
+
+      // Enemy sprites - Demon Bat (Level 1)
+      const demonBatIdleImg = new Image();
+      demonBatIdleImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/IDLE-V90NoEl8WQxdfu93X92hoipQtHfW7y.png?O0Ak";
+      const demonBatDeathImg = new Image();
+      demonBatDeathImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/DEATH-r9w4VgFSi93NjgHhRKFPjbBK3x4XYS.png?VLXN";
+      const demonBatAttackImg = new Image();
+      demonBatAttackImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/ATTACK-ZCinJufJA25jik8Qm2R3DSZEdfIHez.png?iCFX";
+
+      // Enemy sprites - Worm (Level 2)
+      const wormIdleImg = new Image();
+      wormIdleImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/worm_idle-vJDVrN0IWXKWwxGqO3oaeE5VfdeiHx.png?rwdu";
+      const wormDeathImg = new Image();
+      wormDeathImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/worm_dead-fjt1PKqQPfa4Ql1iEJn92utXSHg48b.png?8dpt";
+      const wormAttackImg = new Image();
+      wormAttackImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/worm_attack-Lh6J61U6HqA0OHAbOC558yTFytcB58.png?yXF1";
+
+      // Boss Demon Slime sprites (Level 2 Boss) - Todas las animaciones en un solo sprite sheet
+      const demonSlimeAllStatesImg = new Image();
+      demonSlimeAllStatesImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/demon_boss-OYjrZFu0tNJkaaJug19JpAyTtf7u0m.png?QqaU";
+
+      // Boss Bat sprites (Level 1 Boss)
+      const bossBatIdleImg = new Image();
+      bossBatIdleImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/IDLE_BOSS_1-N75RUTJp8bkxCSPZuvUWDye1KogjOS.png?C7Ns";
+      const bossBatDeathImg = new Image();
+      bossBatDeathImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/DEATH_BOSS_1-gjjAV8gTr6DBjZQ94xcwKAM8y63w2h.png?2Akf";
+      const bossBatAttackImg = new Image();
+      bossBatAttackImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/ATTACK_BOSS_1-FArHbCZ2DrOKLJj2YyFvpSztZ5Ryq9.png?SSuQ";
+
+      // Boss special ability effect
+      const bloodSplatImg = new Image();
+      bloodSplatImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/Blood%20Splat-0zg8BGvPxZDBDQds5ZQiTgB7o5ebiC.png?59te";
+
+      // Mantener sprites antiguos para compatibilidad temporal
       const enemyImg = new Image();
       enemyImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/beast_gigasChad-jHhAfiqtBGKuiIHRZJ0MkWs0W5uFQ5.png?9LBT";
-
-      // Nuevos sprites de goblin
       const goblinIdleImg = new Image();
       goblinIdleImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/IDLE-V90NoEl8WQxdfu93X92hoipQtHfW7y.png?O0Ak";
@@ -93,6 +144,127 @@
       const darkBoltEffectsImg = new Image();
       darkBoltEffectsImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/Dark-Bolt-XsHZlOlUknjRLKGCm3oDIfLlJimYCf.png?Lpbv";
+
+      // Sprite de efectos de Blood Splat para Boss Bat (habilidad principal - un solo aliado)
+      const bloodSplatEffectsImg = new Image();
+      bloodSplatEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/sprite-sheet2-fpBxr82a3zc37rRAF6S573qRmIXtGU.png?ANvP";
+
+      // Sprite de efectos de Blood Storm para Boss Bat (habilidad especial - todos los aliados)
+      const bloodStormEffectsImg = new Image();
+      bloodStormEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/sprite-sheet-F3tkTJhh68R3ZU2T2GrvwFXwEamfaf.png?pJmM";
+
+      // Sprites mejorados para habilidades del Priest
+      const priestSmiteEffectsImg = new Image();
+      priestSmiteEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/smite-Bjk86Soi2Gf9vFJBLWIvzPGFBp44Hf.png?WXvo";
+
+      const priestHolyWaveEffectsImg = new Image();
+      priestHolyWaveEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/heal-3Xw84tzIf6iA8iM9A7ATJFLffNucdb.png?VXbc";
+
+      const priestRegrowthEffectsImg = new Image();
+      priestRegrowthEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/regrowth-jwXtVqqCJVlVmtGbVon46zD1y7zmbJ.png?YYsp";
+
+      // Configuración de niveles - ORDEN TEMPORAL CAMBIADO PARA TESTING
+      const levelConfig = {
+        1: {
+          name: "Red Dunes",
+          background:
+            "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/red_dunes-elmz1XktqRUANSNvvj8jYAoxXZsMkt.png?t9TH",
+          enemies: {
+            normal: {
+              name: "Worm",
+              hp: 100, // Un poco más que Demon Bat
+              sprites: {
+                idle: wormIdleImg,
+                death: wormDeathImg,
+                attack: wormAttackImg,
+              },
+              frameWidth: 90,
+              frameHeight: 90,
+              idleFrames: 9,
+              deathFrames: 8,
+              attackFrames: 16,
+              chargeSpeed: 22, // Ligeramente más rápido que nivel 1
+              size: 110, // Tamaño específico para el Worm
+            },
+            boss: {
+              name: "Demon Slime",
+              hp: 280, // Más vida que Boss Bat
+              sprites: {
+                idle: demonSlimeAllStatesImg, // Usar el sprite sheet completo
+                death: demonSlimeAllStatesImg,
+                attack: demonSlimeAllStatesImg,
+              },
+              frameWidth: 150,
+              frameHeight: 83,
+              idleFrames: 6,
+              deathFrames: 22,
+              attackFrames: 15,
+              chargeSpeed: 26, // 20% más rápido que Worm normal
+              size: 180, // Tamaño específico más grande para el Boss Demon Slime
+              specialAttackCounter: 3, // Contador para ataque especial
+              mainAbility: "slime_attack", // Ataque básico a un héroe aleatorio
+              specialAbility: "poison_cloud", // Debuff de veneno a todos los aliados
+            },
+          },
+        },
+        2: {
+          name: "Demon Cave",
+          background:
+            "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/ChatGPT%20Image%2010%20ago%202025%2C%2001_31_21-11GclhftpsCG06vNEd4ri4gVBVUY8o.png?aymA",
+          enemies: {
+            normal: {
+              name: "Demon Bat",
+              hp: 80,
+              sprites: {
+                idle: demonBatIdleImg,
+                death: demonBatDeathImg,
+                attack: demonBatAttackImg,
+              },
+              frameWidth: 81,
+              frameHeight: 71,
+              idleFrames: 4,
+              deathFrames: 6,
+              attackFrames: 8,
+              chargeSpeed: 20,
+              size: 80, // Tamaño específico para Demon Bat
+            },
+            boss: {
+              name: "Boss Bat",
+              hp: 200,
+              sprites: {
+                idle: bossBatIdleImg,
+                death: bossBatDeathImg,
+                attack: bossBatAttackImg,
+              },
+              frameWidth: 81,
+              frameHeight: 71,
+              idleFrames: 4,
+              deathFrames: 6,
+              attackFrames: 8,
+              chargeSpeed: 24, // 20% más rápido
+              size: 120, // Tamaño específico para Boss Bat
+              specialAttackCounter: 3, // Contador para ataque especial
+              mainAbility: "blood_splat", // Habilidad principal (un solo aliado aleatorio)
+              specialAbility: "blood_storm", // Habilidad especial (todos los aliados)
+            },
+          },
+        },
+        // Aquí se añadirán más niveles en el futuro
+      };
+
+      // UI Elements - Solo los elementos que se usan
+      const panelBrownImg = new Image();
+      panelBrownImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/panel_brown-49f4SM1AoKwCYlEq9piZiXmfxdEC0G.png?ZpjN";
+
+      const buttonLongBeigeImg = new Image();
+      buttonLongBeigeImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/buttonLong_beige-AkYz3mfJrwayHOsnKfj3J2cFcEajGT.png?vtgY";
 
       // Animations - actualizadas con nuevas habilidades
       const animationsMage = {
@@ -140,8 +312,8 @@
             def: 3, // Poca defensa
             charge: 0, // Start empty
             maxcharge: 100,
-            posx: 80,
-            posy: 450,
+            posx: 80, // Posición original
+            posy: 430, // Movido 20px arriba (era 450)
             anim: "idle",
             frame: 0,
             animTime: 0,
@@ -162,8 +334,8 @@
             def: 15, // Buena defensa
             charge: 0, // Start empty
             maxcharge: 100,
-            posx: 180,
-            posy: 380,
+            posx: 180, // Posición original
+            posy: 360, // Movido 20px arriba (era 380)
             anim: "idle",
             frame: 0,
             animTime: 0,
@@ -184,8 +356,8 @@
             def: 3, // Poca defensa
             charge: 0, // Start empty
             maxcharge: 100,
-            posx: 280,
-            posy: 450,
+            posx: 280, // Posición original
+            posy: 430, // Movido 20px arriba (era 450)
             anim: "idle",
             frame: 0,
             animTime: 0,
@@ -206,28 +378,70 @@
         state = "select_hero";
         turnPhase = "player";
         slashStreak = 0;
+        currentBackgroundImg = backgroundLevel2Img; // TEMPORAL: Red Dunes ahora es nivel 1
         startWave();
       }
 
       function startWave() {
         console.log("Starting wave", wave + 1);
+
+        // Verificar si empezamos un nuevo nivel (cada 3 waves)
+        const currentLevel = Math.floor((wave - 1) / 3) + 1; // wave-1 porque incrementamos wave al final
+        const nextLevel = Math.floor(wave / 3) + 1;
+
+        // Actualizar background según el nivel actual - ORDEN TEMPORAL CAMBIADO
+        const currentLevelForBackground = Math.floor(wave / 3) + 1;
+        if (currentLevelForBackground === 1) {
+          currentBackgroundImg = backgroundLevel2Img; // Red Dunes ahora es nivel 1
+        } else if (currentLevelForBackground === 2) {
+          currentBackgroundImg = backgroundImg; // Demon Cave ahora es nivel 2
+        }
+        // Se pueden agregar más niveles aquí en el futuro
+
+        // Solo revivir héroes cuando se cambia de nivel completo (nunca en el mismo nivel)
+        // wave 1,2,3 = nivel 1; wave 4,5,6 = nivel 2; etc.
+        if (nextLevel > currentLevel && wave % 3 === 1) {
+          console.log(
+            `Starting new level ${nextLevel}! Reviving all heroes with full health.`
+          );
+          heroes.forEach((hero) => {
+            hero.hp = hero.maxhp;
+            hero.charge = 0; // Resetear carga también
+            hero.anim = "idle"; // Asegurar que estén en animación idle
+            hero.frame = 0;
+            // Limpiar buffs al empezar nuevo nivel
+            hero.buffs = [];
+          });
+        } else {
+          console.log(
+            `Continuing level ${currentLevel}, wave ${
+              ((wave - 1) % 3) + 1
+            }/3 - heroes maintain their current state (dead heroes stay dead)`
+          );
+        }
+
         let enemyPositions = [];
+        const currentLevelConfig =
+          levelConfig[Math.floor(wave / 3) + 1] || levelConfig[1]; // Fallback al nivel 1
+        const normalHP = currentLevelConfig.enemies.normal.hp;
+        const bossHP = currentLevelConfig.enemies.boss.hp;
+
         if (wave % 3 === 0) {
           // 2 enemies
           enemies = [
-            createEnemy(100, 200, 80, "normal"),
-            createEnemy(260, 200, 80, "normal"),
+            createEnemy(100, 200, normalHP, "normal"),
+            createEnemy(260, 200, normalHP, "normal"),
           ];
         } else if (wave % 3 === 1) {
           // 3 enemies
           enemies = [
-            createEnemy(80, 200, 80, "normal"),
-            createEnemy(180, 200, 80, "normal"),
-            createEnemy(280, 200, 80, "normal"),
+            createEnemy(80, 200, normalHP, "normal"),
+            createEnemy(180, 200, normalHP, "normal"),
+            createEnemy(280, 200, normalHP, "normal"),
           ];
         } else {
           // boss
-          enemies = [createEnemy(180, 200, 200, "boss")];
+          enemies = [createEnemy(180, 200, bossHP, "boss")];
         }
         wave++;
         console.log("Wave", wave, "started with", enemies.length, "enemies");
@@ -235,6 +449,13 @@
       }
 
       function createEnemy(x, y, hp, type) {
+        const currentLevel = Math.floor(wave / 3) + 1;
+        const currentLevelConfig = levelConfig[currentLevel] || levelConfig[1]; // Fallback al nivel 1
+        const enemyConfig =
+          type === "boss"
+            ? currentLevelConfig.enemies.boss
+            : currentLevelConfig.enemies.normal;
+
         return {
           hp,
           maxhp: hp,
@@ -245,17 +466,26 @@
           type,
           animTime: 0,
           def: type === "boss" ? 10 : 5,
-          size: type === "boss" ? 140 : 90,
+          size: enemyConfig.size || (type === "boss" ? 140 : 110), // Usar tamaño específico o fallback
           anim: "idle",
           frame: 0,
           animStartTime: 0,
           isDying: false,
           deathAnimComplete: false,
-          // Propiedades específicas del sprite de goblin
-          frameWidth: 81,
-          frameHeight: 71,
-          idleFrames: 4,
-          deathFrames: 6,
+          name: enemyConfig.name,
+          sprites: enemyConfig.sprites,
+          frameWidth: enemyConfig.frameWidth,
+          frameHeight: enemyConfig.frameHeight,
+          idleFrames: enemyConfig.idleFrames,
+          deathFrames: enemyConfig.deathFrames,
+          attackFrames: enemyConfig.attackFrames,
+          chargeSpeed: enemyConfig.chargeSpeed,
+          // Propiedades específicas del boss
+          specialAttackCounter:
+            type === "boss" ? enemyConfig.specialAttackCounter : null,
+          specialAbility: type === "boss" ? enemyConfig.specialAbility : null,
+          attacksUntilSpecial:
+            type === "boss" ? enemyConfig.specialAttackCounter : null,
         };
       }
 
@@ -294,7 +524,7 @@
             name: "Inferno",
             reqCharge: 100, // 3 cargas (100%)
             type: "all_enemy",
-            damage: 25, // Menos que fireblast pero a todos
+            damage: 500, // Menos que fireblast pero a todos
             anim: "inferno",
           },
         },
@@ -368,9 +598,17 @@
 
           if (allDeathAnimationsComplete) {
             console.log("Wave cleared! Starting next wave...");
+
+            // Bonificación por enemigos eliminados
             enemies.forEach((e) => {
               score += e.type === "boss" ? 10 : 1;
             });
+
+            // Bonificación extra por wave completada
+            const waveBonus = wave * 50; // 50 puntos por wave, escalando
+            score += waveBonus;
+            console.log(`Wave ${wave} completed! Bonus: ${waveBonus} points`);
+
             startWave();
             return true;
           }
@@ -378,29 +616,7 @@
         return false;
       }
 
-      function advanceTurn() {
-        if (turnPhase === "player") {
-          if (heroes.every((h) => h.acted || h.hp <= 0)) {
-            // Add bonus charge at end of turn (in addition to gradual charging)
-            heroes.forEach((h) => {
-              if (h.hp > 0) h.charge = Math.min(h.maxcharge, h.charge + 20);
-            });
-            turnPhase = "enemy";
-            currentEnemyIndex = 0;
-            enemyAct();
-            return;
-          }
-          state = "select_hero";
-        } else if (turnPhase === "enemy") {
-          // Add bonus charge for enemies at end of their turn
-          enemies.forEach((e) => {
-            if (e.hp > 0) e.charge = Math.min(e.maxcharge, e.charge + 20);
-          });
-          turnPhase = "player";
-          heroes.forEach((h) => (h.acted = false));
-          state = "select_hero";
-        }
-      }
+      // NOTA: advanceTurn() removida - ya no se usa sistema de turnos
 
       function executeAction(hero, action, targets) {
         const actionData = classActions[hero.clazz][action];
@@ -539,6 +755,9 @@
               target.animStartTime = currentTime;
               target.hp = Math.max(0, target.hp - effectiveDamage);
 
+              // Sumar puntos por daño hecho a enemigos
+              score += effectiveDamage;
+
               if (target.hp <= 0) {
                 target.isDying = true;
                 target.anim = "die";
@@ -579,7 +798,7 @@
                 nextTick: currentTime + 1,
                 heal: actionData.heal,
               });
-              playHealingAnim(target);
+              playHealingAnim(target, "regrowth");
               console.log("Regrowth applied to", target.clazz);
             }
           });
@@ -606,6 +825,9 @@
               target.frame = 0;
               target.animStartTime = currentTime;
               target.hp = Math.max(0, target.hp - effectiveDamage);
+
+              // Sumar puntos por daño hecho a enemigos
+              score += effectiveDamage;
 
               if (target.hp <= 0) {
                 target.isDying = true;
@@ -662,7 +884,11 @@
           targets.forEach((target) => {
             if (target.hp > 0 && actionData.heal) {
               target.hp = Math.min(target.maxhp, target.hp + actionData.heal);
-              playHealingAnim(target);
+
+              // Determinar tipo de curación para el efecto visual correcto
+              const healType = action === "holywave" ? "holywave" : "healing";
+              playHealingAnim(target, healType);
+
               showHitNumber(
                 target.posx,
                 target.posy - 20,
@@ -687,10 +913,22 @@
         selectedAction = null;
       }
 
-      function playHealingAnim(target) {
+      function playHealingAnim(target, healType = "healing") {
         // En lugar de cambiar la animación del héroe, crear un efecto visual separado
-        console.log("Creando efecto visual de curación para", target.clazz);
-        addHealingEffect(target.posx, target.posy);
+        console.log(
+          "Creando efecto visual de curación para",
+          target.clazz,
+          "tipo:",
+          healType
+        );
+
+        if (healType === "holywave") {
+          addHolyWaveEffect(target.posx, target.posy);
+        } else if (healType === "regrowth") {
+          addRegrowthEffect(target.posx, target.posy);
+        } else {
+          addHealingEffect(target.posx, target.posy);
+        }
       }
 
       function showHitNumber(
@@ -807,6 +1045,44 @@
         });
       }
 
+      function addHolyWaveEffect(x, y) {
+        console.log("Añadiendo efecto visual de Holy Wave en posición", x, y);
+        visualEffects.push({
+          type: "holy_wave",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 0.8, // Duración reducida para animación más fluida (era 1.6)
+          frame: 0,
+          frameCount: 11, // 11 frames en total (3 filas: 5+5+1)
+          frameWidth: 128, // 640px / 5 frames por fila
+          frameHeight: 128, // 384px / 3 filas
+          size: 130, // Tamaño más grande para mejor visibilidad
+          repeat: 0,
+          maxRepeats: 0, // Solo se reproduce una vez
+          endTime: currentTime + 0.8,
+        });
+      }
+
+      function addRegrowthEffect(x, y) {
+        console.log("Añadiendo efecto visual de Regrowth en posición", x, y);
+        visualEffects.push({
+          type: "regrowth_new",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 0.9, // Duración reducida para animación más fluida (era 1.8)
+          frame: 0,
+          frameCount: 12, // 12 frames en total (3 filas: 5+5+2)
+          frameWidth: 128, // 640px / 5 frames por fila
+          frameHeight: 128, // 384px / 3 filas
+          size: 125, // Tamaño apropiado para regeneración
+          repeat: 0,
+          maxRepeats: 0, // Solo se reproduce una vez
+          endTime: currentTime + 0.9,
+        });
+      }
+
       function addCombustionEffect(x, y) {
         console.log("Añadiendo efecto visual de combustion en posición", x, y);
         visualEffects.push({
@@ -833,15 +1109,15 @@
           x: x,
           y: y,
           startTime: currentTime,
-          duration: 1.0, // Duración para 10 frames
+          duration: 0.75, // Duración reducida para animación más fluida (era 1.5)
           frame: 0,
-          frameCount: 10, // 10 frames de lightning
-          frameWidth: 64,
-          frameHeight: 128,
-          size: 100, // Tamaño apropiado para el efecto de rayo
+          frameCount: 10, // 10 frames en total (2 filas de 5 cada una)
+          frameWidth: 128, // 640px / 5 frames por fila (asumiendo 640px total)
+          frameHeight: 128, // 256px / 2 filas (asumiendo 256px total)
+          size: 120, // Tamaño más grande para mejor impacto visual
           repeat: 0,
           maxRepeats: 0, // Solo se reproduce una vez
-          endTime: currentTime + 1.0,
+          endTime: currentTime + 0.75,
         });
       }
 
@@ -861,6 +1137,44 @@
           repeat: 0,
           maxRepeats: 1, // Se repite una vez (total 2 reproducciones)
           endTime: currentTime + 1.1 * 2, // Tiempo absoluto de finalización
+        });
+      }
+
+      function addBloodSplatEffect(x, y) {
+        console.log("Añadiendo efecto visual de Blood Splat en posición", x, y);
+        visualEffects.push({
+          type: "blood_splat",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 1.5, // Duración aumentada para 10 frames
+          frame: 0,
+          frameCount: 10, // 10 frames en total (2 filas de 5 cada una)
+          frameWidth: 128, // 640px / 5 frames por fila
+          frameHeight: 128, // 256px / 2 filas
+          size: 140, // Tamaño más grande para mejor impacto visual
+          repeat: 0,
+          maxRepeats: 0, // Solo se reproduce una vez
+          endTime: currentTime + 1.5,
+        });
+      }
+
+      function addBloodStormEffect(x, y) {
+        console.log("Añadiendo efecto visual de Blood Storm en posición", x, y);
+        visualEffects.push({
+          type: "blood_storm",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 1.2, // Duración para 9 frames
+          frame: 0,
+          frameCount: 9, // 9 frames en total (2 filas: 5+4)
+          frameWidth: 192, // 960px / 5 frames por fila
+          frameHeight: 128, // 256px / 2 filas
+          size: 150, // Tamaño más grande para AoE
+          repeat: 0,
+          maxRepeats: 0, // Solo se reproduce una vez
+          endTime: currentTime + 1.2,
         });
       }
 
@@ -887,6 +1201,19 @@
               radius: 0,
             });
           }
+        });
+      }
+
+      function addPoisonEffect(x, y) {
+        console.log("Añadiendo efecto visual de veneno en posición", x, y);
+        visualEffects.push({
+          type: "poison",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 2.0, // 2 segundos para mejor visibilidad
+          radius: 0,
+          particles: [],
         });
       }
 
@@ -979,6 +1306,26 @@
             if (effect.frame >= effect.frameCount) {
               effect.frame = effect.frameCount - 1;
             }
+          } else if (effect.type === "holy_wave") {
+            // Actualizar frame del efecto de Holy Wave
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Mantener en el último frame si se completa
+            if (effect.frame >= effect.frameCount) {
+              effect.frame = effect.frameCount - 1;
+            }
+          } else if (effect.type === "regrowth_new") {
+            // Actualizar frame del efecto de Regrowth mejorado
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Mantener en el último frame si se completa
+            if (effect.frame >= effect.frameCount) {
+              effect.frame = effect.frameCount - 1;
+            }
           } else if (effect.type === "combustion") {
             // Actualizar frame del efecto de combustion con repeticiones
             const elapsed = currentTime - effect.startTime;
@@ -1017,6 +1364,26 @@
                 effect.frame = 0;
               }
             }
+          } else if (effect.type === "blood_splat") {
+            // Actualizar frame del efecto de Blood Splat
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Mantener en el último frame si se completa
+            if (effect.frame >= effect.frameCount) {
+              effect.frame = effect.frameCount - 1;
+            }
+          } else if (effect.type === "blood_storm") {
+            // Actualizar frame del efecto de Blood Storm
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Mantener en el último frame si se completa
+            if (effect.frame >= effect.frameCount) {
+              effect.frame = effect.frameCount - 1;
+            }
           } else if (effect.type === "lava") {
             // Generar más partículas de lava (más intenso)
             if (Math.random() < 0.6) {
@@ -1042,6 +1409,30 @@
           } else if (effect.type === "protection") {
             // Expandir el escudo
             effect.radius = (elapsed / effect.duration) * 50;
+          } else if (effect.type === "poison") {
+            // Expandir el efecto de veneno y generar partículas tóxicas
+            effect.radius = (elapsed / effect.duration) * 40;
+
+            // Generar partículas de veneno
+            if (Math.random() < 0.4) {
+              effect.particles.push({
+                x: effect.x + (Math.random() - 0.5) * 60,
+                y: effect.y + (Math.random() - 0.5) * 60,
+                vy: -20 - Math.random() * 30,
+                life: 0.8 + Math.random() * 0.6,
+                maxLife: 0.8 + Math.random() * 0.6,
+              });
+            }
+
+            // Actualizar partículas de veneno
+            for (let j = effect.particles.length - 1; j >= 0; j--) {
+              const particle = effect.particles[j];
+              particle.y += particle.vy * dt;
+              particle.life -= dt;
+              if (particle.life <= 0) {
+                effect.particles.splice(j, 1);
+              }
+            }
           } else if (effect.type === "meteor") {
             // Animación del meteorito cayendo
             const progress = Math.min(elapsed / effect.duration, 1);
@@ -1082,14 +1473,16 @@
             effect.type === "conflagration" ||
             effect.type === "slash" ||
             effect.type === "combustion" ||
-            effect.type === "inmolation"
+            effect.type === "inmolation" ||
+            effect.type === "blood_splat" ||
+            effect.type === "blood_storm"
           ) {
             // Para efectos con repeticiones, eliminar cuando se haya superado el tiempo absoluto de finalización
             if (currentTime >= effect.endTime) {
               visualEffects.splice(i, 1);
             }
           } else if (elapsed >= effect.duration) {
-            // Para otros efectos (healing, smite, lava, protection, meteor), eliminar normalmente
+            // Para otros efectos (healing, holy_wave, regrowth_new, smite, lava, protection, meteor), eliminar normalmente
             visualEffects.splice(i, 1);
           }
         }
@@ -1254,15 +1647,93 @@
               );
             }
           } else if (effect.type === "smite") {
-            // Renderizar efecto de smite usando sprite de lightning
+            // Renderizar efecto de smite usando el nuevo sprite mejorado
             if (effect.frame < effect.frameCount) {
               ctx.globalAlpha = 1;
-              const sx = effect.frame * effect.frameWidth; // Frames 0-9
-              const sy = 0; // Solo una fila
 
-              const renderSize = effect.size || 100;
+              // Calcular posición del frame: 5 frames en primera fila, 5 en segunda
+              let sx, sy;
+              if (effect.frame < 5) {
+                // Primera fila (frames 0-4)
+                sx = effect.frame * effect.frameWidth;
+                sy = 0;
+              } else {
+                // Segunda fila (frames 5-9)
+                sx = (effect.frame - 5) * effect.frameWidth;
+                sy = effect.frameHeight;
+              }
+
+              const renderSize = effect.size || 120;
               ctx.drawImage(
-                lightningEffectsImg,
+                priestSmiteEffectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "holy_wave") {
+            // Renderizar efecto de Holy Wave
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+
+              // Calcular posición del frame: 5 frames en primera fila, 5 en segunda, 1 en tercera
+              let sx, sy;
+              if (effect.frame < 5) {
+                // Primera fila (frames 0-4)
+                sx = effect.frame * effect.frameWidth;
+                sy = 0;
+              } else if (effect.frame < 10) {
+                // Segunda fila (frames 5-9)
+                sx = (effect.frame - 5) * effect.frameWidth;
+                sy = effect.frameHeight;
+              } else {
+                // Tercera fila (frame 10)
+                sx = (effect.frame - 10) * effect.frameWidth;
+                sy = effect.frameHeight * 2;
+              }
+
+              const renderSize = effect.size || 130;
+              ctx.drawImage(
+                priestHolyWaveEffectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "regrowth_new") {
+            // Renderizar efecto de Regrowth mejorado
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+
+              // Calcular posición del frame: 5 frames en primera fila, 5 en segunda, 2 en tercera
+              let sx, sy;
+              if (effect.frame < 5) {
+                // Primera fila (frames 0-4)
+                sx = effect.frame * effect.frameWidth;
+                sy = 0;
+              } else if (effect.frame < 10) {
+                // Segunda fila (frames 5-9)
+                sx = (effect.frame - 5) * effect.frameWidth;
+                sy = effect.frameHeight;
+              } else {
+                // Tercera fila (frames 10-11)
+                sx = (effect.frame - 10) * effect.frameWidth;
+                sy = effect.frameHeight * 2;
+              }
+
+              const renderSize = effect.size || 125;
+              ctx.drawImage(
+                priestRegrowthEffectsImg,
                 sx,
                 sy,
                 effect.frameWidth,
@@ -1358,6 +1829,42 @@
             ctx.beginPath();
             ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
             ctx.fill();
+          } else if (effect.type === "poison") {
+            // Renderizar partículas de veneno
+            effect.particles.forEach((particle) => {
+              const alpha = particle.life / particle.maxLife;
+              ctx.globalAlpha = alpha;
+
+              // Colores tóxicos: verde ácido
+              const colors = ["#00ff00", "#32cd32", "#adff2f", "#7fff00"];
+              const colorIndex = Math.floor((1 - alpha) * (colors.length - 1));
+              ctx.fillStyle = colors[colorIndex];
+
+              ctx.beginPath();
+              ctx.arc(particle.x, particle.y, 3, 0, Math.PI * 2);
+              ctx.fill();
+
+              // Brillo tóxico
+              ctx.globalAlpha = alpha * 0.6;
+              ctx.beginPath();
+              ctx.arc(particle.x, particle.y, 5, 0, Math.PI * 2);
+              ctx.fill();
+            });
+
+            // Base de veneno burbujeante
+            ctx.globalAlpha = Math.max(0, 1 - progress);
+            ctx.strokeStyle = "#00ff00"; // Verde tóxico
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Resplandor interior venenoso
+            ctx.globalAlpha = Math.max(0, (1 - progress) * 0.4);
+            ctx.fillStyle = "#32cd32"; // Verde lima para el interior
+            ctx.beginPath();
+            ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
+            ctx.fill();
           } else if (effect.type === "meteor") {
             // Renderizar estela del meteorito
             effect.trail.forEach((point, index) => {
@@ -1398,6 +1905,66 @@
               ctx.arc(effect.x, effect.y, 16, 0, Math.PI * 2);
               ctx.fill();
             }
+          } else if (effect.type === "blood_splat") {
+            // Renderizar efecto de blood splat usando el nuevo sprite sheet (10 frames en 2 filas)
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+
+              // Calcular posición del frame: 5 frames en primera fila, 5 en segunda
+              let sx, sy;
+              if (effect.frame < 5) {
+                // Primera fila (frames 0-4)
+                sx = effect.frame * effect.frameWidth;
+                sy = 0;
+              } else {
+                // Segunda fila (frames 5-9)
+                sx = (effect.frame - 5) * effect.frameWidth;
+                sy = effect.frameHeight;
+              }
+
+              const renderSize = effect.size || 140;
+              ctx.drawImage(
+                bloodSplatEffectsImg, // Usar el nuevo sprite sheet
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "blood_storm") {
+            // Renderizar efecto de blood storm (AoE a todos los aliados)
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+
+              // Calcular posición del frame: 5 frames en primera fila, 4 en segunda
+              let sx, sy;
+              if (effect.frame < 5) {
+                // Primera fila (frames 0-4)
+                sx = effect.frame * effect.frameWidth;
+                sy = 0;
+              } else {
+                // Segunda fila (frames 5-8)
+                sx = (effect.frame - 5) * effect.frameWidth;
+                sy = effect.frameHeight;
+              }
+
+              const renderSize = effect.size || 150;
+              ctx.drawImage(
+                bloodStormEffectsImg, // Usar el sprite original para AoE
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
           }
         });
 
@@ -1428,113 +1995,15 @@
         return closest;
       }
 
-      function enemyAct() {
-        if (currentEnemyIndex >= enemies.length) {
-          advanceTurn();
-          return;
-        }
-        const enemy = enemies[currentEnemyIndex];
-        if (enemy.hp <= 0) {
-          currentEnemyIndex++;
-          enemyAct();
-          return;
-        }
-
-        // Check if enemy should attack automatically when charged
-        let damage = 15;
-        let shouldAttack = false;
-
-        if (enemy.charge >= 100) {
-          damage = 25;
-          enemy.charge = 0; // Reset charge after attack
-          shouldAttack = true;
-        } else if (enemy.charge >= 50) {
-          damage = 20;
-          enemy.charge = 0; // Reset charge after attack
-          shouldAttack = true;
-        }
-
-        if (!shouldAttack) {
-          currentEnemyIndex++;
-          enemyAct();
-          return;
-        }
-
+      function getRandomHero(heroes) {
         const aliveHeroes = heroes.filter((h) => h.hp > 0);
-        if (aliveHeroes.length === 0) {
-          currentEnemyIndex++;
-          enemyAct();
-          return;
-        }
-        const target = getClosestHero(enemy, heroes);
-        if (!target) {
-          currentEnemyIndex++;
-          enemyAct();
-          return;
-        }
-        enemy.animTime = 0.5;
-        setTimeout(() => {
-          if (target.hp > 0) {
-            const currentDef =
-              target.def +
-              target.buffs.reduce(
-                (sum, b) =>
-                  b.type === "protection" || b.type === "agony"
-                    ? sum + b.defBonus
-                    : sum,
-                0
-              );
+        if (aliveHeroes.length === 0) return null;
 
-            // Calcular crítico para el enemigo
-            const criticalResult = calculateCritical(damage);
-            const finalDamage = criticalResult.damage;
-            const isCritical = criticalResult.isCritical;
-
-            const effectiveDamage = Math.max(1, finalDamage - currentDef);
-            target.hp = Math.max(0, target.hp - effectiveDamage);
-
-            // Verificar si el héroe tiene buff de agony para reflejo de daño
-            const agonyBuff = target.buffs.find((b) => b.type === "agony");
-            if (agonyBuff && agonyBuff.damageReflect) {
-              const reflectedDamage = Math.floor(
-                effectiveDamage * (agonyBuff.damageReflect / 100)
-              );
-              enemy.hp = Math.max(0, enemy.hp - reflectedDamage);
-              showHitNumber(
-                enemy.posx,
-                enemy.posy - 20,
-                reflectedDamage,
-                false,
-                false
-              );
-              console.log(
-                "Agony reflection: ",
-                reflectedDamage,
-                "damage to enemy"
-              );
-
-              if (enemy.hp <= 0) {
-                enemy.isDying = true;
-                enemy.anim = "die";
-                enemy.frame = 0;
-                enemy.animStartTime = currentTime;
-              }
-            }
-
-            // Mostrar número de daño del enemigo con indicador de crítico
-            showHitNumber(
-              target.posx,
-              target.posy - 20,
-              effectiveDamage,
-              false,
-              isCritical
-            );
-          }
-          checkGameOver();
-          currentEnemyIndex++;
-          enemyAct();
-        }, 500);
+        const randomIndex = Math.floor(Math.random() * aliveHeroes.length);
+        return aliveHeroes[randomIndex];
       }
+
+      // NOTA: enemyAct() removida - ahora se usa sistema de auto-attack en el loop principal
 
       let lastTime = 0;
       function loop(time) {
@@ -1577,6 +2046,23 @@
               playHealingAnim(h);
               showHitNumber(h.posx, h.posy - 20, b.heal, true);
               b.nextTick += 1;
+            } else if (b.type === "poison" && b.nextTick <= currentTime) {
+              // Aplicar daño de veneno
+              h.hp = Math.max(0, h.hp - b.damage);
+              console.log(
+                "Poison tick para",
+                h.clazz,
+                "- daño de veneno:",
+                b.damage
+              );
+              showHitNumber(h.posx, h.posy - 20, b.damage, false, false);
+              addPoisonEffect(h.posx, h.posy); // Efecto visual cada tick
+              b.nextTick += b.tickInterval; // Próximo tick en 3 segundos
+
+              // Verificar si el héroe murió por veneno
+              if (h.hp <= 0) {
+                console.log(h.clazz, "died from poison!");
+              }
             }
             return true;
           });
@@ -1638,86 +2124,312 @@
         // Update enemy charge and check for automatic attacks
         enemies.forEach((e) => {
           if (e.hp > 0 && !e.isDying) {
-            // Charge enemies always
-            e.charge = Math.min(e.maxcharge, e.charge + delta * 20); // Charge over time
+            // Charge enemies using their custom charge speed
+            const chargeSpeed = e.chargeSpeed || 20; // Fallback a 20 si no hay chargeSpeed definido
+            e.charge = Math.min(e.maxcharge, e.charge + delta * chargeSpeed); // Charge over time
 
             // Auto attack when fully charged
             if (e.charge >= 100 && e.animTime <= 0) {
-              const target = getClosestHero(e, heroes);
+              // Determinar el nivel actual para decidir el targeting
+              const currentLevel = Math.floor(wave / 3) + 1;
+
+              // En Red Dunes (nivel 1) los enemigos atacan a un aliado aleatorio
+              // En otros niveles atacan al más cercano
+              const target =
+                currentLevel === 1
+                  ? getRandomHero(heroes)
+                  : getClosestHero(e, heroes);
+
               if (target) {
-                const damage = 25;
+                let damage = e.type === "boss" ? 45 : 25; // Boss hace 45 de daño base, enemigos normales 25
                 e.charge = 0; // Reset charge
                 e.animTime = 0.5;
+                e.anim = "attack"; // Activar animación de ataque
+                e.frame = 0; // Reiniciar frame
+                e.animStartTime = currentTime; // Tiempo de inicio de la animación
+
+                // Manejo de ataques de Boss (Boss Bat y Demon Slime)
+                let isSpecialAttack = false;
+                let isMainAbility = false;
+                if (e.type === "boss" && e.attacksUntilSpecial !== null) {
+                  e.attacksUntilSpecial--;
+                  if (e.attacksUntilSpecial <= 0) {
+                    isSpecialAttack = true;
+                    e.attacksUntilSpecial = e.specialAttackCounter; // Reset counter
+
+                    // Ajustar daño según el tipo de boss
+                    if (e.name === "Boss Bat") {
+                      damage = 30 + Math.floor(Math.random() * 11); // Daño entre 30-40 para Blood Storm (AoE)
+                    } else if (e.name === "Demon Slime") {
+                      damage = 0; // El ataque especial de Demon Slime no hace daño directo, solo aplica veneno
+                    }
+                  } else {
+                    // Ataques principales/normales
+                    isMainAbility = true;
+                    if (e.name === "Boss Bat") {
+                      damage = 20 + Math.floor(Math.random() * 11); // Daño entre 20-30 para Blood Splat (single target)
+                    } else if (e.name === "Demon Slime") {
+                      damage = 25 + Math.floor(Math.random() * 11); // Daño entre 25-35 para ataque básico del slime
+                    }
+                  }
+                }
 
                 setTimeout(() => {
-                  if (target.hp > 0) {
-                    const currentDef =
-                      target.def +
-                      target.buffs.reduce(
-                        (sum, b) =>
-                          b.type === "protection" || b.type === "agony"
-                            ? sum + b.defBonus
-                            : sum,
-                        0
-                      );
-
-                    // Calcular crítico para auto-ataque de enemigo
-                    const criticalResult = calculateCritical(damage);
-                    const finalDamage = criticalResult.damage;
-                    const isCritical = criticalResult.isCritical;
-
-                    const effectiveDamage = Math.max(
-                      1,
-                      finalDamage - currentDef
-                    );
-                    target.hp = Math.max(0, target.hp - effectiveDamage);
-
-                    // Verificar si el héroe tiene buff de agony para reflejo de daño
-                    const agonyBuff = target.buffs.find(
-                      (b) => b.type === "agony"
-                    );
-                    if (agonyBuff && agonyBuff.damageReflect) {
-                      const reflectedDamage = Math.floor(
-                        effectiveDamage * (agonyBuff.damageReflect / 100)
-                      );
-                      enemy.hp = Math.max(0, enemy.hp - reflectedDamage);
-                      showHitNumber(
-                        enemy.posx,
-                        enemy.posy - 20,
-                        reflectedDamage,
-                        false,
-                        false
-                      );
+                  if (isSpecialAttack) {
+                    if (e.name === "Boss Bat") {
+                      // Ataque especial: Blood Storm (daño AoE a todos los héroes)
                       console.log(
-                        "Agony reflection (auto-attack): ",
-                        reflectedDamage,
-                        "damage to enemy"
+                        "Boss Bat uses Blood Storm special attack (AoE)!"
                       );
+                      heroes.forEach((hero) => {
+                        if (hero.hp > 0) {
+                          const currentDef =
+                            hero.def +
+                            hero.buffs.reduce(
+                              (sum, b) =>
+                                b.type === "protection" || b.type === "agony"
+                                  ? sum + b.defBonus
+                                  : sum,
+                              0
+                            );
 
-                      if (enemy.hp <= 0) {
-                        enemy.isDying = true;
-                        enemy.anim = "die";
-                        enemy.frame = 0;
-                        enemy.animStartTime = currentTime;
+                          const criticalResult = calculateCritical(damage);
+                          const finalDamage = criticalResult.damage;
+                          const effectiveDamage = Math.max(
+                            1,
+                            finalDamage - currentDef
+                          );
+                          hero.hp = Math.max(0, hero.hp - effectiveDamage);
+
+                          console.log(
+                            `${
+                              hero.clazz || "Hero"
+                            } takes ${effectiveDamage} AoE damage from Blood Storm!`
+                          );
+
+                          // Mostrar número de daño para cada héroe afectado
+                          showHitNumber(
+                            hero.posx,
+                            hero.posy - 20,
+                            effectiveDamage,
+                            false,
+                            criticalResult.isCritical
+                          );
+
+                          // Agregar efecto visual de Blood Storm para cada héroe
+                          addBloodStormEffect(hero.posx, hero.posy);
+                        }
+                      });
+                    } else if (e.name === "Demon Slime") {
+                      // Ataque especial: Poison Cloud (debuff de veneno a todos los aliados)
+                      console.log(
+                        "Demon Slime uses Poison Cloud special attack!"
+                      );
+                      heroes.forEach((hero) => {
+                        if (hero.hp > 0) {
+                          // Aplicar debuff de veneno
+                          hero.buffs.push({
+                            type: "poison",
+                            endTime: currentTime + 15, // 15 segundos
+                            nextTick: currentTime + 3, // Primer tick en 3 segundos
+                            damage: 3 + Math.floor(Math.random() * 3), // Daño entre 3-5 HP
+                            tickInterval: 3, // Cada 3 segundos
+                          });
+
+                          console.log(
+                            `${
+                              hero.clazz || "Hero"
+                            } is poisoned for 15 seconds!`
+                          );
+
+                          // Efecto visual de veneno (por ahora usar el de protection pero en verde)
+                          addPoisonEffect(hero.posx, hero.posy);
+                        }
+                      });
+                    }
+                  } else if (isMainAbility) {
+                    if (e.name === "Boss Bat") {
+                      // Habilidad principal: Blood Splat (a un solo aliado aleatorio)
+                      console.log(
+                        "Boss Bat uses Blood Splat main ability (single target)!"
+                      );
+                      const aliveHeroes = heroes.filter((h) => h.hp > 0);
+                      if (aliveHeroes.length > 0) {
+                        // Seleccionar héroe aleatorio en lugar del más cercano
+                        const randomIndex = Math.floor(
+                          Math.random() * aliveHeroes.length
+                        );
+                        const randomTarget = aliveHeroes[randomIndex];
+
+                        const currentDef =
+                          randomTarget.def +
+                          randomTarget.buffs.reduce(
+                            (sum, b) =>
+                              b.type === "protection" || b.type === "agony"
+                                ? sum + b.defBonus
+                                : sum,
+                            0
+                          );
+
+                        const criticalResult = calculateCritical(damage);
+                        const finalDamage = criticalResult.damage;
+                        const effectiveDamage = Math.max(
+                          1,
+                          finalDamage - currentDef
+                        );
+                        randomTarget.hp = Math.max(
+                          0,
+                          randomTarget.hp - effectiveDamage
+                        );
+
+                        console.log(
+                          `${
+                            randomTarget.clazz || "Hero"
+                          } takes ${effectiveDamage} damage from Blood Splat!`
+                        );
+
+                        // Mostrar número de daño
+                        showHitNumber(
+                          randomTarget.posx,
+                          randomTarget.posy - 20,
+                          effectiveDamage,
+                          false,
+                          criticalResult.isCritical
+                        );
+
+                        // Agregar efecto visual de Blood Splat
+                        addBloodSplatEffect(
+                          randomTarget.posx,
+                          randomTarget.posy
+                        );
+                      }
+                    } else if (e.name === "Demon Slime") {
+                      // Ataque básico del Demon Slime: ataque a un héroe aleatorio
+                      console.log(
+                        "Demon Slime uses basic attack (single random target)!"
+                      );
+                      const aliveHeroes = heroes.filter((h) => h.hp > 0);
+                      if (aliveHeroes.length > 0) {
+                        // Seleccionar héroe aleatorio
+                        const randomIndex = Math.floor(
+                          Math.random() * aliveHeroes.length
+                        );
+                        const randomTarget = aliveHeroes[randomIndex];
+
+                        const currentDef =
+                          randomTarget.def +
+                          randomTarget.buffs.reduce(
+                            (sum, b) =>
+                              b.type === "protection" || b.type === "agony"
+                                ? sum + b.defBonus
+                                : sum,
+                            0
+                          );
+
+                        const criticalResult = calculateCritical(damage);
+                        const finalDamage = criticalResult.damage;
+                        const effectiveDamage = Math.max(
+                          1,
+                          finalDamage - currentDef
+                        );
+                        randomTarget.hp = Math.max(
+                          0,
+                          randomTarget.hp - effectiveDamage
+                        );
+
+                        console.log(
+                          `${
+                            randomTarget.clazz || "Hero"
+                          } takes ${effectiveDamage} damage from Slime Attack!`
+                        );
+
+                        // Mostrar número de daño
+                        showHitNumber(
+                          randomTarget.posx,
+                          randomTarget.posy - 20,
+                          effectiveDamage,
+                          false,
+                          criticalResult.isCritical
+                        );
+
+                        // Por ahora sin efecto visual específico para el slime
                       }
                     }
+                  } else {
+                    // Ataque normal a un solo objetivo (el más cercano)
+                    if (target.hp > 0) {
+                      const currentDef =
+                        target.def +
+                        target.buffs.reduce(
+                          (sum, b) =>
+                            b.type === "protection" || b.type === "agony"
+                              ? sum + b.defBonus
+                              : sum,
+                          0
+                        );
 
-                    // Mostrar número de daño del enemigo auto-attack con crítico
-                    showHitNumber(
-                      target.posx,
-                      target.posy - 20,
-                      effectiveDamage,
-                      false,
-                      isCritical
-                    );
-                    checkGameOver();
+                      // Calcular crítico para auto-ataque de enemigo
+                      const criticalResult = calculateCritical(damage);
+                      const finalDamage = criticalResult.damage;
+                      const isCritical = criticalResult.isCritical;
+
+                      const effectiveDamage = Math.max(
+                        1,
+                        finalDamage - currentDef
+                      );
+                      target.hp = Math.max(0, target.hp - effectiveDamage);
+
+                      // Verificar si el héroe tiene buff de agony para reflejo de daño
+                      const agonyBuff = target.buffs.find(
+                        (b) => b.type === "agony"
+                      );
+                      if (agonyBuff && agonyBuff.damageReflect) {
+                        const reflectedDamage = Math.floor(
+                          effectiveDamage * (agonyBuff.damageReflect / 100)
+                        );
+                        e.hp = Math.max(0, e.hp - reflectedDamage);
+
+                        // Sumar puntos por daño reflejado
+                        score += reflectedDamage;
+
+                        showHitNumber(
+                          e.posx,
+                          e.posy - 20,
+                          reflectedDamage,
+                          false,
+                          false
+                        );
+                        console.log(
+                          "Agony reflection (auto-attack): ",
+                          reflectedDamage,
+                          "damage to enemy"
+                        );
+
+                        if (e.hp <= 0) {
+                          e.isDying = true;
+                          e.anim = "die";
+                          e.frame = 0;
+                          e.animStartTime = currentTime;
+                        }
+                      }
+
+                      // Mostrar número de daño del enemigo auto-attack con crítico
+                      showHitNumber(
+                        target.posx,
+                        target.posy - 20,
+                        effectiveDamage,
+                        false,
+                        isCritical
+                      );
+                      checkGameOver();
+                    }
                   }
                 }, 100);
               }
             }
           }
 
-          // Actualizar animaciones de enemigos - usando sprites de goblin
+          // Actualizar animaciones de enemigos - usando sprites dinámicos del nivel
           if (e.anim === "hurt") {
             const elapsed = currentTime - e.animStartTime;
             if (elapsed >= 0.3) {
@@ -1728,16 +2440,29 @@
             }
           } else if (e.anim === "die") {
             const elapsed = currentTime - e.animStartTime;
-            const frameDuration = 0.15; // Duración por frame para muerte
+            const frameDuration = 0.12; // Duración por frame para muerte (más fluido: 0.15 -> 0.12)
             e.frame = Math.floor(elapsed / frameDuration);
-            if (e.frame >= e.deathFrames) {
+            const deathFrames = e.deathFrames || 6; // Usar frames dinámicos o fallback
+            if (e.frame >= deathFrames) {
               e.deathAnimComplete = true;
-              e.frame = e.deathFrames - 1; // Mantener en el último frame
+              e.frame = deathFrames - 1; // Mantener en el último frame
+            }
+          } else if (e.anim === "attack") {
+            const elapsed = currentTime - e.animStartTime;
+            const frameDuration = 0.08; // Duración por frame para ataque (más fluido: 0.1 -> 0.08)
+            e.frame = Math.floor(elapsed / frameDuration);
+            // Usar frames específicos del enemigo o fallback
+            const attackFrames = e.attackFrames || 4;
+            if (e.frame >= attackFrames) {
+              e.anim = "idle"; // Volver a idle después del ataque
+              e.frame = 0;
+              e.animStartTime = currentTime;
             }
           } else if (e.anim === "idle" && e.hp > 0) {
             const elapsed = currentTime - e.animStartTime;
-            const frameDuration = 0.25; // Duración por frame para idle
-            e.frame = Math.floor(elapsed / frameDuration) % e.idleFrames;
+            const frameDuration = 0.18; // Duración por frame para idle (más fluido: 0.25 -> 0.18)
+            const idleFrames = e.idleFrames || 4; // Usar frames dinámicos o fallback
+            e.frame = Math.floor(elapsed / frameDuration) % idleFrames;
           }
 
           if (e.animTime > 0) e.animTime -= delta;
@@ -1763,7 +2488,7 @@
         ctx.imageSmoothingQuality = "high";
 
         // Draw background
-        ctx.drawImage(backgroundImg, 0, 0, designWidth, designHeight);
+        ctx.drawImage(currentBackgroundImg, 0, 0, designWidth, designHeight);
 
         // Draw header
         drawHeader();
@@ -1874,7 +2599,7 @@
 
           const size = e.size || 80;
 
-          // Usar los nuevos sprites de goblin
+          // Usar los sprites específicos del enemigo según el nivel
           ctx.save();
 
           // Activar interpolación suave para mejor calidad
@@ -1884,84 +2609,202 @@
           // Seleccionar sprite y calcular posición según animación
           let spriteImg, sx, sy;
 
-          if (e.anim === "die") {
-            spriteImg = goblinDieImg;
-            sx = e.frame * e.frameWidth;
-            sy = 0;
-            // Efecto de desvanecimiento gradual al morir
-            const deathProgress = e.frame / (e.deathFrames - 1);
-            ctx.globalAlpha = 1 - deathProgress * 0.7;
-            ctx.filter = "grayscale(50%) brightness(0.5)";
-          } else if (e.anim === "hurt") {
-            // Para hurt, usar idle pero con efectos visuales
-            spriteImg = goblinIdleImg;
-            sx = e.frame * e.frameWidth;
-            sy = 0;
-            // Efecto de flash rojo cuando recibe daño
-            ctx.filter = "hue-rotate(0deg) contrast(1.5) brightness(1.2)";
-            ctx.globalAlpha = 0.8 + 0.2 * Math.sin(currentTime * 20); // Parpadeo
+          // Verificar si es Demon Slime (usa sprite sheet completo)
+          if (e.name === "Demon Slime") {
+            spriteImg = demonSlimeAllStatesImg;
+
+            if (e.anim === "die") {
+              // Fila 2 (death): 22 frames
+              sx = e.frame * e.frameWidth;
+              sy = 2 * e.frameHeight;
+              // Efecto de desvanecimiento gradual al morir
+              const deathProgress = e.frame / ((e.deathFrames || 22) - 1);
+              ctx.globalAlpha = 1 - deathProgress * 0.7;
+              ctx.filter = "grayscale(50%) brightness(0.5)";
+            } else if (e.anim === "hurt") {
+              // Para hurt, usar idle (fila 0) pero con efectos visuales
+              sx = e.frame * e.frameWidth;
+              sy = 0 * e.frameHeight;
+              ctx.filter = "hue-rotate(0deg) contrast(1.5) brightness(1.2)";
+              ctx.globalAlpha = 0.8 + 0.2 * Math.sin(currentTime * 20);
+            } else if (e.anim === "attack") {
+              // Fila 1 (attack): 15 frames
+              sx = e.frame * e.frameWidth;
+              sy = 1 * e.frameHeight;
+            } else {
+              // Fila 0 (idle): 6 frames
+              sx = e.frame * e.frameWidth;
+              sy = 0 * e.frameHeight;
+            }
           } else {
-            // idle
-            spriteImg = goblinIdleImg;
-            sx = e.frame * e.frameWidth;
-            sy = 0;
+            // Lógica original para otros enemigos (Demon Bat, Worm)
+            if (e.anim === "die") {
+              spriteImg = e.sprites ? e.sprites.death : goblinDieImg;
+              sx = e.frame * e.frameWidth;
+              sy = 0;
+              // Efecto de desvanecimiento gradual al morir
+              const deathProgress = e.frame / ((e.deathFrames || 6) - 1);
+              ctx.globalAlpha = 1 - deathProgress * 0.7;
+              ctx.filter = "grayscale(50%) brightness(0.5)";
+            } else if (e.anim === "hurt") {
+              // Para hurt, usar idle pero con efectos visuales
+              spriteImg = e.sprites ? e.sprites.idle : goblinIdleImg;
+              sx = e.frame * e.frameWidth;
+              sy = 0;
+              // Efecto de flash rojo cuando recibe daño
+              ctx.filter = "hue-rotate(0deg) contrast(1.5) brightness(1.2)";
+              ctx.globalAlpha = 0.8 + 0.2 * Math.sin(currentTime * 20); // Parpadeo
+            } else if (e.anim === "attack") {
+              // Animación de ataque
+              spriteImg = e.sprites ? e.sprites.attack : goblinIdleImg;
+              sx = e.frame * e.frameWidth;
+              sy = 0;
+            } else {
+              // idle
+              spriteImg = e.sprites ? e.sprites.idle : goblinIdleImg;
+              sx = e.frame * e.frameWidth;
+              sy = 0;
+            }
           }
 
-          // Dibujar el sprite del goblin
+          // Dibujar el sprite del enemigo
+          // Para Demon Slime, mantener las proporciones originales del sprite
+          let drawWidth = size;
+          let drawHeight = size;
+
+          if (e.name === "Demon Slime") {
+            // Mantener proporciones originales del sprite (150x83)
+            const aspectRatio = e.frameWidth / e.frameHeight; // 150/83 ≈ 1.81
+            drawWidth = size;
+            drawHeight = size / aspectRatio; // Ajustar altura para mantener proporción
+          }
+
           ctx.drawImage(
             spriteImg,
             sx,
             sy,
             e.frameWidth,
             e.frameHeight,
-            e.posx - size / 2,
-            e.posy - size / 2,
-            size,
-            size
+            e.posx - drawWidth / 2,
+            e.posy - drawHeight / 2,
+            drawWidth,
+            drawHeight
           );
 
           ctx.restore();
 
           // Solo mostrar HUD si no está muerto o aún no completó la animación
           if (e.hp > 0 || !e.deathAnimComplete) {
+            // Calcular offset vertical para la barra de HP según el tipo de enemigo
+            let hpBarOffset = size / 2 + 25;
+            if (e.name === "Demon Slime") {
+              // Usar la altura real del sprite renderizado
+              const aspectRatio = e.frameWidth / e.frameHeight;
+              const actualHeight = size / aspectRatio;
+              hpBarOffset = actualHeight / 2 + 25;
+            }
+
             // HP bar background - ahora encima del enemigo
             ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-            ctx.fillRect(e.posx - 40, e.posy - size / 2 - 25, 80, 12);
+            ctx.fillRect(e.posx - 40, e.posy - hpBarOffset, 80, 12);
 
             // HP bar red
             ctx.fillStyle = "red";
             const hpWidth = 80 * (e.hp / e.maxhp);
-            ctx.fillRect(e.posx - 40, e.posy - size / 2 - 25, hpWidth, 12);
+            ctx.fillRect(e.posx - 40, e.posy - hpBarOffset, hpWidth, 12);
 
             // Texto de HP centrado perfectamente en la barra
             ctx.fillStyle = "white";
             ctx.font = "8px 'Press Start 2P'";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText(`${e.hp}`, e.posx, e.posy - size / 2 - 25 + 6); // Centrado en Y
+            ctx.fillText(`${e.hp}`, e.posx, e.posy - hpBarOffset + 6); // Centrado en Y
             ctx.textAlign = "left"; // Resetear alineación
             ctx.textBaseline = "alphabetic"; // Resetear baseline
 
             // Charge bar background (solo si está vivo) - directamente debajo de la HP bar
             if (e.hp > 0) {
               ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-              ctx.fillRect(e.posx - 40, e.posy - size / 2 - 13, 80, 8);
+              ctx.fillRect(e.posx - 40, e.posy - hpBarOffset + 12, 80, 8);
 
               // Charge bar orange - barra continua sin divisiones
               ctx.fillStyle = "#FFA500";
               const chargeWidth = 80 * (e.charge / e.maxcharge);
-              ctx.fillRect(e.posx - 40, e.posy - size / 2 - 13, chargeWidth, 8);
+              ctx.fillRect(
+                e.posx - 40,
+                e.posy - hpBarOffset + 12,
+                chargeWidth,
+                8
+              );
 
               // Borde de charge bar
               ctx.strokeStyle = "black";
               ctx.lineWidth = 1;
-              ctx.strokeRect(e.posx - 40, e.posy - size / 2 - 13, 80, 8);
+              ctx.strokeRect(e.posx - 40, e.posy - hpBarOffset + 12, 80, 8);
+
+              // Mostrar esferas de ataque especial para el boss
+              if (
+                e.type === "boss" &&
+                e.attacksUntilSpecial !== null &&
+                e.attacksUntilSpecial <= 3
+              ) {
+                // Posición base para las esferas (centradas arriba de la HP bar)
+                const sphereY = e.posy - hpBarOffset - 10;
+                const sphereSpacing = 12;
+                const startX = e.posx - sphereSpacing; // Para centrar 3 esferas
+
+                // Dibujar 3 esferas
+                for (let i = 0; i < 3; i++) {
+                  const sphereX = startX + i * sphereSpacing;
+
+                  // Determinar si esta esfera debe estar "llena" (roja) o "vacía" (gris)
+                  const shouldBeFilled = 3 - e.attacksUntilSpecial > i;
+
+                  // Esfera exterior (borde negro)
+                  ctx.fillStyle = "black";
+                  ctx.beginPath();
+                  ctx.arc(sphereX, sphereY, 4, 0, Math.PI * 2);
+                  ctx.fill();
+
+                  // Esfera interior - color diferente según el boss
+                  if (shouldBeFilled) {
+                    // Color según el tipo de boss
+                    if (e.name === "Boss Bat") {
+                      ctx.fillStyle = "#ff0000"; // Rojo para Boss Bat
+                    } else if (e.name === "Demon Slime") {
+                      ctx.fillStyle = "#00ff00"; // Verde tóxico para Demon Slime
+                    } else {
+                      ctx.fillStyle = "#ff0000"; // Default rojo
+                    }
+                  } else {
+                    // Esfera gris para ataques pendientes
+                    ctx.fillStyle = "#666666";
+                  }
+                  ctx.beginPath();
+                  ctx.arc(sphereX, sphereY, 3, 0, Math.PI * 2);
+                  ctx.fill();
+
+                  // Brillo interior para esferas llenas
+                  if (shouldBeFilled) {
+                    if (e.name === "Boss Bat") {
+                      ctx.fillStyle = "#ff6666"; // Brillo rojo claro para Boss Bat
+                    } else if (e.name === "Demon Slime") {
+                      ctx.fillStyle = "#66ff66"; // Brillo verde claro para Demon Slime
+                    } else {
+                      ctx.fillStyle = "#ff6666"; // Default rojo claro
+                    }
+                    ctx.beginPath();
+                    ctx.arc(sphereX - 1, sphereY - 1, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                  }
+                }
+              }
             }
 
             // Borde de HP bar
             ctx.strokeStyle = "black";
             ctx.lineWidth = 1;
-            ctx.strokeRect(e.posx - 40, e.posy - size / 2 - 25, 80, 12);
+            ctx.strokeRect(e.posx - 40, e.posy - hpBarOffset, 80, 12);
           }
         });
 
@@ -2038,74 +2881,169 @@
       }
 
       function drawHeader() {
-        // Fondo del header - mismo color que footer
-        ctx.fillStyle = "rgba(30, 20, 10, 0.9)";
+        // Fondo del header - color beige claro
+        ctx.fillStyle = "#D3BF8F";
         ctx.fillRect(0, 0, designWidth, 60);
 
         // Borde inferior del header
-        ctx.strokeStyle = "#8B4513";
+        ctx.strokeStyle = "#3D2914";
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.moveTo(0, 60);
         ctx.lineTo(designWidth, 60);
         ctx.stroke();
 
-        // Score centrado - primera fila
-        ctx.strokeStyle = "#3D2914"; // Borde marrón oscuro
-        ctx.lineWidth = 2;
-        ctx.fillStyle = "#F5DEB3"; // Texto beige
-        ctx.font = "12px 'Press Start 2P'"; // Más pequeño
+        // Score centrado - primera sección (altura: 30px, padding: 7px arriba y abajo)
+        ctx.font = "bold 12px 'Press Start 2P'";
         ctx.textAlign = "center";
-        ctx.strokeText(`SCORE: ${score}`, designWidth / 2, 20);
-        ctx.fillText(`SCORE: ${score}`, designWidth / 2, 20);
+
+        // Texto "points" en marrón
+        ctx.fillStyle = "#3D2914";
+        const pointsText = " points";
+        const pointsWidth = ctx.measureText(pointsText).width;
+        const scoreText = score.toString();
+        const scoreWidth = ctx.measureText(scoreText).width;
+        const totalWidth = scoreWidth + pointsWidth;
+
+        // Número del score en amarillo con borde marrón oscuro
+        ctx.fillStyle = "#FFD700";
+        ctx.strokeStyle = "#3D2914";
+        ctx.lineWidth = 2;
+        ctx.strokeText(
+          scoreText,
+          designWidth / 2 - totalWidth / 2 + scoreWidth / 2,
+          22
+        );
+        ctx.fillText(
+          scoreText,
+          designWidth / 2 - totalWidth / 2 + scoreWidth / 2,
+          22
+        );
+
+        // Texto "points" en marrón
+        ctx.fillStyle = "#3D2914";
+        ctx.fillText(pointsText, designWidth / 2 + scoreWidth / 2, 22);
+
+        // Línea divisora entre score y level/wave - más ancha
+        ctx.strokeStyle = "#3D2914"; // Marrón oscuro
+        ctx.lineWidth = 4; // Aumentado de 2 a 4
+        ctx.beginPath();
+        ctx.moveTo(0, 30);
+        ctx.lineTo(designWidth, 30);
+        ctx.stroke();
 
         // Calcular nivel y wave
         const currentLevel = Math.floor((wave - 1) / 3) + 1;
         const currentWaveInLevel = ((wave - 1) % 3) + 1;
 
-        // Segunda fila - Nivel y Wave separados
-        ctx.fillStyle = "#F5DEB3"; // Texto beige
-        ctx.font = "10px 'Press Start 2P'";
+        // Obtener título de la dungeon desde la configuración de niveles
+        const currentLevelConfig = levelConfig[currentLevel] || levelConfig[1]; // Fallback al nivel 1
+        const dungeonTitle = currentLevelConfig
+          ? currentLevelConfig.name
+          : "Demon Cave";
 
-        // Texto "Level" en beige y número en amarillo - lado izquierdo
-        ctx.textAlign = "left";
-        const levelText = "Level ";
+        // Segunda sección - Level, Dungeon Title y Wave con divisores verticales
+        ctx.font = "bold 9px 'Press Start 2P'";
+        ctx.textAlign = "center";
+
+        // Líneas divisoras verticales - más anchas
+        ctx.strokeStyle = "#3D2914";
+        ctx.lineWidth = 4; // Aumentado de 2 a 4
+        ctx.beginPath();
+        // Primera línea divisora (1/3)
+        ctx.moveTo(designWidth / 3, 30);
+        ctx.lineTo(designWidth / 3, 60);
+        // Segunda línea divisora (2/3)
+        ctx.moveTo((designWidth * 2) / 3, 30);
+        ctx.lineTo((designWidth * 2) / 3, 60);
+        ctx.stroke();
+
+        // Level en la primera sección (0 a 1/3)
+        ctx.fillStyle = "#3D2914"; // "Level" en marrón
+        const levelTextOnly = "Level ";
+        const levelTextWidth = ctx.measureText(levelTextOnly).width;
         const levelNumber = currentLevel.toString();
-        ctx.fillStyle = "#F5DEB3";
-        ctx.fillText(levelText, designWidth / 2 - 60, 40);
-        ctx.fillStyle = "#FFD700"; // Amarillo para el número
+        const levelNumberWidth = ctx.measureText(levelNumber).width;
+        const levelTotalWidth = levelTextWidth + levelNumberWidth;
+
         ctx.fillText(
-          levelNumber,
-          designWidth / 2 - 60 + ctx.measureText(levelText).width,
-          40
+          levelTextOnly,
+          designWidth / 6 - levelTotalWidth / 2 + levelTextWidth / 2,
+          52
+        );
+        ctx.fillStyle = "#3D2914"; // Número en marrón
+        ctx.fillText(levelNumber, designWidth / 6 + levelTextWidth / 2, 52);
+
+        // Título de la dungeon en la sección central (1/3 a 2/3)
+        ctx.fillStyle = "#3D2914";
+        ctx.fillText(dungeonTitle, designWidth / 2, 52);
+
+        // Wave en la tercera sección (2/3 a 1)
+        ctx.fillStyle = "#3D2914"; // "Wave" en marrón
+        const waveTextOnly = "Wave ";
+        const waveTextWidth = ctx.measureText(waveTextOnly).width;
+        const waveFirstNumber = currentWaveInLevel.toString();
+        const waveFirstWidth = ctx.measureText(waveFirstNumber).width;
+        const waveBar = "/";
+        const waveBarWidth = ctx.measureText(waveBar).width;
+        const waveSecondNumber = "3";
+        const waveSecondWidth = ctx.measureText(waveSecondNumber).width;
+        const waveTotalWidth =
+          waveTextWidth +
+          waveFirstWidth +
+          2 +
+          waveBarWidth +
+          2 +
+          waveSecondWidth; // +2 píxeles de separación a cada lado de la barra
+
+        const waveStartX = (designWidth * 5) / 6 - waveTotalWidth / 2;
+        ctx.fillText(waveTextOnly, waveStartX + waveTextWidth / 2, 52);
+        ctx.fillStyle = "#3D2914"; // Primer número en marrón
+        ctx.fillText(
+          waveFirstNumber,
+          waveStartX + waveTextWidth + waveFirstWidth / 2,
+          52
+        );
+        ctx.fillStyle = "#3D2914"; // Barra en marrón
+        ctx.strokeStyle = "#3D2914"; // Borde marrón oscuro para la barra
+        ctx.lineWidth = 1; // Línea más fina que los números
+        ctx.strokeText(
+          waveBar,
+          waveStartX + waveTextWidth + waveFirstWidth + 1 + waveBarWidth / 2, // +1 píxel de separación del primer número
+          52
+        );
+        ctx.fillText(
+          waveBar,
+          waveStartX + waveTextWidth + waveFirstWidth + 1 + waveBarWidth / 2, // +1 píxel de separación del primer número
+          52
+        );
+        ctx.fillStyle = "#3D2914"; // Segundo número en marrón igual que el primero
+        ctx.fillText(
+          waveSecondNumber,
+          waveStartX +
+            waveTextWidth +
+            waveFirstWidth +
+            2 + // +1 píxel de separación antes de la barra
+            waveBarWidth +
+            1 + // +1 píxel de separación después de la barra
+            waveSecondWidth / 2,
+          52
         );
 
-        // Texto "Wave" en beige y fracción en amarillo - lado derecho
-        ctx.textAlign = "left";
-        const waveText = "Wave ";
-        const waveFraction = `${currentWaveInLevel}/3`;
-        ctx.fillStyle = "#F5DEB3";
-        ctx.fillText(waveText, designWidth / 2 + 20, 40);
-        ctx.fillStyle = "#FFD700"; // Amarillo para la fracción
-        ctx.fillText(
-          waveFraction,
-          designWidth / 2 + 20 + ctx.measureText(waveText).width,
-          40
-        );
         ctx.textAlign = "left"; // Resetear alineación
       }
 
       function drawFooter() {
         // Fondo del footer - más oscuro y más alto
         ctx.fillStyle = "rgba(30, 20, 10, 0.9)";
-        ctx.fillRect(0, 540, designWidth, 100); // Aumentado de 80 a 100 y movido de 560 a 540
+        ctx.fillRect(0, 520, designWidth, 120); // Aumentado de 540,100 a 520,120
 
         // Borde superior del footer
-        ctx.strokeStyle = "#8B4513";
+        ctx.strokeStyle = "#3D2914";
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.moveTo(0, 540); // Movido de 560 a 540
-        ctx.lineTo(designWidth, 540);
+        ctx.moveTo(0, 520); // Movido de 540 a 520
+        ctx.lineTo(designWidth, 520);
         ctx.stroke();
 
         // Dividir en 3 columnas
@@ -2119,123 +3057,113 @@
           const columnX = heroIndex * columnWidth;
           const centerX = columnX + columnWidth / 2;
 
-          // Card background - más oscuro y más alto
-          ctx.fillStyle = "rgba(40, 25, 15, 0.9)";
-          ctx.fillRect(columnX + 5, 545, columnWidth - 10, 90); // Aumentado de 70 a 90
+          // Dibujar panel para cada héroe - usar brown para todos con menos espacio entre cards
+          const panelWidth = columnWidth - 5;
+          const panelHeight = 110; // Aumentado de 90 a 110
+          const panelX = columnX + 2.5;
+          const panelY = 525; // Ajustado de 545 a 525
 
-          // Card border
-          ctx.strokeStyle = "#8B4513";
-          ctx.lineWidth = 1;
-          ctx.strokeRect(columnX + 5, 545, columnWidth - 10, 90);
+          ctx.drawImage(panelBrownImg, panelX, panelY, panelWidth, panelHeight);
 
-          // Título del héroe - color beige con borde marrón oscuro
-          ctx.strokeStyle = "#3D2914"; // Marrón muy oscuro para el borde
-          ctx.lineWidth = 2;
-          ctx.fillStyle = hero.hp > 0 ? "#F5DEB3" : "#666"; // Beige
-          ctx.font = "8px 'Press Start 2P'";
+          // Título del héroe - siempre mismo color sin importar si está muerto
+          ctx.fillStyle = "#3D2914"; // Siempre marrón oscuro
+          ctx.font = "bold 8px 'Press Start 2P'";
           ctx.textAlign = "center";
-          ctx.strokeText(hero.clazz.toUpperCase(), centerX, 560);
-          ctx.fillText(hero.clazz.toUpperCase(), centerX, 560);
+          ctx.fillText(hero.clazz.toUpperCase(), centerX, 543); // Movido de 541 a 543 (+2px)
 
           if (hero.hp <= 0) {
             // Mostrar "DEAD" en lugar de botones
             ctx.fillStyle = "red";
-            ctx.font = "10px 'Press Start 2P'";
+            ctx.font = "bold 10px 'Press Start 2P'";
             ctx.textAlign = "center";
-            ctx.fillText("DEAD", centerX, 595);
+            ctx.fillText("DEAD", centerX, 585); // Ajustado de 595 a 585
           } else {
             const actions = Object.keys(classActions[hero.clazz]);
+
+            // Configuración de botones - altura aumentada
+            const buttonWidth = panelWidth - 14;
+            const buttonHeight = 25; // Aumentado de 23 a 25
+            const buttonX = panelX + 7;
+            const buttonSpacing = 2; // Aumentado de 1 a 2
 
             // Botón habilidad principal (1 carga - 33.33%)
             const primaryAction = actions[0];
             const primaryData = classActions[hero.clazz][primaryAction];
-            const buttonY1 = 565;
-            const buttonWidth = columnWidth - 15;
-            const buttonHeight = 22; // Aumentado para ocupar más espacio
-            const buttonX = columnX + 7;
-
-            // Fondo del botón principal - amarillo llamativo como las cargas
+            const buttonY1 = 550; // Ajustado de 567 a 550
             const canUsePrimary = hero.charge >= primaryData.reqCharge;
-            ctx.fillStyle = canUsePrimary
-              ? "rgba(255, 215, 0, 0.6)" // Amarillo más llamativo
-              : "rgba(80, 80, 80, 0.5)";
-            ctx.fillRect(buttonX, buttonY1, buttonWidth, buttonHeight);
 
-            // Borde del botón principal - amarillo más grueso
-            ctx.strokeStyle = canUsePrimary ? "#FFD700" : "#555"; // Amarillo
-            ctx.lineWidth = 2; // Más grueso
-            ctx.strokeRect(buttonX, buttonY1, buttonWidth, buttonHeight);
+            // Usar botón beige si está activo, panel brown si está inactivo
+            const primaryButtonImg = canUsePrimary
+              ? buttonLongBeigeImg
+              : panelBrownImg;
+            ctx.drawImage(
+              primaryButtonImg,
+              buttonX,
+              buttonY1,
+              buttonWidth,
+              buttonHeight
+            );
 
-            // Texto del botón principal - marrón oscuro en negrita
-            ctx.fillStyle = canUsePrimary ? "#3D2914" : "#888"; // Marrón oscuro
-            ctx.font = "bold 7px 'Press Start 2P'"; // Aumentado para mejor legibilidad
+            // Texto del botón principal - siempre marrón
+            ctx.fillStyle = "#3D2914"; // Siempre marrón oscuro
+            ctx.font = "bold 7px 'Press Start 2P'"; // Aumentado de 6px a 7px
             ctx.textAlign = "center";
             const primaryText =
               primaryData.name.charAt(0).toUpperCase() +
               primaryData.name.slice(1).toLowerCase();
-            ctx.fillText(primaryText, centerX, buttonY1 + 14);
+            ctx.fillText(primaryText, centerX, buttonY1 + 16); // Ajustado para centrar mejor con altura 25
 
             // Botón habilidad secundaria (2 cargas - 66.66%)
             const secondaryAction = actions[1];
             const secondaryData = classActions[hero.clazz][secondaryAction];
-            const buttonY2 = buttonY1 + buttonHeight + 1;
-
-            // Fondo del botón secundario - amarillo llamativo como las cargas
+            const buttonY2 = buttonY1 + buttonHeight + buttonSpacing;
             const canUseSecondary = hero.charge >= secondaryData.reqCharge;
-            ctx.fillStyle = canUseSecondary
-              ? "rgba(255, 215, 0, 0.6)" // Amarillo más llamativo
-              : "rgba(80, 80, 80, 0.5)";
-            ctx.fillRect(buttonX, buttonY2, buttonWidth, buttonHeight);
 
-            // Borde del botón secundario - amarillo más grueso
-            ctx.strokeStyle = canUseSecondary ? "#FFD700" : "#555"; // Amarillo
-            ctx.lineWidth = 2; // Más grueso
-            ctx.strokeRect(buttonX, buttonY2, buttonWidth, buttonHeight);
+            const secondaryButtonImg = canUseSecondary
+              ? buttonLongBeigeImg
+              : panelBrownImg;
+            ctx.drawImage(
+              secondaryButtonImg,
+              buttonX,
+              buttonY2,
+              buttonWidth,
+              buttonHeight
+            );
 
-            // Texto del botón secundario - marrón oscuro en negrita
-            ctx.fillStyle = canUseSecondary ? "#3D2914" : "#888"; // Marrón oscuro
-            ctx.font = "bold 7px 'Press Start 2P'"; // Aumentado para mejor legibilidad
+            // Texto del botón secundario - siempre marrón
+            ctx.fillStyle = "#3D2914"; // Siempre marrón oscuro
+            ctx.font = "bold 7px 'Press Start 2P'"; // Aumentado de 6px a 7px
             ctx.textAlign = "center";
             const secondaryText =
               secondaryData.name.charAt(0).toUpperCase() +
               secondaryData.name.slice(1).toLowerCase();
-            ctx.fillText(secondaryText, centerX, buttonY2 + 14);
+            ctx.fillText(secondaryText, centerX, buttonY2 + 16); // Ajustado para centrar mejor con altura 25
 
             // Botón habilidad terciaria (3 cargas - 100%)
             const tertiaryAction = actions[2];
             const tertiaryData = classActions[hero.clazz][tertiaryAction];
-            const buttonY3 = buttonY2 + buttonHeight + 1;
-
-            // Fondo del botón terciario - amarillo llamativo como las cargas
+            const buttonY3 = buttonY2 + buttonHeight + buttonSpacing;
             const canUseTertiary = hero.charge >= tertiaryData.reqCharge;
-            ctx.fillStyle = canUseTertiary
-              ? "rgba(255, 215, 0, 0.6)" // Amarillo más llamativo
-              : "rgba(80, 80, 80, 0.5)";
-            ctx.fillRect(buttonX, buttonY3, buttonWidth, buttonHeight);
 
-            // Borde del botón terciario - amarillo más grueso
-            ctx.strokeStyle = canUseTertiary ? "#FFD700" : "#555"; // Amarillo
-            ctx.lineWidth = 2; // Más grueso
-            ctx.strokeRect(buttonX, buttonY3, buttonWidth, buttonHeight);
+            const tertiaryButtonImg = canUseTertiary
+              ? buttonLongBeigeImg
+              : panelBrownImg;
+            ctx.drawImage(
+              tertiaryButtonImg,
+              buttonX,
+              buttonY3,
+              buttonWidth,
+              buttonHeight
+            );
 
-            // Texto del botón terciario - marrón oscuro en negrita
-            ctx.fillStyle = canUseTertiary ? "#3D2914" : "#888"; // Marrón oscuro
-            ctx.font = "bold 7px 'Press Start 2P'"; // Aumentado para mejor legibilidad
+            // Texto del botón terciario - siempre marrón
+            ctx.fillStyle = "#3D2914"; // Siempre marrón oscuro
+            ctx.font = "bold 7px 'Press Start 2P'"; // Aumentado de 6px a 7px
             ctx.textAlign = "center";
             const tertiaryText =
               tertiaryData.name.charAt(0).toUpperCase() +
               tertiaryData.name.slice(1).toLowerCase();
-            ctx.fillText(tertiaryText, centerX, buttonY3 + 14);
-          }
-
-          // Líneas separadoras entre columnas
-          if (heroIndex < 2) {
-            ctx.strokeStyle = "#8B4513";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(columnX + columnWidth, 540); // Movido de 560 a 540
-            ctx.lineTo(columnX + columnWidth, 640);
-            ctx.stroke();
+            ctx.fillText(tertiaryText, centerX, buttonY3 + 16); // Ajustado para centrar mejor con altura 25
           }
         });
 
@@ -2262,23 +3190,28 @@
         const touchY = (clientY - rect.top) * (designHeight / rect.height);
 
         // Footer buttons
-        if (touchY >= 540 && state === "select_hero") {
-          // Cambiado de 560 a 540
+        if (touchY >= 520 && state === "select_hero") {
+          // Actualizado de 540 a 520
           const columnWidth = designWidth / 3;
-          const heroOrder = ["mage", "warlock", "priest"]; // Orden fijo
+          const heroOrder = ["mage", "warlock", "priest"];
 
           heroOrder.forEach((heroClass, heroIndex) => {
             const hero = heroes.find((h) => h.clazz === heroClass);
-            if (!hero || hero.hp <= 0) return; // Skip dead heroes
+            if (!hero || hero.hp <= 0) return;
 
             const actions = Object.keys(classActions[hero.clazz]);
             const columnX = heroIndex * columnWidth;
-            const buttonWidth = columnWidth;
-            const buttonHeight = 23; // Actualizado para coincidir con el nuevo tamaño
-            const buttonX = columnX;
+
+            // Configuración de botones para coincidir con drawFooter
+            const panelWidth = columnWidth - 5; // Actualizado
+            const panelX = columnX + 2.5; // Actualizado
+            const buttonWidth = panelWidth - 14;
+            const buttonHeight = 25; // Actualizado de 23 a 25
+            const buttonX = panelX + 7;
+            const buttonSpacing = 2; // Actualizado de 1 a 2
 
             // Botón habilidad principal (1 carga)
-            const primaryY = 565;
+            const primaryY = 550; // Actualizado de 567 a 550
             if (
               touchX >= buttonX &&
               touchX <= buttonX + buttonWidth &&
@@ -2336,7 +3269,7 @@
             }
 
             // Botón habilidad secundaria (2 cargas)
-            const secondaryY = primaryY + buttonHeight + 1;
+            const secondaryY = primaryY + buttonHeight + buttonSpacing;
             if (
               touchX >= buttonX &&
               touchX <= buttonX + buttonWidth &&
@@ -2394,7 +3327,7 @@
             }
 
             // Botón habilidad terciaria (3 cargas)
-            const tertiaryY = secondaryY + buttonHeight + 1;
+            const tertiaryY = secondaryY + buttonHeight + buttonSpacing;
             if (
               touchX >= buttonX &&
               touchX <= buttonX + buttonWidth &&
@@ -2527,9 +3460,21 @@
 
       Promise.all([
         new Promise((r) => (backgroundImg.onload = r)),
+        new Promise((r) => (backgroundLevel2Img.onload = r)),
         new Promise((r) => (mageImg.onload = r)),
         new Promise((r) => (priestImg.onload = r)),
         new Promise((r) => (warlockImg.onload = r)),
+        new Promise((r) => (demonBatIdleImg.onload = r)),
+        new Promise((r) => (demonBatDeathImg.onload = r)),
+        new Promise((r) => (demonBatAttackImg.onload = r)),
+        new Promise((r) => (wormIdleImg.onload = r)),
+        new Promise((r) => (wormDeathImg.onload = r)),
+        new Promise((r) => (wormAttackImg.onload = r)),
+        new Promise((r) => (bossBatIdleImg.onload = r)),
+        new Promise((r) => (bossBatDeathImg.onload = r)),
+        new Promise((r) => (bossBatAttackImg.onload = r)),
+        new Promise((r) => (demonSlimeAllStatesImg.onload = r)),
+        new Promise((r) => (bloodSplatImg.onload = r)),
         new Promise((r) => (enemyImg.onload = r)),
         new Promise((r) => (goblinIdleImg.onload = r)),
         new Promise((r) => (goblinDieImg.onload = r)),
@@ -2538,6 +3483,13 @@
         new Promise((r) => (healingEffectsImg.onload = r)),
         new Promise((r) => (lightningEffectsImg.onload = r)),
         new Promise((r) => (darkBoltEffectsImg.onload = r)),
+        new Promise((r) => (bloodSplatEffectsImg.onload = r)),
+        new Promise((r) => (bloodStormEffectsImg.onload = r)),
+        new Promise((r) => (priestSmiteEffectsImg.onload = r)),
+        new Promise((r) => (priestHolyWaveEffectsImg.onload = r)),
+        new Promise((r) => (priestRegrowthEffectsImg.onload = r)),
+        new Promise((r) => (panelBrownImg.onload = r)),
+        new Promise((r) => (buttonLongBeigeImg.onload = r)),
       ]).then(() => {
         init();
         requestAnimationFrame(loop);
