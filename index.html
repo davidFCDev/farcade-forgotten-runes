@@ -88,10 +88,10 @@
       wormAttackImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/worm_attack-Lh6J61U6HqA0OHAbOC558yTFytcB58.png?yXF1";
 
-      // Boss Demon Slime sprites (Level 2 Boss) - Todas las animaciones en un solo sprite sheet
-      const demonSlimeAllStatesImg = new Image();
-      demonSlimeAllStatesImg.src =
-        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/demon_boss-OYjrZFu0tNJkaaJug19JpAyTtf7u0m.png?QqaU";
+      // Boss Minotaur sprites (Level 2 Boss) - Todas las animaciones en un solo sprite sheet
+      const minotaurAllStatesImg = new Image();
+      minotaurAllStatesImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/minotaur-sheet-Bv1KHH5UMJznTKr0gBV7kf6WUmOwZr.png?ZYdW";
 
       // Boss Bat sprites (Level 1 Boss)
       const bossBatIdleImg = new Image();
@@ -192,23 +192,23 @@
               size: 110, // Tamaño específico para el Worm
             },
             boss: {
-              name: "Demon Slime",
+              name: "Minotaur",
               hp: 280, // Más vida que Boss Bat
               sprites: {
-                idle: demonSlimeAllStatesImg, // Usar el sprite sheet completo
-                death: demonSlimeAllStatesImg,
-                attack: demonSlimeAllStatesImg,
+                idle: minotaurAllStatesImg, // Usar el sprite sheet completo
+                death: minotaurAllStatesImg,
+                attack: minotaurAllStatesImg,
               },
-              frameWidth: 150,
-              frameHeight: 83,
-              idleFrames: 6,
-              deathFrames: 22,
-              attackFrames: 15,
+              frameWidth: 288, // Tamaño de frame del minotauro
+              frameHeight: 160, // Tamaño de frame del minotauro
+              idleFrames: 16, // Primera fila: IDLE 16 frames
+              deathFrames: 16, // No hay animación de muerte, usar idle/attack para transición
+              attackFrames: 16, // Segunda fila: ATTACK 16 frames
               chargeSpeed: 26, // 20% más rápido que Worm normal
-              size: 180, // Tamaño específico más grande para el Boss Demon Slime
+              size: 320, // Más grande para que el Minotaur sea imponente
               specialAttackCounter: 3, // Contador para ataque especial
-              mainAbility: "slime_attack", // Ataque básico a un héroe aleatorio
-              specialAbility: "poison_cloud", // Debuff de veneno a todos los aliados
+              mainAbility: "slime_attack", // Ataque básico a un héroe aleatorio (puedes renombrar si tienes lógica específica)
+              specialAbility: "poison_cloud", // Debuff de veneno a todos los aliados (puedes renombrar si tienes lógica específica)
             },
           },
         },
@@ -313,7 +313,7 @@
             charge: 0, // Start empty
             maxcharge: 100,
             posx: 80, // Posición original
-            posy: 430, // Movido 20px arriba (era 450)
+            posy: 415, // Movido 20px arriba (era 450)
             anim: "idle",
             frame: 0,
             animTime: 0,
@@ -325,7 +325,7 @@
             animations: animationsMage,
             frameW: 100, // Nuevo tamaño de frame
             frameH: 100, // Nuevo tamaño de frame
-            size: 100,
+            size: 90,
           },
           {
             clazz: "warlock",
@@ -335,7 +335,7 @@
             charge: 0, // Start empty
             maxcharge: 100,
             posx: 180, // Posición original
-            posy: 360, // Movido 20px arriba (era 380)
+            posy: 380, // Movido 20px abajo para mejor alineación visual
             anim: "idle",
             frame: 0,
             animTime: 0,
@@ -347,7 +347,7 @@
             animations: animationsWarlock,
             frameW: 100, // Nuevo tamaño de frame
             frameH: 100, // Nuevo tamaño de frame
-            size: 100,
+            size: 90,
           },
           {
             clazz: "priest",
@@ -357,7 +357,7 @@
             charge: 0, // Start empty
             maxcharge: 100,
             posx: 280, // Posición original
-            posy: 430, // Movido 20px arriba (era 450)
+            posy: 415, // Movido 20px arriba (era 450)
             anim: "idle",
             frame: 0,
             animTime: 0,
@@ -369,7 +369,7 @@
             animations: animationsPriest,
             frameW: 100, // Nuevo tamaño de frame
             frameH: 100, // Nuevo tamaño de frame
-            size: 100,
+            size: 90,
           },
         ];
         enemies = [];
@@ -462,7 +462,7 @@
           charge: 0,
           maxcharge: 100,
           posx: x,
-          posy: y,
+          posy: y + 20, // Mover enemigos 20px hacia abajo
           type,
           animTime: 0,
           def: type === "boss" ? 10 : 5,
@@ -2148,7 +2148,7 @@
                 e.frame = 0; // Reiniciar frame
                 e.animStartTime = currentTime; // Tiempo de inicio de la animación
 
-                // Manejo de ataques de Boss (Boss Bat y Demon Slime)
+                // Manejo de ataques de Boss (Boss Bat y Minotaur)
                 let isSpecialAttack = false;
                 let isMainAbility = false;
                 if (e.type === "boss" && e.attacksUntilSpecial !== null) {
@@ -2160,16 +2160,16 @@
                     // Ajustar daño según el tipo de boss
                     if (e.name === "Boss Bat") {
                       damage = 30 + Math.floor(Math.random() * 11); // Daño entre 30-40 para Blood Storm (AoE)
-                    } else if (e.name === "Demon Slime") {
-                      damage = 0; // El ataque especial de Demon Slime no hace daño directo, solo aplica veneno
+                    } else if (e.name === "Minotaur") {
+                      damage = 0; // El ataque especial de Minotaur no hace daño directo, solo aplica veneno
                     }
                   } else {
                     // Ataques principales/normales
                     isMainAbility = true;
                     if (e.name === "Boss Bat") {
                       damage = 20 + Math.floor(Math.random() * 11); // Daño entre 20-30 para Blood Splat (single target)
-                    } else if (e.name === "Demon Slime") {
-                      damage = 25 + Math.floor(Math.random() * 11); // Daño entre 25-35 para ataque básico del slime
+                    } else if (e.name === "Minotaur") {
+                      damage = 25 + Math.floor(Math.random() * 11); // Daño entre 25-35 para ataque básico del minotauro
                     }
                   }
                 }
@@ -2220,11 +2220,9 @@
                           addBloodStormEffect(hero.posx, hero.posy);
                         }
                       });
-                    } else if (e.name === "Demon Slime") {
+                    } else if (e.name === "Minotaur") {
                       // Ataque especial: Poison Cloud (debuff de veneno a todos los aliados)
-                      console.log(
-                        "Demon Slime uses Poison Cloud special attack!"
-                      );
+                      console.log("Minotaur uses Poison Cloud special attack!");
                       heroes.forEach((hero) => {
                         if (hero.hp > 0) {
                           // Aplicar debuff de veneno
@@ -2303,10 +2301,10 @@
                           randomTarget.posy
                         );
                       }
-                    } else if (e.name === "Demon Slime") {
-                      // Ataque básico del Demon Slime: ataque a un héroe aleatorio
+                    } else if (e.name === "Minotaur") {
+                      // Ataque básico del Minotaur: ataque a un héroe aleatorio
                       console.log(
-                        "Demon Slime uses basic attack (single random target)!"
+                        "Minotaur uses basic attack (single random target)!"
                       );
                       const aliveHeroes = heroes.filter((h) => h.hp > 0);
                       if (aliveHeroes.length > 0) {
@@ -2609,16 +2607,16 @@
           // Seleccionar sprite y calcular posición según animación
           let spriteImg, sx, sy;
 
-          // Verificar si es Demon Slime (usa sprite sheet completo)
-          if (e.name === "Demon Slime") {
-            spriteImg = demonSlimeAllStatesImg;
+          // Verificar si es Minotaur (usa sprite sheet completo)
+          if (e.name === "Minotaur") {
+            spriteImg = minotaurAllStatesImg;
 
             if (e.anim === "die") {
-              // Fila 2 (death): 22 frames
+              // Fila 1 (attack) como "death" visual: 16 frames
               sx = e.frame * e.frameWidth;
-              sy = 2 * e.frameHeight;
+              sy = 1 * e.frameHeight;
               // Efecto de desvanecimiento gradual al morir
-              const deathProgress = e.frame / ((e.deathFrames || 22) - 1);
+              const deathProgress = e.frame / ((e.deathFrames || 16) - 1);
               ctx.globalAlpha = 1 - deathProgress * 0.7;
               ctx.filter = "grayscale(50%) brightness(0.5)";
             } else if (e.anim === "hurt") {
@@ -2628,11 +2626,11 @@
               ctx.filter = "hue-rotate(0deg) contrast(1.5) brightness(1.2)";
               ctx.globalAlpha = 0.8 + 0.2 * Math.sin(currentTime * 20);
             } else if (e.anim === "attack") {
-              // Fila 1 (attack): 15 frames
+              // Fila 1 (attack): 16 frames
               sx = e.frame * e.frameWidth;
               sy = 1 * e.frameHeight;
             } else {
-              // Fila 0 (idle): 6 frames
+              // Fila 0 (idle): 16 frames
               sx = e.frame * e.frameWidth;
               sy = 0 * e.frameHeight;
             }
@@ -2672,9 +2670,9 @@
           let drawWidth = size;
           let drawHeight = size;
 
-          if (e.name === "Demon Slime") {
-            // Mantener proporciones originales del sprite (150x83)
-            const aspectRatio = e.frameWidth / e.frameHeight; // 150/83 ≈ 1.81
+          if (e.name === "Minotaur") {
+            // Mantener proporciones originales del sprite (288x160)
+            const aspectRatio = e.frameWidth / e.frameHeight; // 288/160 = 1.8
             drawWidth = size;
             drawHeight = size / aspectRatio; // Ajustar altura para mantener proporción
           }
@@ -2697,7 +2695,7 @@
           if (e.hp > 0 || !e.deathAnimComplete) {
             // Calcular offset vertical para la barra de HP según el tipo de enemigo
             let hpBarOffset = size / 2 + 25;
-            if (e.name === "Demon Slime") {
+            if (e.name === "Minotaur") {
               // Usar la altura real del sprite renderizado
               const aspectRatio = e.frameWidth / e.frameHeight;
               const actualHeight = size / aspectRatio;
@@ -2771,8 +2769,8 @@
                     // Color según el tipo de boss
                     if (e.name === "Boss Bat") {
                       ctx.fillStyle = "#ff0000"; // Rojo para Boss Bat
-                    } else if (e.name === "Demon Slime") {
-                      ctx.fillStyle = "#00ff00"; // Verde tóxico para Demon Slime
+                    } else if (e.name === "Minotaur") {
+                      ctx.fillStyle = "#00ff00"; // Verde tóxico para Minotaur
                     } else {
                       ctx.fillStyle = "#ff0000"; // Default rojo
                     }
@@ -2788,8 +2786,8 @@
                   if (shouldBeFilled) {
                     if (e.name === "Boss Bat") {
                       ctx.fillStyle = "#ff6666"; // Brillo rojo claro para Boss Bat
-                    } else if (e.name === "Demon Slime") {
-                      ctx.fillStyle = "#66ff66"; // Brillo verde claro para Demon Slime
+                    } else if (e.name === "Minotaur") {
+                      ctx.fillStyle = "#66ff66"; // Brillo verde claro para Minotaur
                     } else {
                       ctx.fillStyle = "#ff6666"; // Default rojo claro
                     }
@@ -3473,7 +3471,7 @@
         new Promise((r) => (bossBatIdleImg.onload = r)),
         new Promise((r) => (bossBatDeathImg.onload = r)),
         new Promise((r) => (bossBatAttackImg.onload = r)),
-        new Promise((r) => (demonSlimeAllStatesImg.onload = r)),
+        // Eliminado: new Promise((r) => (demonSlimeAllStatesImg.onload = r)),
         new Promise((r) => (bloodSplatImg.onload = r)),
         new Promise((r) => (enemyImg.onload = r)),
         new Promise((r) => (goblinIdleImg.onload = r)),
