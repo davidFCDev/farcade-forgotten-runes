@@ -54,6 +54,11 @@
       backgroundLevel2Img.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/red_dunes-elmz1XktqRUANSNvvj8jYAoxXZsMkt.png?t9TH";
 
+      // Background para nivel 3
+      const backgroundLevel3Img = new Image();
+      backgroundLevel3Img.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/dark_swamp-eMmE7CgLp4Bx3xpLSgXlriVLfXN325.png?opu2";
+
       // Background dinámico que cambia según el nivel
       let currentBackgroundImg = backgroundLevel2Img; // TEMPORAL: Red Dunes ahora es nivel 1
       const mageImg = new Image();
@@ -92,6 +97,22 @@
       const minotaurAllStatesImg = new Image();
       minotaurAllStatesImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/minotaur-sheet-Bv1KHH5UMJznTKr0gBV7kf6WUmOwZr.png?ZYdW";
+
+      // Enemy sprites - Skeleton (Level 3)
+      const skeletonIdleImg = new Image();
+      skeletonIdleImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/skeleton_iddle-lA8kabwaFV334zfdbugB8lwHBwJ49T.png?hkDa";
+      const skeletonDeathImg = new Image();
+      skeletonDeathImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/skeleton_die-cDmiIPRzKJmoey1iaznPlMPSEBsocf.png?FroY";
+      const skeletonAttackImg = new Image();
+      skeletonAttackImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/skeleton_attack-RVnOpZpTswza8ZuU5kg3F3UOTnMYZp.png?kEOy";
+
+      // Boss Cthulhu sprites (Level 3 Boss) - Todas las animaciones en un solo sprite sheet
+      const cthuluAllStatesImg = new Image();
+      cthuluAllStatesImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/cthulu_swamp-yafs3V8Zc2xeEIKGO4C4hCQ2Hk1a0T.png?s97N";
 
       // Boss Bat sprites (Level 1 Boss)
       const bossBatIdleImg = new Image();
@@ -168,9 +189,82 @@
       priestRegrowthEffectsImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/regrowth-jwXtVqqCJVlVmtGbVon46zD1y7zmbJ.png?YYsp";
 
-      // Configuración de niveles - ORDEN TEMPORAL CAMBIADO PARA TESTING
+      // Minotaur effects sprites
+      const minotaurSmashEffectsImg = new Image();
+      minotaurSmashEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/minotaur_normal-3TLpHMzhlYcUnC1CBuUC2d2VRA3DpS.png?n1Bm";
+
+      const minotaurLifeStealEffectsImg = new Image();
+      minotaurLifeStealEffectsImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/minotaur_special-zBxxGSBFlpUHDEVfULo1Qk6KuB00K6.png?uuJE";
+
+      // Debuff/Buff Icons
+      const healingDebuffImg = new Image();
+      healingDebuffImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/healing-YGKWqqGrTxhH9nhj77jIaH3ezS2vvi.png?oHcR";
+
+      const protectionDebuffImg = new Image();
+      protectionDebuffImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/protection-UyjGiLIvlil5dqkRuzLrMT5DGBWKVx.png?6ERH";
+
+      const combustionDebuffImg = new Image();
+      combustionDebuffImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/combustion-POS1UpYARnaioLsfaKNCqSob1xs0gl.png?8CXB";
+
+      const bersekerDebuffImg = new Image();
+      bersekerDebuffImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/berseker-Pxtuppp6McZnp7KQKIrlZMwIYgNxi4.png?mdnk";
+
+      // Poison debuff icon (temporal - usa el mismo que combustion por ahora)
+      const poisonDebuffImg = new Image();
+      poisonDebuffImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/combustion-POS1UpYARnaioLsfaKNCqSob1xs0gl.png?8CXB"; // Temporal
+
+      // Configuración de niveles - ORDEN TEMPORAL CAMBIADO PARA DESARROLLO
       const levelConfig = {
         1: {
+          name: "Dark Swamp",
+          background:
+            "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/dark_swamp-eMmE7CgLp4Bx3xpLSgXlriVLfXN325.png?opu2",
+          enemies: {
+            normal: {
+              name: "Skeleton",
+              hp: 120, // Más HP que Worm
+              sprites: {
+                idle: skeletonIdleImg,
+                death: skeletonDeathImg,
+                attack: skeletonAttackImg,
+              },
+              frameWidth: 64,
+              frameHeight: 64,
+              idleFrames: 8,
+              deathFrames: 17, // 17 frames en grid 5x4 (última fila tiene 2 frames)
+              attackFrames: 23, // 23 frames en grid 5x5 (última fila tiene 3 frames)
+              chargeSpeed: 24, // Más rápido que Worm
+              size: 120, // Tamaño apropiado para Skeleton
+            },
+            boss: {
+              name: "Cthulhu",
+              hp: 350, // Más vida que Minotaur
+              sprites: {
+                idle: cthuluAllStatesImg, // Usar el sprite sheet completo
+                death: cthuluAllStatesImg,
+                attack: cthuluAllStatesImg,
+              },
+              frameWidth: 192, // 2880px / 15 columnas = 192px
+              frameHeight: 112, // 784px / 7 filas = 112px
+              idleFrames: 15, // Primera fila: IDLE 15 frames
+              deathFrames: 11, // Séptima fila: DEATH 11 frames
+              attackFrames: 7, // Cuarta fila: ATTACK 7 frames
+              chargeSpeed: 29, // 20% más rápido que Skeleton normal (24 * 1.2 = 28.8)
+              size: 380, // Aún más grande e imponente (era 320)
+              specialAttackCounter: 3, // Contador para ataque especial
+              mainAbility: "tentacle_strike", // Ataque básico con veneno
+              specialAbility: "cosmic_horror", // Ataque especial (80 daño)
+            },
+          },
+        },
+        2: {
           name: "Red Dunes",
           background:
             "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/red_dunes-elmz1XktqRUANSNvvj8jYAoxXZsMkt.png?t9TH",
@@ -212,7 +306,7 @@
             },
           },
         },
-        2: {
+        3: {
           name: "Demon Cave",
           background:
             "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/ChatGPT%20Image%2010%20ago%202025%2C%2001_31_21-11GclhftpsCG06vNEd4ri4gVBVUY8o.png?aymA",
@@ -319,6 +413,7 @@
             animTime: 0,
             acted: false,
             buffs: [],
+            debuffs: [], // Array para iconos de debuffs/buffs
             targets: [],
             action: null,
             img: mageImg,
@@ -341,6 +436,7 @@
             animTime: 0,
             acted: false,
             buffs: [],
+            debuffs: [], // Array para iconos de debuffs/buffs
             targets: [],
             action: null,
             img: warlockImg,
@@ -363,6 +459,7 @@
             animTime: 0,
             acted: false,
             buffs: [],
+            debuffs: [], // Array para iconos de debuffs/buffs
             targets: [],
             action: null,
             img: priestImg,
@@ -395,6 +492,8 @@
           currentBackgroundImg = backgroundLevel2Img; // Red Dunes ahora es nivel 1
         } else if (currentLevelForBackground === 2) {
           currentBackgroundImg = backgroundImg; // Demon Cave ahora es nivel 2
+        } else if (currentLevelForBackground === 3) {
+          currentBackgroundImg = backgroundLevel3Img; // Dark Swamp es nivel 3
         }
         // Se pueden agregar más niveles aquí en el futuro
 
@@ -472,6 +571,7 @@
           animStartTime: 0,
           isDying: false,
           deathAnimComplete: false,
+          debuffs: [], // Array para iconos de debuffs/buffs
           name: enemyConfig.name,
           sprites: enemyConfig.sprites,
           frameWidth: enemyConfig.frameWidth,
@@ -503,6 +603,14 @@
         };
       }
 
+      // Función para calcular valores aleatorios en un rango
+      function calculateRandomValue(baseValue, variationPercent = 20) {
+        const variation = Math.floor(baseValue * (variationPercent / 100));
+        const minValue = baseValue - variation;
+        const maxValue = baseValue + variation;
+        return minValue + Math.floor(Math.random() * (maxValue - minValue + 1));
+      }
+
       const classActions = {
         mage: {
           fireblast: {
@@ -516,8 +624,7 @@
             name: "Combustion",
             reqCharge: 66.66, // 2 cargas (66.66% de 100%)
             type: "self",
-            critBonus: 50, // Aumenta críticos 50%
-            duration: 30, // 30 segundos
+            critBonus: 80, // Gran porcentaje de crítico para el próximo ataque
             anim: "combustion",
           },
           inferno: {
@@ -547,8 +654,8 @@
             name: "Regrowth",
             reqCharge: 100, // 3 cargas
             type: "all_ally",
-            heal: 8, // Ticks pequeños
-            ticks: 3, // 3 segundos
+            heal: 8, // Base para rango 7-9
+            ticks: 10, // 10 segundos de duración
             anim: "regrowth",
           },
         },
@@ -711,18 +818,18 @@
 
         // Nuevas mecánicas específicas por habilidad
         if (action === "combustion") {
-          // Combustion: buff de críticos al mago
+          // Combustion: buff de críticos para el próximo ataque
           hero.buffs.push({
             type: "combustion",
-            endTime: currentTime + actionData.duration,
             critBonus: actionData.critBonus,
+            usesRemaining: 1, // Solo para el próximo ataque
           });
+          // Agregar icono de combustion debuff
+          addDebuff(hero, "combustion", 1);
           console.log(
             "Combustion buff applied to",
             hero.clazz,
-            "for",
-            actionData.duration,
-            "seconds"
+            "- next attack will have high critical chance"
           );
           // Agregar efecto visual de combustion en el propio mago
           addCombustionEffect(hero.posx, hero.posy);
@@ -736,6 +843,8 @@
                 defBonus: actionData.defBonus,
                 damageReflect: actionData.damageReflect,
               });
+              // Agregar icono de protection debuff
+              addDebuff(target, "protection", 1);
               console.log("Agony buff applied to", target.clazz);
               addProtectionEffect([target]);
             }
@@ -795,9 +904,12 @@
               target.buffs.push({
                 type: "regrowth",
                 endTime: currentTime + actionData.ticks,
-                nextTick: currentTime + 1,
+                nextTick: currentTime + 2, // Primer tick en 2 segundos
                 heal: actionData.heal,
+                tickInterval: 2, // Tick cada 2 segundos
               });
+              // Agregar icono de healing debuff
+              addDebuff(target, "healing", 1);
               playHealingAnim(target, "regrowth");
               console.log("Regrowth applied to", target.clazz);
             }
@@ -806,14 +918,22 @@
           // Habilidades de daño normales
           targets.forEach((target) => {
             if (target.hp > 0) {
-              let damage = actionData.damage;
+              // Aplicar variación aleatoria al daño base
+              let damage = calculateRandomValue(actionData.damage, 20); // ±20% de variación
 
               // Aplicar buff de combustion si existe
               let criticalChance = 15; // Base 15%
-              if (hero.buffs.some((b) => b.type === "combustion")) {
-                criticalChance += hero.buffs.find(
-                  (b) => b.type === "combustion"
-                ).critBonus;
+              const combustionBuff = hero.buffs.find(
+                (b) => b.type === "combustion"
+              );
+              if (combustionBuff) {
+                criticalChance += combustionBuff.critBonus;
+                // Consumir el buff después de usarlo
+                combustionBuff.usesRemaining--;
+                if (combustionBuff.usesRemaining <= 0) {
+                  // Marcar para eliminación
+                  combustionBuff.toRemove = true;
+                }
               }
 
               const criticalResult = calculateCritical(damage, criticalChance);
@@ -883,21 +1003,18 @@
           // Habilidades de curación normales
           targets.forEach((target) => {
             if (target.hp > 0 && actionData.heal) {
-              target.hp = Math.min(target.maxhp, target.hp + actionData.heal);
+              // Aplicar variación aleatoria a la curación
+              const healAmount = calculateRandomValue(actionData.heal, 20); // ±20% de variación
+              target.hp = Math.min(target.maxhp, target.hp + healAmount);
 
               // Determinar tipo de curación para el efecto visual correcto
               const healType = action === "holywave" ? "holywave" : "healing";
               playHealingAnim(target, healType);
 
-              showHitNumber(
-                target.posx,
-                target.posy - 20,
-                actionData.heal,
-                true
-              );
+              showHitNumber(target.posx, target.posy - 20, healAmount, true);
               console.log(
                 "Healing",
-                actionData.heal,
+                healAmount,
                 "to",
                 target.clazz || "target"
               );
@@ -907,6 +1024,20 @@
 
         checkWaveCleared();
         checkGameOver();
+
+        // Limpiar buffs de combustion consumidos
+        hero.buffs = hero.buffs.filter((b) => {
+          if (b.toRemove && b.type === "combustion") {
+            // Remover también el debuff visual
+            removeDebuff(hero, "combustion");
+            console.log(
+              "Combustion buff consumed and removed from",
+              hero.clazz
+            );
+            return false;
+          }
+          return true;
+        });
 
         // Resetear selección después de aplicar efectos
         selectedHero = null;
@@ -1178,6 +1309,52 @@
         });
       }
 
+      function addMinotaurSmashEffect(x, y) {
+        console.log(
+          "Añadiendo efecto visual de Minotaur Smash en posición",
+          x,
+          y
+        );
+        visualEffects.push({
+          type: "minotaur_smash",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 0.8, // Duración reducida para animación más fluida (era 1.6)
+          frame: 0,
+          frameCount: 8, // 8 frames en total (4 filas, 2 columnas)
+          frameWidth: 128, // 256px / 2 columnas
+          frameHeight: 160, // 640px / 4 filas
+          size: 160, // Tamaño grande para impacto
+          repeat: 0,
+          maxRepeats: 0, // Solo se reproduce una vez
+          endTime: currentTime + 0.8,
+        });
+      }
+
+      function addMinotaurLifeStealEffect(x, y) {
+        console.log(
+          "Añadiendo efecto visual de Minotaur Life Steal en posición",
+          x,
+          y
+        );
+        visualEffects.push({
+          type: "minotaur_life_steal",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 0.8, // Duración reducida para animación más fluida (era 1.6)
+          frame: 0,
+          frameCount: 8, // 8 frames en total (4 filas, 2 columnas)
+          frameWidth: 128, // 256px / 2 columnas
+          frameHeight: 128, // 512px / 4 filas
+          size: 150, // Tamaño apropiado para AoE
+          repeat: 0,
+          maxRepeats: 0, // Solo se reproduce una vez
+          endTime: currentTime + 0.8,
+        });
+      }
+
       function addLavaEffect(x, y) {
         visualEffects.push({
           type: "lava",
@@ -1214,6 +1391,42 @@
           duration: 2.0, // 2 segundos para mejor visibilidad
           radius: 0,
           particles: [],
+        });
+      }
+
+      function addCosmicHorrorEffect(x, y) {
+        console.log(
+          "Añadiendo efecto visual de Cosmic Horror en posición",
+          x,
+          y
+        );
+        visualEffects.push({
+          type: "cosmic_horror",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 1.5, // 1.5 segundos de duración
+          radius: 0,
+          particles: [],
+          intensity: 1.0,
+        });
+      }
+
+      function addTentacleStrikeEffect(x, y) {
+        console.log(
+          "Añadiendo efecto visual de Tentacle Strike en posición",
+          x,
+          y
+        );
+        visualEffects.push({
+          type: "tentacle_strike",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 1.2, // 1.2 segundos de duración
+          radius: 0,
+          particles: [],
+          tentacles: [],
         });
       }
 
@@ -1384,6 +1597,26 @@
             if (effect.frame >= effect.frameCount) {
               effect.frame = effect.frameCount - 1;
             }
+          } else if (effect.type === "minotaur_smash") {
+            // Actualizar frame del efecto de Minotaur Smash
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Mantener en el último frame si se completa
+            if (effect.frame >= effect.frameCount) {
+              effect.frame = effect.frameCount - 1;
+            }
+          } else if (effect.type === "minotaur_life_steal") {
+            // Actualizar frame del efecto de Minotaur Life Steal
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+
+            // Mantener en el último frame si se completa
+            if (effect.frame >= effect.frameCount) {
+              effect.frame = effect.frameCount - 1;
+            }
           } else if (effect.type === "lava") {
             // Generar más partículas de lava (más intenso)
             if (Math.random() < 0.6) {
@@ -1433,6 +1666,59 @@
                 effect.particles.splice(j, 1);
               }
             }
+          } else if (effect.type === "cosmic_horror") {
+            // Efecto de Horror Cósmico - ondas expansivas y distorsión
+            effect.radius = (elapsed / effect.duration) * 80;
+            effect.intensity = 1 - elapsed / effect.duration;
+
+            // Generar partículas de energía cósmica
+            if (Math.random() < 0.6) {
+              effect.particles.push({
+                x: effect.x + (Math.random() - 0.5) * 100,
+                y: effect.y + (Math.random() - 0.5) * 100,
+                vy: -30 - Math.random() * 40,
+                vx: (Math.random() - 0.5) * 60,
+                life: 1.0 + Math.random() * 0.5,
+                maxLife: 1.0 + Math.random() * 0.5,
+              });
+            }
+
+            // Actualizar partículas cósmicas
+            for (let j = effect.particles.length - 1; j >= 0; j--) {
+              const particle = effect.particles[j];
+              particle.x += particle.vx * dt;
+              particle.y += particle.vy * dt;
+              particle.life -= dt;
+              if (particle.life <= 0) {
+                effect.particles.splice(j, 1);
+              }
+            }
+          } else if (effect.type === "tentacle_strike") {
+            // Efecto de Golpe de Tentáculo - tentáculos serpenteantes
+            effect.radius = (elapsed / effect.duration) * 60;
+
+            // Generar partículas de tentáculos
+            if (Math.random() < 0.5) {
+              effect.particles.push({
+                x: effect.x + (Math.random() - 0.5) * 80,
+                y: effect.y + (Math.random() - 0.5) * 80,
+                vy: -25 - Math.random() * 35,
+                vx: (Math.random() - 0.5) * 50,
+                life: 0.8 + Math.random() * 0.4,
+                maxLife: 0.8 + Math.random() * 0.4,
+              });
+            }
+
+            // Actualizar partículas de tentáculos
+            for (let j = effect.particles.length - 1; j >= 0; j--) {
+              const particle = effect.particles[j];
+              particle.x += particle.vx * dt;
+              particle.y += particle.vy * dt;
+              particle.life -= dt;
+              if (particle.life <= 0) {
+                effect.particles.splice(j, 1);
+              }
+            }
           } else if (effect.type === "meteor") {
             // Animación del meteorito cayendo
             const progress = Math.min(elapsed / effect.duration, 1);
@@ -1475,7 +1761,9 @@
             effect.type === "combustion" ||
             effect.type === "inmolation" ||
             effect.type === "blood_splat" ||
-            effect.type === "blood_storm"
+            effect.type === "blood_storm" ||
+            effect.type === "minotaur_smash" ||
+            effect.type === "minotaur_life_steal"
           ) {
             // Para efectos con repeticiones, eliminar cuando se haya superado el tiempo absoluto de finalización
             if (currentTime >= effect.endTime) {
@@ -1497,7 +1785,7 @@
 
           // Configurar estilo según el tipo de hit
           if (hitNum.isCritical) {
-            ctx.font = "bold 28px monospace"; // Más grande para críticos
+            ctx.font = "bold 22px monospace"; // Reducido de 28px a 22px
             ctx.fillStyle = "#FFD700"; // Amarillo dorado para críticos
             ctx.lineWidth = 4;
           } else if (hitNum.isHealing) {
@@ -1865,6 +2153,84 @@
             ctx.beginPath();
             ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
             ctx.fill();
+          } else if (effect.type === "cosmic_horror") {
+            // Renderizar efecto de Horror Cósmico
+            const progress = (currentTime - effect.startTime) / effect.duration;
+
+            // Renderizar partículas de energía cósmica
+            effect.particles.forEach((particle) => {
+              const alpha = particle.life / particle.maxLife;
+              ctx.globalAlpha = alpha;
+
+              // Colores cósmicos: púrpura oscuro y azul profundo
+              const colors = ["#4B0082", "#8A2BE2", "#9400D3", "#6A0DAD"];
+              const colorIndex = Math.floor((1 - alpha) * (colors.length - 1));
+              ctx.fillStyle = colors[colorIndex];
+
+              ctx.beginPath();
+              ctx.arc(particle.x, particle.y, 4, 0, Math.PI * 2);
+              ctx.fill();
+
+              // Resplandor cósmico
+              ctx.globalAlpha = alpha * 0.5;
+              ctx.beginPath();
+              ctx.arc(particle.x, particle.y, 7, 0, Math.PI * 2);
+              ctx.fill();
+            });
+
+            // Ondas expansivas de horror cósmico
+            ctx.globalAlpha = effect.intensity * 0.6;
+            ctx.strokeStyle = "#4B0082"; // Púrpura profundo
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Distorsión central
+            ctx.globalAlpha = effect.intensity * 0.3;
+            ctx.fillStyle = "#9400D3"; // Violeta oscuro
+            ctx.beginPath();
+            ctx.arc(effect.x, effect.y, effect.radius * 0.5, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (effect.type === "tentacle_strike") {
+            // Renderizar efecto de Golpe de Tentáculo
+            const progress = (currentTime - effect.startTime) / effect.duration;
+
+            // Renderizar partículas de tentáculos
+            effect.particles.forEach((particle) => {
+              const alpha = particle.life / particle.maxLife;
+              ctx.globalAlpha = alpha;
+
+              // Colores de tentáculos: verde oscuro y marrón
+              const colors = ["#2F4F2F", "#556B2F", "#6B8E23", "#8FBC8F"];
+              const colorIndex = Math.floor((1 - alpha) * (colors.length - 1));
+              ctx.fillStyle = colors[colorIndex];
+
+              ctx.beginPath();
+              ctx.arc(particle.x, particle.y, 3, 0, Math.PI * 2);
+              ctx.fill();
+
+              // Brillo de tentáculo
+              ctx.globalAlpha = alpha * 0.4;
+              ctx.beginPath();
+              ctx.arc(particle.x, particle.y, 6, 0, Math.PI * 2);
+              ctx.fill();
+            });
+
+            // Base de tentáculos serpenteantes
+            ctx.globalAlpha = Math.max(0, 1 - progress);
+            ctx.strokeStyle = "#2F4F2F"; // Verde oscuro
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(effect.x, effect.y, effect.radius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Centro de impacto
+            ctx.globalAlpha = Math.max(0, (1 - progress) * 0.5);
+            ctx.fillStyle = "#556B2F"; // Verde oliva
+            ctx.beginPath();
+            ctx.arc(effect.x, effect.y, effect.radius * 0.6, 0, Math.PI * 2);
+            ctx.fill();
           } else if (effect.type === "meteor") {
             // Renderizar estela del meteorito
             effect.trail.forEach((point, index) => {
@@ -1965,6 +2331,54 @@
                 renderSize
               );
             }
+          } else if (effect.type === "minotaur_smash") {
+            // Renderizar efecto de Minotaur Smash
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+
+              // Calcular posición del frame en grid 4x2 (4 filas, 2 columnas)
+              const col = effect.frame % 2; // Columna (0 o 1)
+              const row = Math.floor(effect.frame / 2); // Fila (0-3)
+              const sx = col * effect.frameWidth;
+              const sy = row * effect.frameHeight;
+
+              const renderSize = effect.size || 160;
+              ctx.drawImage(
+                minotaurSmashEffectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
+          } else if (effect.type === "minotaur_life_steal") {
+            // Renderizar efecto de Minotaur Life Steal
+            if (effect.frame < effect.frameCount) {
+              ctx.globalAlpha = 1;
+
+              // Calcular posición del frame en grid 4x2 (4 filas, 2 columnas)
+              const col = effect.frame % 2; // Columna (0 o 1)
+              const row = Math.floor(effect.frame / 2); // Fila (0-3)
+              const sx = col * effect.frameWidth;
+              const sy = row * effect.frameHeight;
+
+              const renderSize = effect.size || 150;
+              ctx.drawImage(
+                minotaurLifeStealEffectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
           }
         });
 
@@ -2003,6 +2417,92 @@
         return aliveHeroes[randomIndex];
       }
 
+      // Funciones para manejo de debuffs/buffs
+      function addDebuff(target, type, stacks = 1) {
+        // Buscar si ya existe este debuff
+        const existingDebuff = target.debuffs.find((d) => d.type === type);
+
+        if (existingDebuff) {
+          // Si ya existe, aumentar stacks (máximo según el tipo)
+          switch (type) {
+            case "berseker":
+              existingDebuff.stacks = Math.min(
+                existingDebuff.stacks + stacks,
+                10
+              ); // Máximo 10 stacks (50%)
+              break;
+            default:
+              existingDebuff.stacks = stacks; // Para otros debuffs, reemplazar stacks
+              break;
+          }
+        } else {
+          // Si no existe, crear nuevo debuff
+          const debuffData = {
+            type: type,
+            stacks: stacks,
+            icon: getDebuffIcon(type),
+          };
+          target.debuffs.push(debuffData);
+        }
+      }
+
+      function removeDebuff(target, type) {
+        target.debuffs = target.debuffs.filter((d) => d.type !== type);
+      }
+
+      function getDebuffIcon(type) {
+        switch (type) {
+          case "healing":
+            return healingDebuffImg;
+          case "protection":
+            return protectionDebuffImg;
+          case "combustion":
+            return combustionDebuffImg;
+          case "berseker":
+            return bersekerDebuffImg;
+          case "poison":
+            return poisonDebuffImg;
+          default:
+            return null;
+        }
+      }
+
+      function renderDebuffs(target, baseX, baseY) {
+        if (!target.debuffs || target.debuffs.length === 0) return;
+
+        const iconSize = 16; // Tamaño pequeño pero distinguible
+        const startX = baseX - 40; // Empezar desde la izquierda
+
+        target.debuffs.forEach((debuff, index) => {
+          const x = startX + index * (iconSize + 2); // Espaciado de 2px entre iconos
+          const y = baseY;
+
+          // Renderizar icono del debuff
+          if (debuff.icon) {
+            ctx.drawImage(debuff.icon, x, y, iconSize, iconSize);
+
+            // Si tiene stacks > 1, mostrar número pequeño
+            if (debuff.stacks > 1) {
+              ctx.save();
+              ctx.fillStyle = "white";
+              ctx.strokeStyle = "black";
+              ctx.lineWidth = 1;
+              ctx.font = "8px Arial";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+
+              const text = debuff.stacks.toString();
+              const textX = x + iconSize - 4;
+              const textY = y + iconSize - 4;
+
+              ctx.strokeText(text, textX, textY);
+              ctx.fillText(text, textX, textY);
+              ctx.restore();
+            }
+          }
+        });
+      }
+
       // NOTA: enemyAct() removida - ahora se usa sistema de auto-attack en el loop principal
 
       let lastTime = 0;
@@ -2023,7 +2523,20 @@
         // Update buffs
         heroes.forEach((h) => {
           h.buffs = h.buffs.filter((b) => {
-            if (b.endTime <= currentTime) return false;
+            // Buffs de combustión no se eliminan por tiempo, solo por uso
+            if (b.type === "combustion") {
+              return true; // Mantener hasta que se consuma
+            }
+
+            if (b.endTime <= currentTime) {
+              // Remover debuff correspondiente cuando termine el buff
+              if (b.type === "regrowth") {
+                removeDebuff(h, "healing");
+              } else if (b.type === "agony") {
+                removeDebuff(h, "protection");
+              }
+              return false;
+            }
 
             if (b.type === "rejuvenation" && b.nextTick <= currentTime) {
               h.hp = Math.min(h.maxhp, h.hp + b.heal);
@@ -2036,16 +2549,18 @@
               showHitNumber(h.posx, h.posy - 20, b.heal, true);
               b.nextTick += 1;
             } else if (b.type === "regrowth" && b.nextTick <= currentTime) {
-              h.hp = Math.min(h.maxhp, h.hp + b.heal);
+              // Calcular curación aleatoria en el rango 7-9
+              const healAmount = 7 + Math.floor(Math.random() * 3); // 7, 8, o 9
+              h.hp = Math.min(h.maxhp, h.hp + healAmount);
               console.log(
                 "Regrowth tick para",
                 h.clazz,
                 "- curación de",
-                b.heal
+                healAmount
               );
               playHealingAnim(h);
-              showHitNumber(h.posx, h.posy - 20, b.heal, true);
-              b.nextTick += 1;
+              showHitNumber(h.posx, h.posy - 20, healAmount, true);
+              b.nextTick += b.tickInterval || 2; // Usar tickInterval o 2 segundos por defecto
             } else if (b.type === "poison" && b.nextTick <= currentTime) {
               // Aplicar daño de veneno
               h.hp = Math.max(0, h.hp - b.damage);
@@ -2161,7 +2676,9 @@
                     if (e.name === "Boss Bat") {
                       damage = 30 + Math.floor(Math.random() * 11); // Daño entre 30-40 para Blood Storm (AoE)
                     } else if (e.name === "Minotaur") {
-                      damage = 0; // El ataque especial de Minotaur no hace daño directo, solo aplica veneno
+                      damage = 30 + Math.floor(Math.random() * 16); // Daño entre 30-45 para Life Steal (AoE)
+                    } else if (e.name === "Cthulhu") {
+                      damage = 80; // Ataque especial de Cthulhu hace 80 de daño fijo
                     }
                   } else {
                     // Ataques principales/normales
@@ -2169,7 +2686,9 @@
                     if (e.name === "Boss Bat") {
                       damage = 20 + Math.floor(Math.random() * 11); // Daño entre 20-30 para Blood Splat (single target)
                     } else if (e.name === "Minotaur") {
-                      damage = 25 + Math.floor(Math.random() * 11); // Daño entre 25-35 para ataque básico del minotauro
+                      damage = 40 + Math.floor(Math.random() * 21); // Daño entre 40-60 para Smash (single target)
+                    } else if (e.name === "Cthulhu") {
+                      damage = 35 + Math.floor(Math.random() * 16); // Daño entre 35-50 para ataque básico con veneno
                     }
                   }
                 }
@@ -2221,29 +2740,133 @@
                         }
                       });
                     } else if (e.name === "Minotaur") {
-                      // Ataque especial: Poison Cloud (debuff de veneno a todos los aliados)
-                      console.log("Minotaur uses Poison Cloud special attack!");
+                      // Ataque especial: Life Steal (AoE que roba vida)
+                      console.log("Minotaur uses Life Steal special attack!");
+                      let totalDamageDealt = 0;
+
                       heroes.forEach((hero) => {
                         if (hero.hp > 0) {
-                          // Aplicar debuff de veneno
-                          hero.buffs.push({
-                            type: "poison",
-                            endTime: currentTime + 15, // 15 segundos
-                            nextTick: currentTime + 3, // Primer tick en 3 segundos
-                            damage: 3 + Math.floor(Math.random() * 3), // Daño entre 3-5 HP
-                            tickInterval: 3, // Cada 3 segundos
-                          });
+                          const currentDef =
+                            hero.def +
+                            hero.buffs.reduce(
+                              (sum, b) =>
+                                b.type === "protection" || b.type === "agony"
+                                  ? sum + b.defBonus
+                                  : sum,
+                              0
+                            );
+
+                          const criticalResult = calculateCritical(damage);
+                          const finalDamage = criticalResult.damage;
+                          const effectiveDamage = Math.max(
+                            1,
+                            finalDamage - currentDef
+                          );
+                          hero.hp = Math.max(0, hero.hp - effectiveDamage);
+                          totalDamageDealt += effectiveDamage;
 
                           console.log(
                             `${
                               hero.clazz || "Hero"
-                            } is poisoned for 15 seconds!`
+                            } takes ${effectiveDamage} AoE damage from Life Steal!`
                           );
 
-                          // Efecto visual de veneno (por ahora usar el de protection pero en verde)
-                          addPoisonEffect(hero.posx, hero.posy);
+                          // Mostrar número de daño para cada héroe afectado
+                          showHitNumber(
+                            hero.posx,
+                            hero.posy - 20,
+                            effectiveDamage,
+                            false,
+                            criticalResult.isCritical
+                          );
+
+                          // Agregar efecto visual de Life Steal para cada héroe
+                          addMinotaurLifeStealEffect(hero.posx, hero.posy);
                         }
                       });
+
+                      // El Minotaur roba 5% del daño total realizado
+                      const lifeSteal = Math.floor(totalDamageDealt * 0.05);
+                      if (lifeSteal > 0) {
+                        e.hp = Math.min(e.maxhp, e.hp + lifeSteal);
+                        console.log(
+                          `Minotaur steals ${lifeSteal} HP from Life Steal attack!`
+                        );
+
+                        // Mostrar número de curación para el Minotaur
+                        showHitNumber(
+                          e.posx,
+                          e.posy - 20,
+                          lifeSteal,
+                          true,
+                          false
+                        );
+                      }
+
+                      // Habilidad especial del Minotaur: aumentar velocidad de carga 5% después de cada ataque
+                      e.chargeSpeed = (e.chargeSpeed || 26) * 1.05;
+
+                      // Agregar/actualizar debuff berseker
+                      addDebuff(e, "berseker", 1);
+
+                      console.log(
+                        `Minotaur's charge speed increased to ${e.chargeSpeed.toFixed(
+                          2
+                        )} after Life Steal attack!`
+                      );
+                    } else if (e.name === "Cthulhu") {
+                      // Ataque especial: Cosmic Horror (daño alto a un héroe aleatorio)
+                      console.log("Cthulhu uses Cosmic Horror special attack!");
+                      const aliveHeroes = heroes.filter((h) => h.hp > 0);
+                      if (aliveHeroes.length > 0) {
+                        // Seleccionar héroe aleatorio
+                        const randomIndex = Math.floor(
+                          Math.random() * aliveHeroes.length
+                        );
+                        const randomTarget = aliveHeroes[randomIndex];
+
+                        const currentDef =
+                          randomTarget.def +
+                          randomTarget.buffs.reduce(
+                            (sum, b) =>
+                              b.type === "protection" || b.type === "agony"
+                                ? sum + b.defBonus
+                                : sum,
+                            0
+                          );
+
+                        // Cosmic Horror hace daño fijo de 80
+                        const cosmicDamage = 80;
+                        const effectiveDamage = Math.max(
+                          1,
+                          cosmicDamage - currentDef
+                        );
+                        randomTarget.hp = Math.max(
+                          0,
+                          randomTarget.hp - effectiveDamage
+                        );
+
+                        console.log(
+                          `${
+                            randomTarget.clazz || "Hero"
+                          } takes ${effectiveDamage} damage from Cosmic Horror!`
+                        );
+
+                        // Mostrar número de daño
+                        showHitNumber(
+                          randomTarget.posx,
+                          randomTarget.posy - 20,
+                          effectiveDamage,
+                          false,
+                          false
+                        );
+
+                        // Agregar efecto visual de Cosmic Horror
+                        addCosmicHorrorEffect(
+                          randomTarget.posx,
+                          randomTarget.posy
+                        );
+                      }
                     }
                   } else if (isMainAbility) {
                     if (e.name === "Boss Bat") {
@@ -2302,9 +2925,9 @@
                         );
                       }
                     } else if (e.name === "Minotaur") {
-                      // Ataque básico del Minotaur: ataque a un héroe aleatorio
+                      // Habilidad principal: Smash (ataque devastador a un solo héroe)
                       console.log(
-                        "Minotaur uses basic attack (single random target)!"
+                        "Minotaur uses Smash main ability (single target)!"
                       );
                       const aliveHeroes = heroes.filter((h) => h.hp > 0);
                       if (aliveHeroes.length > 0) {
@@ -2338,7 +2961,7 @@
                         console.log(
                           `${
                             randomTarget.clazz || "Hero"
-                          } takes ${effectiveDamage} damage from Slime Attack!`
+                          } takes ${effectiveDamage} massive damage from Smash!`
                         );
 
                         // Mostrar número de daño
@@ -2350,7 +2973,92 @@
                           criticalResult.isCritical
                         );
 
-                        // Por ahora sin efecto visual específico para el slime
+                        // Agregar efecto visual de Smash
+                        addMinotaurSmashEffect(
+                          randomTarget.posx,
+                          randomTarget.posy
+                        );
+
+                        // Habilidad especial del Minotaur: aumentar velocidad de carga 5% después de cada ataque
+                        e.chargeSpeed = (e.chargeSpeed || 26) * 1.05;
+
+                        // Agregar/actualizar debuff berseker
+                        addDebuff(e, "berseker", 1);
+
+                        console.log(
+                          `Minotaur's charge speed increased to ${e.chargeSpeed.toFixed(
+                            2
+                          )} after Smash attack!`
+                        );
+                      }
+                    } else if (e.name === "Cthulhu") {
+                      // Habilidad principal: Tentacle Strike (daño + veneno)
+                      console.log("Cthulhu uses Tentacle Strike main ability!");
+                      const aliveHeroes = heroes.filter((h) => h.hp > 0);
+                      if (aliveHeroes.length > 0) {
+                        // Seleccionar héroe aleatorio
+                        const randomIndex = Math.floor(
+                          Math.random() * aliveHeroes.length
+                        );
+                        const randomTarget = aliveHeroes[randomIndex];
+
+                        const currentDef =
+                          randomTarget.def +
+                          randomTarget.buffs.reduce(
+                            (sum, b) =>
+                              b.type === "protection" || b.type === "agony"
+                                ? sum + b.defBonus
+                                : sum,
+                            0
+                          );
+
+                        // Tentacle Strike hace daño variable de 35-50
+                        const tentacleDamage = calculateRandomValue(35, 50);
+                        const effectiveDamage = Math.max(
+                          1,
+                          tentacleDamage - currentDef
+                        );
+                        randomTarget.hp = Math.max(
+                          0,
+                          randomTarget.hp - effectiveDamage
+                        );
+
+                        console.log(
+                          `${
+                            randomTarget.clazz || "Hero"
+                          } takes ${effectiveDamage} damage from Tentacle Strike!`
+                        );
+
+                        // Mostrar número de daño
+                        showHitNumber(
+                          randomTarget.posx,
+                          randomTarget.posy - 20,
+                          effectiveDamage,
+                          false,
+                          false
+                        );
+
+                        // Aplicar veneno al objetivo
+                        randomTarget.buffs.push({
+                          type: "poison",
+                          endTime: currentTime + 15, // 15 segundos de duración
+                          nextTick: currentTime + 3, // Primer tick en 3 segundos
+                          damage: 3 + Math.floor(Math.random() * 3), // Daño entre 3-5
+                          tickInterval: 3, // Tick cada 3 segundos
+                        });
+
+                        // Agregar icono de veneno
+                        addDebuff(randomTarget, "poison", 1);
+
+                        // Agregar efecto visual de Tentacle Strike
+                        addTentacleStrikeEffect(
+                          randomTarget.posx,
+                          randomTarget.posy
+                        );
+
+                        console.log(
+                          `Cthulhu applies poison to ${randomTarget.clazz}!`
+                        );
                       }
                     }
                   } else {
@@ -2419,6 +3127,49 @@
                         false,
                         isCritical
                       );
+
+                      // Habilidad especial del Minotaur: aumentar velocidad de carga 5% después de cada ataque
+                      if (e.name === "Minotaur") {
+                        e.chargeSpeed = (e.chargeSpeed || 26) * 1.05;
+
+                        // Agregar/actualizar debuff berseker
+                        addDebuff(e, "berseker", 1);
+
+                        console.log(
+                          `Minotaur's charge speed increased to ${e.chargeSpeed.toFixed(
+                            2
+                          )} after basic attack!`
+                        );
+                      }
+
+                      // Lógica de veneno para enemigos del nivel 3 (Skeleton y Cthulhu)
+                      if (e.name === "Skeleton" || e.name === "Cthulhu") {
+                        // Agregar debuff de veneno a un héroe aleatorio
+                        const aliveHeroes = heroes.filter((h) => h.hp > 0);
+                        if (aliveHeroes.length > 0) {
+                          const randomIndex = Math.floor(
+                            Math.random() * aliveHeroes.length
+                          );
+                          const poisonTarget = aliveHeroes[randomIndex];
+
+                          // Agregar buff de veneno
+                          poisonTarget.buffs.push({
+                            type: "poison",
+                            endTime: currentTime + 15, // 15 segundos de duración
+                            nextTick: currentTime + 3, // Primer tick en 3 segundos
+                            damage: 3 + Math.floor(Math.random() * 3), // Daño entre 3-5
+                            tickInterval: 3, // Tick cada 3 segundos
+                          });
+
+                          // Agregar icono de veneno
+                          addDebuff(poisonTarget, "poison", 1);
+
+                          console.log(
+                            `${e.name} applies poison to ${poisonTarget.clazz}!`
+                          );
+                        }
+                      }
+
                       checkGameOver();
                     }
                   }
@@ -2590,6 +3341,12 @@
           ctx.strokeStyle = "black";
           ctx.lineWidth = 1;
           ctx.strokeRect(h.posx - 40, h.posy + 55, 80, 12);
+
+          // Renderizar debuffs debajo de la barra de energía
+          if (h.hp > 0) {
+            // Solo si está vivo
+            renderDebuffs(h, h.posx, h.posy + 80);
+          }
         });
 
         enemies.forEach((e) => {
@@ -2634,6 +3391,32 @@
               sx = e.frame * e.frameWidth;
               sy = 0 * e.frameHeight;
             }
+          } else if (e.name === "Cthulhu") {
+            spriteImg = cthuluAllStatesImg;
+
+            if (e.anim === "die") {
+              // Fila 6 (death): 11 frames
+              sx = e.frame * e.frameWidth;
+              sy = 6 * e.frameHeight;
+              // Efecto de desvanecimiento gradual al morir
+              const deathProgress = e.frame / ((e.deathFrames || 11) - 1);
+              ctx.globalAlpha = 1 - deathProgress * 0.7;
+              ctx.filter = "grayscale(50%) brightness(0.5)";
+            } else if (e.anim === "hurt") {
+              // Para hurt, usar idle (fila 0) pero con efectos visuales
+              sx = e.frame * e.frameWidth;
+              sy = 0 * e.frameHeight;
+              ctx.filter = "hue-rotate(0deg) contrast(1.5) brightness(1.2)";
+              ctx.globalAlpha = 0.8 + 0.2 * Math.sin(currentTime * 20);
+            } else if (e.anim === "attack") {
+              // Fila 3 (attack): 7 frames
+              sx = e.frame * e.frameWidth;
+              sy = 3 * e.frameHeight;
+            } else {
+              // Fila 0 (idle): 15 frames
+              sx = e.frame * e.frameWidth;
+              sy = 0 * e.frameHeight;
+            }
           } else {
             // Lógica original para otros enemigos (Demon Bat, Worm)
             if (e.anim === "die") {
@@ -2675,6 +3458,11 @@
             const aspectRatio = e.frameWidth / e.frameHeight; // 288/160 = 1.8
             drawWidth = size;
             drawHeight = size / aspectRatio; // Ajustar altura para mantener proporción
+          } else if (e.name === "Cthulhu") {
+            // Mantener proporciones originales del sprite (192x112)
+            const aspectRatio = e.frameWidth / e.frameHeight; // 192/112 = 1.71
+            drawWidth = size;
+            drawHeight = size / aspectRatio; // Ajustar altura para mantener proporción
           }
 
           ctx.drawImage(
@@ -2697,6 +3485,11 @@
             let hpBarOffset = size / 2 + 25;
             if (e.name === "Minotaur") {
               // Usar la altura real del sprite renderizado
+              const aspectRatio = e.frameWidth / e.frameHeight;
+              const actualHeight = size / aspectRatio;
+              hpBarOffset = actualHeight / 2 + 25;
+            } else if (e.name === "Cthulhu") {
+              // Usar la altura real del sprite renderizado para Cthulhu
               const aspectRatio = e.frameWidth / e.frameHeight;
               const actualHeight = size / aspectRatio;
               hpBarOffset = actualHeight / 2 + 25;
@@ -2803,6 +3596,9 @@
             ctx.strokeStyle = "black";
             ctx.lineWidth = 1;
             ctx.strokeRect(e.posx - 40, e.posy - hpBarOffset, 80, 12);
+
+            // Renderizar debuffs debajo de la barra de carga (solo si está vivo)
+            renderDebuffs(e, e.posx, e.posy - hpBarOffset + 22);
           }
         });
 
@@ -3486,6 +4282,8 @@
         new Promise((r) => (priestSmiteEffectsImg.onload = r)),
         new Promise((r) => (priestHolyWaveEffectsImg.onload = r)),
         new Promise((r) => (priestRegrowthEffectsImg.onload = r)),
+        new Promise((r) => (minotaurSmashEffectsImg.onload = r)),
+        new Promise((r) => (minotaurLifeStealEffectsImg.onload = r)),
         new Promise((r) => (panelBrownImg.onload = r)),
         new Promise((r) => (buttonLongBeigeImg.onload = r)),
       ]).then(() => {
