@@ -12,7 +12,7 @@
     />
     <title>RPG Battle Game</title>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Jacquard+24&family=Jersey+10&display=swap");
 
       body {
         margin: 0;
@@ -68,10 +68,15 @@
       backgroundLevel3Img.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/dark_swamp-eMmE7CgLp4Bx3xpLSgXlriVLfXN325.png?opu2";
 
+      // Background para pantallas de información de nivel
+      const levelInfoBackgroundImg = new Image();
+      levelInfoBackgroundImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/dark_swamp_window-lrkt7WbouEZqCWjp3IlD9mptsv2aab.png?A8mv";
+
       // Background para pantalla de inicio
       const mainMenuImg = new Image();
       mainMenuImg.src =
-        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/main_window-rYNSvyGa7b90oSwehh1og4qJHdadYN.png?c2Uo";
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/fondo_start-8ed4QcpKSo1dG5ASd0fGjy1p66Cwll.png?Ouaf";
 
       // Background dinámico que cambia según el nivel
       let currentBackgroundImg = backgroundImg; // Empezar con The Crypt (nivel 1)
@@ -509,6 +514,30 @@
       let currentTime = 0;
       let hitNumbers = []; // Array para almacenar los números de golpe flotantes
       let visualEffects = []; // Array para efectos visuales especiales
+      let levelCompletionModal = { show: false, level: 0, boss: "", timer: 0 }; // Modal de finalización de nivel
+      let currentLevel = 1; // Nivel actual del juego (1, 2, 3)
+
+      // Información de los niveles
+      const levelInfo = {
+        1: {
+          name: "The Forgotten Crypt",
+          lore: "The mages ventured into the ancient crypt in search of the lost arcane artifacts. Dark creatures await in the shadows...",
+          boss: "Shadow Bat Lord",
+          background: "#1a0d0a", // Color de fondo marrón oscuro para la cripta
+        },
+        2: {
+          name: "The Red Dunes",
+          lore: "Beyond the crypt lies a cursed desert where the crimson sands conceal deadly predators beneath their surface...",
+          boss: "Minotaur Guardian",
+          background: "#3d2012", // Color de fondo marrón rojizo para el desierto
+        },
+        3: {
+          name: "The Dark Swamp",
+          lore: "In the deepest marshlands, ancient evils stir. The final challenge awaits those brave enough to face the swamp's master...",
+          boss: "Swamp Gorgon",
+          background: "#0d2818", // Color de fondo verde oscuro para el pantano
+        },
+      };
 
       function init() {
         heroes = [
@@ -588,46 +617,43 @@
         enemies = [];
         score = 0;
         wave = 0;
-        state = "select_hero";
+        currentLevel = 1;
+        state = "level_info"; // Empezar mostrando info del nivel 1
         turnPhase = "player";
         slashStreak = 0;
         currentBackgroundImg = backgroundImg; // The Crypt es nivel 1
-        startWave();
+        levelCompletionModal = { show: false, level: 0, boss: "", timer: 0 };
+        // No llamar startWave() aquí - se llamará cuando se pulse "Enter" en level_info
       }
 
       function startGame() {
         console.log("Starting game...");
-        // Cambiar estado a selección de héroe
-        state = "select_hero";
         // Inicializar el juego
         init();
-        // Empezar la primera wave
-        startWave();
+        // El estado ya se establece como "level_info" en init()
       }
 
       function startWave() {
         console.log("Starting wave", wave + 1);
 
         // Verificar si empezamos un nuevo nivel (cada 3 waves)
-        const currentLevel = Math.floor((wave - 1) / 3) + 1; // wave-1 porque incrementamos wave al final
+        const previousLevel = Math.floor((wave - 1) / 3) + 1;
         const nextLevel = Math.floor(wave / 3) + 1;
+        currentLevel = nextLevel;
 
-        // Actualizar background según el nivel actual - ORDEN CORRECTO
-        const currentLevelForBackground = Math.floor(wave / 3) + 1;
-        if (currentLevelForBackground === 1) {
-          currentBackgroundImg = backgroundImg; // The Crypt (Demon Cave background) es nivel 1
-        } else if (currentLevelForBackground === 2) {
-          currentBackgroundImg = backgroundLevel2Img; // Red Dunes es nivel 2
-        } else if (currentLevelForBackground === 3) {
-          currentBackgroundImg = backgroundLevel3Img; // Dark Swamp es nivel 3
+        // Actualizar background según el nivel actual
+        if (currentLevel === 1) {
+          currentBackgroundImg = backgroundImg; // The Crypt
+        } else if (currentLevel === 2) {
+          currentBackgroundImg = backgroundLevel2Img; // Red Dunes
+        } else if (currentLevel === 3) {
+          currentBackgroundImg = backgroundLevel3Img; // Dark Swamp
         } else {
-          currentBackgroundImg = backgroundImg; // Demon Cave para niveles posteriores
+          currentBackgroundImg = backgroundImg; // Default para niveles posteriores
         }
-        // Se pueden agregar más niveles aquí en el futuro
 
-        // Solo revivir héroes cuando se cambia de nivel completo (nunca en el mismo nivel)
-        // wave 1,2,3 = nivel 1; wave 4,5,6 = nivel 2; etc.
-        if (nextLevel > currentLevel && wave % 3 === 1) {
+        // Solo revivir héroes cuando se cambia de nivel completo
+        if (nextLevel > previousLevel && wave % 3 === 1) {
           console.log(
             `Starting new level ${nextLevel}! Reviving all heroes with full health.`
           );
@@ -994,7 +1020,35 @@
             score += waveBonus;
             console.log(`Wave ${wave} completed! Bonus: ${waveBonus} points`);
 
-            startWave();
+            // Verificar si hemos completado un nivel (wave 3, 6, 9...)
+            if (wave % 3 === 0) {
+              const completedLevel = Math.floor(wave / 3);
+              const levelData = levelInfo[completedLevel];
+
+              if (completedLevel === 3) {
+                // Juego completado
+                levelCompletionModal = {
+                  show: true,
+                  level: completedLevel,
+                  boss: levelData.boss,
+                  timer: 180, // 3 segundos (60 FPS * 3)
+                  gameCompleted: true,
+                };
+              } else {
+                // Nivel completado, mostrar modal y luego pasar al siguiente nivel
+                levelCompletionModal = {
+                  show: true,
+                  level: completedLevel,
+                  boss: levelData.boss,
+                  timer: 180, // 3 segundos (60 FPS * 3)
+                  gameCompleted: false,
+                };
+              }
+              state = "level_completion";
+            } else {
+              // Continuar con la siguiente wave del mismo nivel
+              startWave();
+            }
             return true;
           }
         }
@@ -1309,24 +1363,45 @@
               target.debuffs &&
               target.debuffs.some((d) => d.type === "healing");
 
-            if (target.hp > 0 && actionData.heal && !hasHealingDebuff) {
-              // Aplicar variación aleatoria a la curación
-              const healAmount = calculateRandomValue(actionData.heal, 20); // ±20% de variación
-              target.hp = Math.min(target.maxhp, target.hp + healAmount);
-              validateHP(target);
+            if (actionData.heal && !hasHealingDebuff) {
+              // Verificar si el objetivo está vivo AL MOMENTO de aplicar el efecto
+              // (esto permite que la curación falle si el objetivo muere durante la animación)
+              if (target.hp > 0) {
+                // Aplicar variación aleatoria a la curación
+                const healAmount = calculateRandomValue(actionData.heal, 20); // ±20% de variación
+                target.hp = Math.min(target.maxhp, target.hp + healAmount);
+                validateHP(target);
 
-              // Determinar tipo de curación para el efecto visual correcto
-              const healType = action === "holywave" ? "holywave" : "healing";
-              playHealingAnim(target, healType);
+                // Determinar tipo de curación para el efecto visual correcto
+                const healType = action === "holywave" ? "holywave" : "healing";
+                playHealingAnim(target, healType);
 
-              showHitNumber(target.posx, target.posy - 20, healAmount, true);
-              console.log(
-                "Healing",
-                healAmount,
-                "to",
-                target.clazz || "target"
-              );
-            } else if (hasHealingDebuff && target.hp > 0) {
+                showHitNumber(target.posx, target.posy - 20, healAmount, true);
+                console.log(
+                  "Healing",
+                  healAmount,
+                  "to",
+                  target.clazz || "target"
+                );
+              } else if (target.hp <= 0) {
+                // Revivir al héroe muerto con la cantidad de curación
+                const healAmount = calculateRandomValue(actionData.heal, 20); // ±20% de variación
+                target.hp = Math.min(target.maxhp, healAmount);
+                validateHP(target);
+
+                // Determinar tipo de curación para el efecto visual correcto
+                const healType = action === "holywave" ? "holywave" : "healing";
+                playHealingAnim(target, healType);
+
+                showHitNumber(target.posx, target.posy - 20, healAmount, true);
+                console.log(
+                  "Reviving and healing",
+                  healAmount,
+                  "to",
+                  target.clazz || "target"
+                );
+              }
+            } else if (hasHealingDebuff) {
               console.log(
                 `${target.clazz} cannot be healed due to healing debuff.`
               );
@@ -2907,8 +2982,15 @@
         lastTime = time;
         currentTime += delta;
 
-        // Solo ejecutar lógica del juego si no estamos en el menú principal
-        if (state !== "main_menu") {
+        // Solo ejecutar lógica del juego si no estamos en el menú principal o pantallas informativas
+        if (state !== "main_menu" && state !== "level_info") {
+          // No hay timer automático para el modal - se controla por botón
+          if (state === "level_completion" && levelCompletionModal.show) {
+            // No ejecutar el resto de la lógica durante el modal
+            draw();
+            requestAnimationFrame(loop);
+            return;
+          }
           // Update hit numbers
           updateHitNumbers(delta);
 
@@ -3962,6 +4044,18 @@
           return;
         }
 
+        // Si estamos en la pantalla de información de nivel
+        if (state === "level_info") {
+          drawLevelInfo();
+          return;
+        }
+
+        // Si estamos en la pantalla de finalización de nivel
+        if (state === "level_completion") {
+          drawLevelCompletion();
+          return;
+        }
+
         // Draw background
         ctx.drawImage(currentBackgroundImg, 0, 0, designWidth, designHeight);
 
@@ -4767,50 +4861,255 @@
       }
 
       function drawMainMenu() {
-        // Dibujar fondo de la pantalla de inicio
+        // Dibujar fondo de la pantalla de inicio sin compresión
+        ctx.imageSmoothingEnabled = false; // Evitar suavizado/compresión
         ctx.drawImage(mainMenuImg, 0, 0, designWidth, designHeight);
+        ctx.imageSmoothingEnabled = true; // Restaurar suavizado para otros elementos
 
-        // Título "Dungeons & Mages" en la parte superior
-        ctx.fillStyle = "#FFD700"; // Amarillo dorado
-        ctx.strokeStyle = "#2A1F0F"; // Marrón oscuro para el borde
-        ctx.lineWidth = 3;
-        ctx.font = "bold 18px 'Press Start 2P'";
-        ctx.textAlign = "center";
+        // Configuración de botones estilo habilidades
+        const buttonWidth = 200;
+        const buttonHeight = 40;
+        const buttonSpacing = 20;
+        const startY = 350;
+        const buttonX = (designWidth - buttonWidth) / 2;
 
-        const titleText = "Dungeons & Mages";
-        const titleY = 80;
+        // Botones: Start, Guide, Book
+        const buttons = ["Start", "Guide", "Book"];
 
-        // Dibujar borde del título
-        ctx.strokeText(titleText, designWidth / 2, titleY);
-        // Dibujar título
-        ctx.fillText(titleText, designWidth / 2, titleY);
+        buttons.forEach((buttonText, index) => {
+          const buttonY = startY + index * (buttonHeight + buttonSpacing);
 
-        // Definir botones (solo texto)
-        const buttonSpacing = 60;
-        const startY = 280;
+          // Usar estilo de botón similar a las habilidades
+          ctx.drawImage(
+            buttonLongBeigeImg,
+            buttonX,
+            buttonY,
+            buttonWidth,
+            buttonHeight
+          );
 
-        // Configurar estilo de texto para botones
-        ctx.font = "bold 14px 'Press Start 2P'";
-        ctx.fillStyle = "#FFD700"; // Amarillo dorado
-        ctx.strokeStyle = "#2A1F0F"; // Marrón oscuro para el borde
-        ctx.lineWidth = 2;
-
-        // Botón Start
-        const startButtonY = startY;
-        ctx.strokeText("Start", designWidth / 2, startButtonY);
-        ctx.fillText("Start", designWidth / 2, startButtonY);
-
-        // Botón Instructions
-        const instructionsButtonY = startY + buttonSpacing;
-        ctx.strokeText("Instructions", designWidth / 2, instructionsButtonY);
-        ctx.fillText("Instructions", designWidth / 2, instructionsButtonY);
-
-        // Botón Book
-        const bookButtonY = startY + buttonSpacing * 2;
-        ctx.strokeText("Book", designWidth / 2, bookButtonY);
-        ctx.fillText("Book", designWidth / 2, bookButtonY);
+          // Texto del botón con estilo similar a las habilidades
+          ctx.fillStyle = "#3D2914"; // Marrón oscuro como los botones de habilidades
+          ctx.font = "bold 19px 'Jersey 10'";
+          ctx.textAlign = "center";
+          ctx.fillText(buttonText, designWidth / 2, buttonY + 25);
+        });
 
         ctx.textAlign = "left";
+      }
+
+      function drawLevelInfo() {
+        const levelData = levelInfo[currentLevel];
+
+        // Dibujar fondo de imagen para las pantallas de nivel sin compresión
+        ctx.imageSmoothingEnabled = false; // Evitar suavizado/compresión
+        ctx.drawImage(levelInfoBackgroundImg, 0, 0, designWidth, designHeight);
+        ctx.imageSmoothingEnabled = true; // Restaurar suavizado para otros elementos
+
+        // Oscurecer ligeramente el fondo
+        ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
+        ctx.fillRect(0, 0, designWidth, designHeight);
+
+        // Marco decorativo
+        ctx.strokeStyle = "#D3BF8F";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(20, 20, designWidth - 40, designHeight - 40);
+
+        // Título del nivel
+        ctx.fillStyle = "#D3BF8F";
+        ctx.strokeStyle = "#000000"; // Borde negro para mejor contraste
+        ctx.lineWidth = 3;
+        ctx.font = "bold 36px 'Jersey 10'";
+        ctx.letterSpacing = "0.1px";
+        ctx.textAlign = "center";
+
+        const levelTitle = `Level ${currentLevel}`;
+        ctx.strokeText(levelTitle, designWidth / 2, 120);
+        ctx.fillText(levelTitle, designWidth / 2, 120);
+
+        // Nombre del nivel
+        ctx.font = "bold 30px 'Jersey 10'";
+        ctx.letterSpacing = "0.1px";
+        ctx.strokeStyle = "#000000"; // Borde negro para mejor contraste
+        ctx.strokeText(levelData.name, designWidth / 2, 160);
+        ctx.fillText(levelData.name, designWidth / 2, 160);
+
+        // Lore del nivel (texto envuelto) - usando Jacquard 24
+        ctx.font = "18px 'Jacquard 24'";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = "#2A1F0F";
+        ctx.lineWidth = 1;
+
+        const loreLines = wrapText(levelData.lore, 280);
+        const lineHeight = 32;
+        const startY = 220;
+
+        loreLines.forEach((line, index) => {
+          const y = startY + index * lineHeight;
+          ctx.strokeText(line, designWidth / 2, y);
+          ctx.fillText(line, designWidth / 2, y);
+        });
+
+        // Botón "Explore" estilo habilidades
+        const buttonY = 420;
+        const buttonWidth = 200;
+        const buttonHeight = 40;
+        const buttonX = (designWidth - buttonWidth) / 2;
+
+        // Usar estilo de botón similar a las habilidades
+        ctx.drawImage(
+          buttonLongBeigeImg,
+          buttonX,
+          buttonY,
+          buttonWidth,
+          buttonHeight
+        );
+
+        // Texto del botón con estilo similar a las habilidades
+        ctx.fillStyle = "#3D2914"; // Marrón oscuro como los botones de habilidades
+        ctx.font = "bold 19px 'Jersey 10'";
+        ctx.textAlign = "center";
+        ctx.fillText("Explore", designWidth / 2, buttonY + 25);
+
+        ctx.textAlign = "left";
+      }
+
+      function drawLevelCompletion() {
+        // Dibujar fondo del juego actual
+        ctx.drawImage(currentBackgroundImg, 0, 0, designWidth, designHeight);
+
+        // Overlay oscuro
+        ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+        ctx.fillRect(0, 0, designWidth, designHeight);
+
+        // Modal central
+        const modalWidth = 300;
+        const modalHeight = 290; // Aumentado para acomodar el botón Surrender
+        const modalX = (designWidth - modalWidth) / 2;
+        const modalY = (designHeight - modalHeight) / 2;
+
+        // Fondo del modal
+        ctx.fillStyle = "rgba(20, 20, 20, 0.95)";
+        ctx.fillRect(modalX, modalY, modalWidth, modalHeight);
+
+        // Marco del modal con el mismo estilo que las pantallas de nivel
+        ctx.strokeStyle = "#D3BF8F";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(modalX, modalY, modalWidth, modalHeight);
+
+        // Título del modal con el mismo estilo que los títulos de nivel
+        ctx.fillStyle = "#D3BF8F";
+        ctx.strokeStyle = "#000000"; // Borde negro como los títulos de nivel
+        ctx.lineWidth = 3;
+        ctx.font = "bold 24px 'Jersey 10'";
+        ctx.letterSpacing = "0.1px";
+        ctx.textAlign = "center";
+
+        let titleText;
+        if (levelCompletionModal.gameCompleted) {
+          titleText = "Victory!";
+        } else {
+          titleText = `${levelCompletionModal.boss} Defeated`;
+        }
+
+        ctx.strokeText(titleText, designWidth / 2, modalY + 50);
+        ctx.fillText(titleText, designWidth / 2, modalY + 50);
+
+        // Texto de preparación para siguiente nivel
+        ctx.font = "18px 'Jacquard 24'";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = "#2A1F0F";
+        ctx.lineWidth = 1;
+
+        let readyText;
+        if (levelCompletionModal.gameCompleted) {
+          readyText = "You have conquered all dungeons!";
+        } else {
+          readyText = "Ready for the next level?";
+        }
+
+        const readyLines = wrapText(readyText, modalWidth - 40);
+        readyLines.forEach((line, index) => {
+          const y = modalY + 90 + index * 24;
+          ctx.strokeText(line, designWidth / 2, y);
+          ctx.fillText(line, designWidth / 2, y);
+        });
+
+        // Botón Continue estilo habilidades
+        const continueButtonY = modalY + 150;
+        const buttonWidth = 160;
+        const buttonHeight = 40;
+        const buttonX = (designWidth - buttonWidth) / 2;
+
+        // Usar estilo de botón similar a las habilidades
+        ctx.drawImage(
+          buttonLongBeigeImg,
+          buttonX,
+          continueButtonY,
+          buttonWidth,
+          buttonHeight
+        );
+
+        // Texto del botón Continue
+        ctx.fillStyle = "#3D2914"; // Marrón oscuro como los botones de habilidades
+        ctx.font = "bold 17px 'Jersey 10'";
+        ctx.textAlign = "center";
+
+        let continueButtonText;
+        if (levelCompletionModal.gameCompleted) {
+          continueButtonText = "Main Menu";
+        } else {
+          continueButtonText = "Continue";
+        }
+
+        ctx.fillText(continueButtonText, designWidth / 2, continueButtonY + 25);
+
+        // Botón Surrender (solo si no es el final del juego)
+        if (!levelCompletionModal.gameCompleted) {
+          const surrenderButtonY = continueButtonY + buttonHeight + 10;
+
+          // Usar el mismo estilo de botón
+          ctx.drawImage(
+            buttonLongBeigeImg,
+            buttonX,
+            surrenderButtonY,
+            buttonWidth,
+            buttonHeight
+          );
+
+          // Texto del botón Surrender en rojo
+          ctx.fillStyle = "#CC0000"; // Rojo para surrender
+          ctx.font = "bold 17px 'Jersey 10'";
+          ctx.textAlign = "center";
+          ctx.fillText("Surrender", designWidth / 2, surrenderButtonY + 25);
+        }
+
+        ctx.textAlign = "left";
+      }
+
+      // Función auxiliar para envolver texto
+      function wrapText(text, maxWidth) {
+        const words = text.split(" ");
+        const lines = [];
+        let currentLine = "";
+
+        for (let word of words) {
+          const testLine = currentLine + (currentLine ? " " : "") + word;
+          const metrics = ctx.measureText(testLine);
+
+          if (metrics.width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = testLine;
+          }
+        }
+
+        if (currentLine) {
+          lines.push(currentLine);
+        }
+
+        return lines;
       }
 
       canvas.addEventListener("touchstart", handleInput);
@@ -4834,49 +5133,150 @@
 
         // Manejar clics en el menú principal
         if (state === "main_menu") {
-          const buttonSpacing = 60;
-          const startY = 280;
-
-          // Áreas de clic más amplias para texto (centradas en la pantalla)
-          const textClickWidth = 140; // Área más amplia para facilitar el clic
-          const textClickHeight = 30; // Altura apropiada para texto
-          const textClickX = (designWidth - textClickWidth) / 2;
+          // Coordenadas de los nuevos botones estilo habilidades
+          const buttonWidth = 200;
+          const buttonHeight = 40;
+          const buttonSpacing = 20;
+          const startY = 350;
+          const buttonX = (designWidth - buttonWidth) / 2;
 
           // Verificar clic en botón Start
+          const startButtonY = startY;
           if (
-            touchX >= textClickX &&
-            touchX <= textClickX + textClickWidth &&
-            touchY >= startY - textClickHeight / 2 &&
-            touchY <= startY + textClickHeight / 2
+            touchX >= buttonX &&
+            touchX <= buttonX + buttonWidth &&
+            touchY >= startButtonY &&
+            touchY <= startButtonY + buttonHeight
           ) {
             console.log("Start button clicked");
             startGame();
             return;
           }
 
-          // Verificar clic en botón Instructions
+          // Verificar clic en botón Guide
+          const guideButtonY = startY + buttonHeight + buttonSpacing;
           if (
-            touchX >= textClickX &&
-            touchX <= textClickX + textClickWidth &&
-            touchY >= startY + buttonSpacing - textClickHeight / 2 &&
-            touchY <= startY + buttonSpacing + textClickHeight / 2
+            touchX >= buttonX &&
+            touchX <= buttonX + buttonWidth &&
+            touchY >= guideButtonY &&
+            touchY <= guideButtonY + buttonHeight
           ) {
-            console.log("Instructions button clicked");
-            // TODO: Abrir modal de instrucciones
+            console.log("Guide button clicked");
+            // TODO: Abrir modal de guía
             return;
           }
 
           // Verificar clic en botón Book
+          const bookButtonY = startY + 2 * (buttonHeight + buttonSpacing);
           if (
-            touchX >= textClickX &&
-            touchX <= textClickX + textClickWidth &&
-            touchY >= startY + buttonSpacing * 2 - textClickHeight / 2 &&
-            touchY <= startY + buttonSpacing * 2 + textClickHeight / 2
+            touchX >= buttonX &&
+            touchX <= buttonX + buttonWidth &&
+            touchY >= bookButtonY &&
+            touchY <= bookButtonY + buttonHeight
           ) {
             console.log("Book button clicked");
             // TODO: Abrir modal del libro de monstruos
             return;
           }
+        }
+
+        // Manejar clics en la pantalla de información de nivel
+        if (state === "level_info") {
+          const buttonY = 420;
+          const buttonWidth = 200;
+          const buttonHeight = 40;
+          const buttonX = (designWidth - buttonWidth) / 2;
+
+          // Verificar clic en botón "Enter the Dungeon"
+          if (
+            touchX >= buttonX &&
+            touchX <= buttonX + buttonWidth &&
+            touchY >= buttonY &&
+            touchY <= buttonY + buttonHeight
+          ) {
+            console.log("Enter the Dungeon button clicked");
+            state = "select_hero";
+            startWave(); // Empezar la primera wave del nivel
+            return;
+          }
+        }
+
+        // Manejar clics en el modal de finalización de nivel
+        if (state === "level_completion" && levelCompletionModal.show) {
+          // Coordenadas del modal y botones
+          const modalWidth = 300;
+          const modalHeight = 290;
+          const modalX = (designWidth - modalWidth) / 2;
+          const modalY = (designHeight - modalHeight) / 2;
+          const continueButtonY = modalY + 150;
+          const buttonWidth = 160;
+          const buttonHeight = 40;
+          const buttonX = (designWidth - buttonWidth) / 2;
+
+          // Verificar clic en el botón Continue
+          if (
+            touchX >= buttonX &&
+            touchX <= buttonX + buttonWidth &&
+            touchY >= continueButtonY &&
+            touchY <= continueButtonY + buttonHeight
+          ) {
+            console.log("Continue button clicked");
+            levelCompletionModal.show = false;
+
+            if (levelCompletionModal.gameCompleted) {
+              // Juego completado, volver al menú principal
+              state = "main_menu";
+              resetGame();
+            } else {
+              // Pasar al siguiente nivel - revivir todos los héroes con vida completa
+              console.log(
+                `Advancing to level ${
+                  currentLevel + 1
+                }! Reviving all heroes with full health.`
+              );
+              heroes.forEach((hero) => {
+                hero.hp = hero.maxhp; // Revivir con vida completa
+                hero.charge = 0; // Resetear carga
+                hero.anim = "idle"; // Asegurar que estén en animación idle
+                hero.frame = 0;
+                // Limpiar buffs al empezar nuevo nivel
+                hero.buffs = [];
+                hero.debuffs = [];
+              });
+
+              currentLevel++;
+              if (currentLevel <= 3) {
+                state = "level_info";
+              } else {
+                // Juego completado (por si acaso)
+                state = "main_menu";
+                resetGame();
+              }
+            }
+            return;
+          }
+
+          // Verificar clic en el botón Surrender (solo si no es el final del juego)
+          if (!levelCompletionModal.gameCompleted) {
+            const surrenderButtonY = continueButtonY + buttonHeight + 10;
+            if (
+              touchX >= buttonX &&
+              touchX <= buttonX + buttonWidth &&
+              touchY >= surrenderButtonY &&
+              touchY <= surrenderButtonY + buttonHeight
+            ) {
+              console.log("Surrender button clicked");
+              levelCompletionModal.show = false;
+
+              // TODO: Enviar score al SDK aquí
+              // Volver al menú principal (Game Over)
+              state = "main_menu";
+              resetGame();
+              return;
+            }
+          }
+
+          return; // No procesar otros clics durante el modal
         }
 
         // Footer buttons
@@ -5131,7 +5531,6 @@
         } else if (state === "select_target_ally") {
           heroes.forEach((h) => {
             if (
-              h.hp > 0 &&
               Math.abs(touchX - h.posx) < 40 &&
               Math.abs(touchY - h.posy) < 40
             ) {
@@ -5145,7 +5544,17 @@
       }
 
       function resetGame() {
-        init();
+        state = "main_menu";
+        currentLevel = 1;
+        wave = 0;
+        score = 0;
+        levelCompletionModal = { show: false, level: 0, boss: "", timer: 0 };
+        selectedHero = null;
+        selectedAction = null;
+        heroes = [];
+        enemies = [];
+        hitNumbers = [];
+        visualEffects = [];
       }
 
       Promise.all([
@@ -5199,7 +5608,8 @@
         new Promise((r) => (buttonLongBeigeImg.onload = r)),
         new Promise((r) => (mainMenuImg.onload = r)),
       ]).then(() => {
-        // No inicializar el juego automáticamente, empezar en el menú principal
+        // Asegurar que empezamos en el menú principal
+        state = "main_menu";
         requestAnimationFrame(loop);
       });
     </script>
