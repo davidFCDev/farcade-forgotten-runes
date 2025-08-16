@@ -1475,7 +1475,7 @@
             name: "Holy Wave",
             reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "single_ally",
-            heal: 45,
+            heal: 50,
             anim: "holywave",
           },
           smite: {
@@ -3822,6 +3822,16 @@
               lastTurnEntity = null;
               continue;
             }
+            // Watchdog: si activeAction quedó colgado sobre una entidad muerta o sin animación, liberarlo
+            if (
+              activeAction &&
+              (activeAction.hp <= 0 ||
+                (activeAction.anim !== "attack" &&
+                  activeAction.anim !== "cast" &&
+                  activeAction.animTime <= 0))
+            ) {
+              activeAction = null;
+            }
             // Esperar a que la acción previa termine antes de procesar nuevo turno
             if (
               activeAction &&
@@ -3836,6 +3846,10 @@
                 turnQueue.shift();
                 lastTurnEntity = null;
                 continue;
+              }
+              // Si tras processTurnStart el frente es enemigo boss listo pero no disparará (p.ej. ataquesUntilSpecial==null), aseguramos que ataquesUntilSpecial exista
+              if (front.type === "boss" && front.attacksUntilSpecial == null) {
+                front.attacksUntilSpecial = front.specialAttackCounter || 3;
               }
               lastTurnEntity = front;
             }
