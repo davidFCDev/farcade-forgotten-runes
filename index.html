@@ -11,6 +11,7 @@
             size: 100,al-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>RPG Battle Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/@farcade/game-sdk@latest/dist/index.min.js"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Jacquard+24&family=Jersey+10&display=swap");
 
@@ -21,12 +22,17 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
         font-family: "Press Start 2P", monospace;
+        overflow: hidden; /* Evitar scrollbars */
       }
       canvas {
         display: block;
         image-rendering: pixelated;
+        max-width: 100vw;
+        max-height: 100vh;
+        width: auto;
+        height: auto;
       }
     </style>
   </head>
@@ -47,11 +53,47 @@
       const GAME_AREA_HEIGHT = FOOTER_Y - HEADER_HEIGHT; // 460px de área de juego
 
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = designWidth * dpr;
-      canvas.height = designHeight * dpr;
-      ctx.scale(dpr, dpr);
-      canvas.style.width = designWidth + "px";
-      canvas.style.height = designHeight + "px";
+
+      // Función para calcular el tamaño responsivo del canvas
+      function calculateCanvasSize() {
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        // Calcular la escala manteniendo la proporción del diseño original (360x640)
+        const designAspectRatio = designWidth / designHeight;
+        const windowAspectRatio = windowWidth / windowHeight;
+
+        let canvasWidth, canvasHeight;
+
+        if (windowAspectRatio > designAspectRatio) {
+          // La ventana es más ancha que el diseño, escalar por altura
+          canvasHeight = Math.min(windowHeight * 0.95, designHeight); // 95% de la altura de la ventana
+          canvasWidth = canvasHeight * designAspectRatio;
+        } else {
+          // La ventana es más alta que el diseño, escalar por anchura
+          canvasWidth = Math.min(windowWidth * 0.95, designWidth); // 95% del ancho de la ventana
+          canvasHeight = canvasWidth / designAspectRatio;
+        }
+
+        return { width: canvasWidth, height: canvasHeight };
+      }
+
+      // Función para redimensionar el canvas
+      function resizeCanvas() {
+        const size = calculateCanvasSize();
+
+        canvas.width = designWidth * dpr;
+        canvas.height = designHeight * dpr;
+        ctx.scale(dpr, dpr);
+        canvas.style.width = size.width + "px";
+        canvas.style.height = size.height + "px";
+      }
+
+      // Configurar tamaño inicial del canvas
+      resizeCanvas();
+
+      // Redimensionar cuando cambie el tamaño de la ventana
+      window.addEventListener("resize", resizeCanvas);
 
       // Load images
       const backgroundImg = new Image();
@@ -71,12 +113,30 @@
       // Background para pantallas de información de nivel
       const levelInfoBackgroundImg = new Image();
       levelInfoBackgroundImg.src =
-        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/dark_swamp_window-lrkt7WbouEZqCWjp3IlD9mptsv2aab.png?A8mv";
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/crypt-PNZ7duhJjKjlUmf5WnW33JBy22gVjQ.png?OGU6"; // Default level 1
+
+      // Backgrounds específicos para cada nivel de información
+      const level1InfoBg = new Image();
+      level1InfoBg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/crypt-PNZ7duhJjKjlUmf5WnW33JBy22gVjQ.png?OGU6";
+
+      const level2InfoBg = new Image();
+      level2InfoBg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/dunes-xdPuf2QdTX1Om2RDjw8ZE5iXg0Hfi2.png?j2E8";
+
+      const level3InfoBg = new Image();
+      level3InfoBg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/swamp-KN7CGHBBios5G8hfhno211L3BQpjao.png?Cv7i";
 
       // Background para pantalla de inicio
       const mainMenuImg = new Image();
       mainMenuImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/fondo_start-8ed4QcpKSo1dG5ASd0fGjy1p66Cwll.png?Ouaf";
+
+      // Background para el Book
+      const bookBackgroundImg = new Image();
+      bookBackgroundImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/fondo_book-AN2QslDiEGnJY1esoB29QQ8JlzX3Uq.png?6KnD";
 
       // Background dinámico que cambia según el nivel
       let currentBackgroundImg = backgroundImg; // Empezar con The Crypt (nivel 1)
@@ -228,6 +288,250 @@
       priestSmiteEffectsImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/smite-Bjk86Soi2Gf9vFJBLWIvzPGFBp44Hf.png?WXvo";
 
+      // ================================
+      // SISTEMA DE AUDIO
+      // ================================
+
+      // Música de fondo
+      const menuMusic = new Audio();
+      menuMusic.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/inicio-MQDiXSPNvWEeB155H9x56e222bHZLS.mp3?make";
+      menuMusic.loop = true;
+      menuMusic.volume = 0.4; // Volumen inicial
+
+      const level1Music = new Audio();
+      level1Music.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/crypt-LZN8TdnXRiyblZvvzcWPzT7uoQYwz7.mp3?Hg5w";
+      level1Music.loop = true;
+      level1Music.volume = 0.2; // Volumen reducido para niveles
+
+      const level2Music = new Audio();
+      level2Music.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/dunes-ru73QsoLV35gEZQ55A3rk09T8uleBr.mp3?tVGO";
+      level2Music.loop = true;
+      level2Music.volume = 0.2; // Volumen reducido para niveles
+
+      const level3Music = new Audio();
+      level3Music.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/swamp-UzVNiCOnEhv4JAiX6bpWBSjdpSQ3HR.mp3?fyCd";
+      level3Music.loop = true;
+      level3Music.volume = 0.2; // Volumen reducido para niveles
+
+      // Efectos de sonido para hechizos
+      const mageSpellSound = new Audio();
+      mageSpellSound.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/fire-4xwSm7LSlrGc8FWd3CFstxoWINubeG.mp3?7yyv";
+      mageSpellSound.volume = 0.6;
+
+      const healSound = new Audio();
+      healSound.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/heal-TiCdRKJwwC3qIRZnJFOVVBl2QcQlcO.mp3?ZSQJ";
+      healSound.volume = 0.6;
+
+      const smiteSound = new Audio();
+      smiteSound.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/smite-ZK5nk41gDDoOYphPE6NCGNtBM9KeUl.mp3?Wkvu";
+      smiteSound.volume = 0.6;
+
+      const slashSound = new Audio();
+      slashSound.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/slash-ODPOGnjPy7ZKZtYaiES5z2YFTjcZ8r.mp3?M7FY";
+      slashSound.volume = 0.6;
+
+      const inmolationSound = new Audio();
+      inmolationSound.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/inmolation-mVevlPxJHzaIYbV1pteo7O80Ve5UsI.mp3?O3PH";
+      inmolationSound.volume = 0.6;
+
+      const agonySound = new Audio();
+      agonySound.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/agony-Un5jNoMJYl7yaAjjPGr1FfZoqeue0N.mp3?xV6m";
+      agonySound.volume = 0.6;
+
+      // Variables para control de música
+      let currentMusic = null;
+      let pendingSounds = []; // Array para manejar sonidos con delay
+      let audioInitialized = false; // Para manejar el autoplay de navegadores
+      let userHasInteracted = false; // Para rastrear si el usuario ha interactuado
+      let pendingMusicToPlay = null; // Música que se debe reproducir cuando el usuario interactúe
+
+      // Funciones de control de audio
+      function initializeAudio() {
+        if (!audioInitialized && userHasInteracted) {
+          console.log("Initializing audio after user interaction...");
+
+          // Inicializar contexto de audio de forma más simple
+          const initAudio = new Audio();
+          initAudio.volume = 0;
+          initAudio.src =
+            "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwgAztw0O7ZkUcQFE2c6+OmWRYSVZPl7K1NDQxRneftuGMeAztp1etqx6s4AAAq"; // Wav silencioso
+
+          initAudio
+            .play()
+            .then(() => {
+              initAudio.pause();
+              audioInitialized = true;
+
+              // Reproducir música pendiente si la hay después de un pequeño delay
+              if (pendingMusicToPlay) {
+                console.log("Playing pending music...");
+                setTimeout(() => {
+                  playMusicNow(pendingMusicToPlay);
+                  pendingMusicToPlay = null;
+                }, 100);
+              }
+            })
+            .catch((e) => {
+              console.log("Audio initialization failed:", e);
+              // Aún así marcar como inicializado para intentar reproducir música
+              audioInitialized = true;
+              if (pendingMusicToPlay) {
+                setTimeout(() => {
+                  playMusicNow(pendingMusicToPlay);
+                  pendingMusicToPlay = null;
+                }, 100);
+              }
+            });
+        }
+      }
+
+      function playMusicNow(audioElement) {
+        // Detener música actual si existe
+        if (currentMusic && currentMusic !== audioElement) {
+          currentMusic.pause();
+          currentMusic.currentTime = 0;
+        }
+
+        currentMusic = audioElement;
+
+        // Reproducir nueva música con manejo robusto
+        audioElement.currentTime = 0;
+        const playPromise = audioElement.play();
+
+        if (playPromise !== undefined) {
+          playPromise.catch((e) => {
+            console.log("No se pudo reproducir la música:", e);
+            // Intentar de nuevo después de un breve delay
+            setTimeout(() => {
+              console.log("Reintentando reproducción de música...");
+              audioElement.currentTime = 0;
+              audioElement.play().catch((e2) => {
+                console.log("Segundo intento de reproducción falló:", e2);
+              });
+            }, 300);
+          });
+        }
+      }
+
+      function playMusic(audioElement) {
+        if (!userHasInteracted) {
+          // Si el usuario no ha interactuado, guardar la música para reproducir después
+          pendingMusicToPlay = audioElement;
+          console.log("Music queued for after user interaction");
+          return;
+        }
+
+        initializeAudio();
+        playMusicNow(audioElement);
+      }
+
+      function stopAllMusic() {
+        [menuMusic, level1Music, level2Music, level3Music].forEach((music) => {
+          music.pause();
+          music.currentTime = 0;
+        });
+        currentMusic = null;
+      }
+
+      // Función para manejar la primera interacción del usuario
+      function handleFirstInteraction() {
+        if (!userHasInteracted) {
+          console.log("First user interaction detected");
+          userHasInteracted = true;
+          initializeAudio();
+
+          // Remover los listeners después de la primera interacción
+          document.removeEventListener("click", handleFirstInteraction, true);
+          document.removeEventListener(
+            "touchstart",
+            handleFirstInteraction,
+            true
+          );
+          document.removeEventListener("keydown", handleFirstInteraction, true);
+        }
+      }
+
+      // Agregar listeners para detectar la primera interacción (useCapture = true para asegurar que se ejecute)
+      document.addEventListener("click", handleFirstInteraction, true);
+      document.addEventListener("touchstart", handleFirstInteraction, true);
+      document.addEventListener("keydown", handleFirstInteraction, true);
+
+      function playSpellSound(spellName, delay = 0) {
+        if (!userHasInteracted) {
+          console.log("Spell sound queued - waiting for user interaction");
+          return;
+        }
+
+        initializeAudio();
+
+        let soundToPlay = null;
+
+        // Determinar qué sonido reproducir según el hechizo
+        switch (spellName) {
+          case "fireblast":
+          case "combustion":
+          case "inferno":
+            soundToPlay = mageSpellSound;
+            break;
+          case "holywave":
+          case "regrowth":
+            soundToPlay = healSound;
+            break;
+          case "smite":
+            soundToPlay = smiteSound;
+            break;
+          case "darkslash":
+            soundToPlay = slashSound;
+            break;
+          case "inmolation":
+            soundToPlay = inmolationSound;
+            break;
+          case "agony":
+            soundToPlay = agonySound;
+            break;
+          default:
+            return; // No hay sonido para este hechizo
+        }
+
+        if (delay > 0) {
+          // Programar el sonido para más tarde
+          pendingSounds.push({
+            sound: soundToPlay,
+            time: currentTime + delay,
+          });
+        } else {
+          // Reproducir inmediatamente
+          soundToPlay.currentTime = 0;
+          soundToPlay.play().catch((e) => {
+            console.log("No se pudo reproducir el sonido:", e);
+          });
+        }
+      }
+
+      function updatePendingSounds() {
+        // Verificar si hay sonidos pendientes que deben reproducirse
+        for (let i = pendingSounds.length - 1; i >= 0; i--) {
+          const pendingSound = pendingSounds[i];
+          if (currentTime >= pendingSound.time) {
+            pendingSound.sound.currentTime = 0;
+            pendingSound.sound.play().catch((e) => {
+              console.log("No se pudo reproducir el sonido pendiente:", e);
+            });
+            pendingSounds.splice(i, 1);
+          }
+        }
+      }
+
       const priestHolyWaveEffectsImg = new Image();
       priestHolyWaveEffectsImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/heal-3Xw84tzIf6iA8iM9A7ATJFLffNucdb.png?VXbc";
@@ -280,6 +584,10 @@
       poisonDebuffImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/poison-y1X2h1bNJlxnP7MA15GtrUyaYio8dQ.png?joqy";
 
+      const shadowsDebuffImg = new Image();
+      shadowsDebuffImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/shadows-kVBYwJqd1hX0tXr4EdjP2EA7NWo0ub.png?6D0w";
+
       // Configuración de niveles - CORREGIDO PARA DARK SWAMP LEVEL 3
       const levelConfig = {
         1: {
@@ -300,8 +608,8 @@
               idleFrames: 4,
               deathFrames: 6,
               attackFrames: 8,
-              chargeSpeed: 30, // 6/10 velocidad según especificaciones
-              chargeSpeedRating: 6, // 6/10 velocidad según especificaciones
+              chargeSpeed: 40, // Aumentado (+2 rating)
+              chargeSpeedRating: 8, // Subido de 6 a 8
               size: 80,
               isFlying: true, // Volador según especificaciones
               mainAbility: "basic_attack", // Habilidad básica que hace daño bajo/intermedio a héroe aleatorio
@@ -474,9 +782,25 @@
       panelBrownImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/panel_brown-49f4SM1AoKwCYlEq9piZiXmfxdEC0G.png?ZpjN";
 
+      const panelBeigeImg = new Image();
+      panelBeigeImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/panel_beige-S87wunV71Sxq5QTxONuar0vD9W1LrV.png?sZSO";
+
       const buttonLongBeigeImg = new Image();
       buttonLongBeigeImg.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/buttonLong_beige-AkYz3mfJrwayHOsnKfj3J2cFcEajGT.png?vtgY";
+
+      const buttonLongBrownImg = new Image();
+      buttonLongBrownImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/buttonLong_brown-oof3pI0kehlONOYt1I39gi6TcPr2Jm.png?KInj";
+
+      const buttonRoundBeigeImg = new Image();
+      buttonRoundBeigeImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/buttonRound_beige-cnUh8OwyVlFjAjg2lpGBuVJKnmwV4m.png?wzPo";
+
+      const iconCrossBrownImg = new Image();
+      iconCrossBrownImg.src =
+        "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/iconCross_brown-vkY074tDvp0pjArcKTQ6CYMIcBKwGO.png?V1qv";
 
       // Animations - actualizadas con nuevas habilidades
       const animationsMage = {
@@ -516,6 +840,176 @@
       let visualEffects = []; // Array para efectos visuales especiales
       let levelCompletionModal = { show: false, level: 0, boss: "", timer: 0 }; // Modal de finalización de nivel
       let currentLevel = 1; // Nivel actual del juego (1, 2, 3)
+      // Sistema de turnos por cola
+      let turnQueue = []; // Contendrá referencias directas a héroes o enemigos cuyo charge llegó a 100 en orden de llegada
+      let activeAction = null; // Acción en curso (animación/delay) bloquea inicio de la siguiente
+      let actionDelayTimer = 0; // Pequeño retardo antes de ejecutar el efecto de ataque enemigo
+      // Sistema de turnos para debuffs turn-based
+      let lastTurnEntity = null;
+      let globalTurnCounter = 0; // Cuenta turnos globales (cada entidad que comienza turno)
+      // Transición entre waves
+      let waveTransition = { active: false, timer: 0, delay: 1.2 }; // 1.2s de margen
+      // Flag para mostrar pantalla de información del siguiente nivel tras transición
+      let pendingLevelInfo = false;
+
+      function processTurnStart(activeEntity) {
+        if (!activeEntity) return;
+        globalTurnCounter++;
+        const allHeroes = heroes || [];
+        const allEnemies = enemies || [];
+
+        // Procesar buffs turn-based en héroes
+        allHeroes.forEach((h) => {
+          if (!h.buffs) h.buffs = [];
+          if (h.hp <= 0) return;
+          h.buffs = h.buffs.filter((b) => {
+            switch (b.type) {
+              case "regrowth": {
+                // Curación por turno ajustada (4-5) reducida
+                const healAmount = 4 + Math.floor(Math.random() * 2);
+                h.hp = Math.min(h.maxhp, h.hp + healAmount);
+                validateHP(h);
+                playHealingAnim(h, "regrowth");
+                showHitNumber(h.posx, h.posy - 20, healAmount, true);
+                if (b.remainingTurns !== undefined) {
+                  b.remainingTurns--;
+                  if (b.remainingTurns <= 0) {
+                    removeDebuff(h, "healing");
+                    return false;
+                  }
+                }
+                return true;
+              }
+              case "agony": {
+                if (b.remainingTurns !== undefined) {
+                  b.remainingTurns--;
+                  if (b.remainingTurns <= 0) {
+                    removeDebuff(h, "protection");
+                    return false;
+                  }
+                }
+                return true;
+              }
+              case "poison": {
+                // Poison: daño base reducido (aprox 2/3 del anterior 3) => 2 + 1 por cada stack adicional
+                const stacks = b.stacks || 1;
+                const dmg = 2 + (stacks - 1) * 1; // base 2, +1 por stack extra
+                h.hp = Math.max(0, h.hp - dmg);
+                showHitNumber(h.posx, h.posy - 20, dmg, false, false);
+                if (h.hp <= 0) {
+                  console.log(h.clazz, "died from poison (turn system)");
+                }
+                if (b.remainingTurns !== undefined) {
+                  b.remainingTurns--;
+                  if (b.remainingTurns <= 0) {
+                    removeDebuff(h, "poison");
+                    return false;
+                  }
+                }
+                return true;
+              }
+              default:
+                return true; // Otros buffs sin cambio
+            }
+          });
+
+          // Procesar debuffs (shadows/poison) si se aplicaran a héroes via h.debuffs
+          if (h.debuffs && h.debuffs.length > 0 && h.hp > 0) {
+            h.debuffs = h.debuffs.filter((d) => {
+              if (d.type === "shadows") {
+                const dmg = d.damagePerTick || 2;
+                h.hp = Math.max(0, h.hp - dmg);
+                showHitNumber(h.posx, h.posy - 20, dmg, false, false);
+                if (h.hp <= 0) {
+                  console.log(h.clazz + " died from shadows (turn system)");
+                }
+                if (d.remainingTurns !== undefined) {
+                  d.remainingTurns--;
+                  if (d.remainingTurns <= 0) return false;
+                }
+                return true;
+              } else if (d.type === "poison") {
+                const stacks = d.stacks || 1;
+                const dmg = 2 + (stacks - 1) * 1;
+                h.hp = Math.max(0, h.hp - dmg);
+                showHitNumber(h.posx, h.posy - 20, dmg, false, false);
+                if (h.hp <= 0)
+                  console.log(h.clazz + " died from poison (turn debuff)");
+                if (d.remainingTurns !== undefined) {
+                  d.remainingTurns--;
+                  if (d.remainingTurns <= 0) return false;
+                }
+                return true;
+              }
+              return true;
+            });
+          }
+        });
+
+        // Procesar debuffs turn-based en enemigos (shadows, poison futuro)
+        allEnemies.forEach((e) => {
+          if (!e.debuffs) e.debuffs = [];
+          if (e.hp <= 0) return;
+          e.debuffs = e.debuffs.filter((d) => {
+            switch (d.type) {
+              case "shadows": {
+                const dmg = d.damagePerTick || 2;
+                e.hp = Math.max(0, e.hp - dmg);
+                showHitNumber(e.posx, e.posy - 20, dmg, false, false);
+                if (e.hp <= 0) {
+                  console.log(
+                    (e.type || e.name) + " died from shadows (turn system)"
+                  );
+                  e.isDying = true;
+                  e.anim = "die";
+                  e.frame = 0;
+                  e.animStartTime = currentTime;
+                  triggerHapticFeedback();
+                }
+                if (d.remainingTurns !== undefined) {
+                  d.remainingTurns--;
+                  if (d.remainingTurns <= 0) {
+                    return false;
+                  }
+                }
+                return true;
+              }
+              case "poison": {
+                const stacks = d.stacks || 1;
+                const dmg = 2 + (stacks - 1) * 1;
+                e.hp = Math.max(0, e.hp - dmg);
+                showHitNumber(e.posx, e.posy - 20, dmg, false, false);
+                if (e.hp <= 0) {
+                  console.log(
+                    (e.type || e.name) + " died from poison (turn system)"
+                  );
+                  e.isDying = true;
+                  e.anim = "die";
+                  e.frame = 0;
+                  e.animStartTime = currentTime;
+                  triggerHapticFeedback();
+                }
+                if (d.remainingTurns !== undefined) {
+                  d.remainingTurns--;
+                  if (d.remainingTurns <= 0) return false;
+                }
+                return true;
+              }
+              default:
+                return true;
+            }
+          });
+        });
+      }
+
+      // Variables para el Book
+      let bookScrollY = 0; // Posición del scroll vertical
+      let guideScrollY = 0; // Posición del scroll vertical para la guía
+      const bookScrollSpeed = 30; // Velocidad del scroll
+
+      // Variables para scroll táctil
+      let isDragging = false;
+      let lastTouchY = 0;
 
       // Información de los niveles
       const levelInfo = {
@@ -615,6 +1109,8 @@
           },
         ];
         enemies = [];
+        activeAction = null;
+        actionDelayTimer = 0;
         score = 0;
         wave = 0;
         currentLevel = 1;
@@ -623,6 +1119,11 @@
         slashStreak = 0;
         currentBackgroundImg = backgroundImg; // The Crypt es nivel 1
         levelCompletionModal = { show: false, level: 0, boss: "", timer: 0 };
+        pendingLevelInfo = false;
+
+        // Reproducir música del nivel 1 al inicio del juego
+        playMusic(level1Music);
+
         // No llamar startWave() aquí - se llamará cuando se pulse "Enter" en level_info
       }
 
@@ -635,6 +1136,9 @@
 
       function startWave() {
         console.log("Starting wave", wave + 1);
+
+        // Limpiar enemigos de la wave anterior
+        enemies = [];
 
         // Verificar si empezamos un nuevo nivel (cada 3 waves)
         const previousLevel = Math.floor((wave - 1) / 3) + 1;
@@ -652,10 +1156,25 @@
           currentBackgroundImg = backgroundImg; // Default para niveles posteriores
         }
 
-        // Solo revivir héroes cuando se cambia de nivel completo
-        if (nextLevel > previousLevel && wave % 3 === 1) {
+        // Cambiar música según el nivel cuando se inicia una nueva wave
+        if (currentLevel === 1) {
+          if (currentMusic !== level1Music) {
+            playMusic(level1Music);
+          }
+        } else if (currentLevel === 2) {
+          if (currentMusic !== level2Music) {
+            playMusic(level2Music);
+          }
+        } else if (currentLevel === 3) {
+          if (currentMusic !== level3Music) {
+            playMusic(level3Music);
+          }
+        }
+
+        // Revivir héroes cuando se detecta inicio de un nuevo nivel (justo después de haber terminado una wave múltiplo de 3)
+        if (nextLevel > previousLevel && wave % 3 === 0) {
           console.log(
-            `Starting new level ${nextLevel}! Reviving all heroes with full health.`
+            `Starting new level ${nextLevel}! Reviving all heroes with full health (after previous level completion).`
           );
           heroes.forEach((hero) => {
             hero.hp = hero.maxhp;
@@ -754,6 +1273,8 @@
         wave++;
         console.log("Wave", wave, "started with", enemies.length, "enemies");
         heroes.forEach((h) => (h.acted = false));
+        // Reiniciar cola de turnos al iniciar wave
+        turnQueue = [];
       }
 
       function createEnemy(x, y, hp, type) {
@@ -802,6 +1323,7 @@
           animStartTime: 0,
           isDying: false,
           deathAnimComplete: false,
+          spawnFadeProgress: 0, // 0 -> 1 aparición suave
           debuffs: [], // Array para iconos de debuffs/buffs
           name: enemyConfig.name,
           sprites: enemyConfig.sprites,
@@ -826,6 +1348,7 @@
           sphereCharges: type === "special" ? 0 : null, // Para sistema de esferas del Crab Bomb
           maxSphereCharges:
             type === "special" ? enemyConfig.specialAttackCounter : null,
+          damageMultiplier: 1, // Para pasivas de escalado (Noctebane)
         };
 
         // Validar que HP y maxHP sean números válidos para evitar NaN
@@ -909,55 +1432,62 @@
 
       // Función para obtener la velocidad de carga actual (para debugging)
       function getCurrentChargeSpeed(character) {
-        if (character.chargeSpeedRating) {
-          return getChargeSpeedFromRating(character.chargeSpeedRating);
-        } else {
-          return character.chargeSpeed || 20;
+        let base = character.chargeSpeedRating
+          ? getChargeSpeedFromRating(character.chargeSpeedRating)
+          : character.chargeSpeed || 20;
+        // Bonus berseker: +3% por stack hasta 10 stacks (30%)
+        if (character.debuffs) {
+          const bers = character.debuffs.find((d) => d.type === "berseker");
+          if (bers && bers.stacks) {
+            const bonusPct = Math.min(bers.stacks * 3, 30);
+            base *= 1 + bonusPct / 100;
+          }
         }
+        return base;
       }
 
       const classActions = {
         mage: {
           fireblast: {
             name: "Fireblast",
-            reqCharge: 33.33, // 1 carga (33.33% de 100%)
+            reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "single_enemy",
             damage: 35,
             anim: "fireblast",
           },
           combustion: {
             name: "Combustion",
-            reqCharge: 66.66, // 2 cargas (66.66% de 100%)
+            reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "self",
             critBonus: 80, // Gran porcentaje de crítico para el próximo ataque
             anim: "combustion",
           },
           inferno: {
             name: "Inferno",
-            reqCharge: 100, // 3 cargas (100%)
+            reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "all_enemy",
-            damage: 500, // Menos que fireblast pero a todos
+            damage: 22, // Menos que fireblast pero a todos los enemigos
             anim: "inferno",
           },
         },
         priest: {
           holywave: {
             name: "Holy Wave",
-            reqCharge: 33.33, // 1 carga
+            reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "single_ally",
             heal: 45,
             anim: "holywave",
           },
           smite: {
             name: "Smite",
-            reqCharge: 66.66, // 2 cargas
+            reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "single_enemy",
             damage: 20, // Poco daño
             anim: "smite",
           },
           regrowth: {
             name: "Regrowth",
-            reqCharge: 100, // 3 cargas
+            reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "all_ally",
             heal: 8, // Base para rango 7-9
             ticks: 10, // 10 segundos de duración
@@ -967,40 +1497,57 @@
         warlock: {
           darkslash: {
             name: "Dark Slash",
-            reqCharge: 33.33, // 1 carga
+            reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "single_enemy",
-            damage: 25,
+            damage: 5,
             anim: "darkslash",
+            shadowsDamage: 2, // Daño base por tick de Shadows
+            shadowsDuration: 15, // 15 segundos
+            shadowsInterval: 5, // Cada 5 segundos
+            stackDamageIncrease: 1, // +1 daño por stack
           },
           agony: {
             name: "Agony",
-            reqCharge: 66.66, // 2 cargas
+            reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "all_ally",
-            damageReduction: 20, // 20% reducción de daño
-            duration: 20, // 20 segundos
+            // (Turn-based) ahora otorga +20% DEF temporal (defBonus se calcula al aplicar)
+            duration: 20, // Conservado por si otras partes usan duración base (segundos original no usado ya)
             anim: "agony",
           },
           inmolation: {
             name: "Inmolation",
-            reqCharge: 100, // 3 cargas
+            reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "all_enemy",
-            damage: 45, // Mucho daño
-            selfDamage: 60, // 60% de su vida
+            damage: 35, // Mucho daño
+            selfDamage: 50, // 60% de su vida
             anim: "inmolation",
           },
         },
       };
 
+      // ================================
+      // GAME OVER HANDLING
+      // ================================
+
+      function handleGameOver() {
+        // Enviar score al SDK de Farcade (única acción en game over)
+        if (window.FarcadeSDK) {
+          window.FarcadeSDK.singlePlayer.actions.gameOver({ score: score });
+        }
+      }
+
       function checkGameOver() {
         if (heroes.every((h) => h.hp <= 0)) {
-          alert("Game Over! Score: " + score);
-          resetGame();
+          handleGameOver();
           return true;
         }
         return false;
       }
-
       function checkWaveCleared() {
+        // Si ya estamos en transición, no volver a dispararla
+        if (waveTransition.active) return false;
+        // Si ya mostramos modal de fin de nivel, no repetir
+        if (state === "level_completion") return false;
         if (enemies.every((e) => e.hp <= 0)) {
           // Verificar si todos los enemigos han completado su animación de muerte
           const allDeathAnimationsComplete = enemies.every(
@@ -1008,7 +1555,7 @@
           );
 
           if (allDeathAnimationsComplete) {
-            console.log("Wave cleared! Starting next wave...");
+            console.log("Wave cleared! Preparing transition...");
 
             // Bonificación por enemigos eliminados
             enemies.forEach((e) => {
@@ -1025,34 +1572,42 @@
               const completedLevel = Math.floor(wave / 3);
               const levelData = levelInfo[completedLevel];
 
-              if (completedLevel === 3) {
-                // Juego completado
-                levelCompletionModal = {
-                  show: true,
-                  level: completedLevel,
-                  boss: levelData.boss,
-                  timer: 180, // 3 segundos (60 FPS * 3)
-                  gameCompleted: true,
-                };
-              } else {
-                // Nivel completado, mostrar modal y luego pasar al siguiente nivel
-                levelCompletionModal = {
-                  show: true,
-                  level: completedLevel,
-                  boss: levelData.boss,
-                  timer: 180, // 3 segundos (60 FPS * 3)
-                  gameCompleted: false,
-                };
+              // Validar que tenemos datos del nivel (si falta, continuar igualmente)
+              if (!levelData) {
+                console.error(
+                  "Level data not found for level:",
+                  completedLevel
+                );
               }
-              state = "level_completion";
+
+              if (completedLevel === 3) {
+                // Juego completado: el SDK se encarga; no iniciar más waves
+                console.log("Game completion handled by SDK");
+              } else {
+                console.log(
+                  `Level ${completedLevel} completed -> showing completion modal`
+                );
+                levelCompletionModal.show = true;
+                levelCompletionModal.level = completedLevel;
+                levelCompletionModal.boss = levelData ? levelData.boss : "";
+                state = "level_completion";
+              }
             } else {
-              // Continuar con la siguiente wave del mismo nivel
-              startWave();
+              // Continuar con la siguiente wave del mismo nivel mediante transición suave
+              beginWaveTransition();
             }
             return true;
           }
         }
         return false;
+      }
+
+      function beginWaveTransition() {
+        // Limpiar efectos visuales residuales y números de golpe
+        hitNumbers = [];
+        visualEffects = visualEffects.filter((fx) => fx.persistent); // Opcional: mantener solo persistentes si existieran
+        waveTransition.active = true;
+        waveTransition.timer = waveTransition.delay;
       }
 
       // NOTA: advanceTurn() removida - ya no se usa sistema de turnos
@@ -1082,6 +1637,11 @@
       function executeAction(hero, action, targets) {
         const actionData = classActions[hero.clazz][action];
 
+        // Solo puede actuar si es su turno (primero en la cola) en modo de turnos
+        if (turnQueue.length === 0 || turnQueue[0] !== hero) {
+          return false;
+        }
+
         // Check if we have enough charge before executing
         let requiredCharge = actionData.reqCharge;
 
@@ -1099,6 +1659,13 @@
 
         // Always reset charge to 0 when using any ability
         hero.charge = 0;
+        // Retirar de la cola (ya consumió su turno)
+        if (turnQueue[0] === hero) {
+          turnQueue.shift();
+        } else {
+          // Seguridad por si estuviera más adelante (no debería ocurrir)
+          turnQueue = turnQueue.filter((e) => e !== hero);
+        }
 
         hero.anim = actionData.anim;
         hero.frame = 0;
@@ -1107,7 +1674,8 @@
         hero.targets = [];
         hero.targets = Array.isArray(targets) ? targets : [targets];
         hero.action = action;
-        state = "animate";
+        // NO cambiar estado a "animate" para permitir clicks rápidos
+        // state = "animate";
 
         console.log(
           "Executing action:",
@@ -1152,6 +1720,12 @@
           actionData.type
         );
 
+        // Reproducir sonido del hechizo inmediatamente
+        playSpellSound(action, 0);
+
+        // Feedback háptico al usar un hechizo
+        triggerHapticFeedback();
+
         // Validación adicional para prevenir contaminación de targets
         if (actionData.type.includes("enemy") && targets.some((t) => t.clazz)) {
           console.error(
@@ -1191,14 +1765,20 @@
           // Agony: reducción de daño del 20% a todos los aliados
           targets.forEach((target) => {
             if (target.hp > 0) {
+              // Nuevo sistema: +20% defensa base durante 10 turnos globales
+              const defBonus = Math.round((target.def || 0) * 0.2);
               target.buffs.push({
                 type: "agony",
-                endTime: currentTime + actionData.duration,
-                damageReduction: actionData.damageReduction,
+                remainingTurns: 10,
+                defBonus,
               });
-              // Agregar icono de protection debuff
-              addDebuff(target, "protection", 1);
-              console.log("Agony buff applied to", target.clazz);
+              addDebuff(target, "protection", 1); // Icono existente reutilizado
+              console.log(
+                "Agony (turn-based) aplicado a",
+                target.clazz,
+                "defBonus:",
+                defBonus
+              );
               addProtectionEffect([target]);
             }
           });
@@ -1258,15 +1838,78 @@
             if (target.hp > 0) {
               target.buffs.push({
                 type: "regrowth",
-                endTime: currentTime + actionData.ticks,
-                nextTick: currentTime + 2, // Primer tick en 2 segundos
-                heal: actionData.heal,
-                tickInterval: 2, // Tick cada 2 segundos
+                remainingTurns: 5, // 5 turnos globales
               });
-              // Agregar icono de healing debuff
+              // Mostrar icono 'healing' (según nueva definición)
               addDebuff(target, "healing", 1);
               playHealingAnim(target, "regrowth");
-              console.log("Regrowth applied to", target.clazz);
+              console.log("Regrowth (turn-based) aplicado a", target.clazz);
+            }
+          });
+        } else if (action === "darkslash") {
+          // Dark Slash: daño normal + aplicar/stackear debuff Shadows
+          targets.forEach((target) => {
+            if (target.hp > 0) {
+              // Aplicar daño normal primero
+              let damage = calculateRandomValue(actionData.damage, 20);
+              let criticalChance = 15;
+
+              const criticalResult = calculateCritical(damage, criticalChance);
+              const finalDamage = criticalResult.damage;
+              const isCritical = criticalResult.isCritical;
+
+              target.hp = Math.max(0, target.hp - finalDamage);
+              validateHP(target);
+
+              showHitNumber(
+                target.posx,
+                target.posy - 20,
+                finalDamage,
+                false,
+                isCritical
+              );
+
+              // Aplicar o stackear debuff Shadows
+              const existingShadows = target.debuffs.find(
+                (d) => d.type === "shadows"
+              );
+              if (existingShadows) {
+                existingShadows.stacks = (existingShadows.stacks || 1) + 1;
+                existingShadows.remainingTurns = 10; // Reinicia duración en turnos
+                existingShadows.damagePerTick =
+                  (existingShadows.damagePerTick || 2) + 1; // +1 daño por stack
+                if (!existingShadows.icon)
+                  existingShadows.icon = getDebuffIcon("shadows");
+                console.log(
+                  `Shadows stack (${existingShadows.stacks}) en ${
+                    target.type || target.clazz
+                  }. Daño por tick: ${existingShadows.damagePerTick}`
+                );
+              } else {
+                target.debuffs.push({
+                  type: "shadows",
+                  remainingTurns: 10,
+                  damagePerTick: 2 + Math.floor(Math.random() * 2), // 2-3
+                  stacks: 1,
+                  icon: getDebuffIcon("shadows"),
+                });
+                console.log(
+                  `Shadows aplicado a ${target.type || target.clazz}`
+                );
+              }
+
+              // Efectos visuales
+              clearEffectsByTypeAndPosition("slash", target.posx, target.posy);
+              addSlashEffect(target.posx, target.posy);
+
+              if (target.hp <= 0) {
+                target.isDying = true;
+                target.anim = "die";
+                target.frame = 0;
+                target.animStartTime = currentTime;
+                // Trigger haptic feedback when enemy dies
+                triggerHapticFeedback();
+              }
             }
           });
         } else if (actionData.type.includes("enemy")) {
@@ -1359,11 +2002,14 @@
           // Habilidades de curación normales
           targets.forEach((target) => {
             // Verificar si el objetivo puede recibir curación
-            const hasHealingDebuff =
+            // Solo bloquear si tiene debuff de regrowth Y estamos aplicando regrowth
+            const hasRegrowthDebuff =
               target.debuffs &&
-              target.debuffs.some((d) => d.type === "healing");
+              target.debuffs.some((d) => d.type === "regrowth");
+            const isRegrowthAction = action === "regrowth";
+            const shouldBlockHealing = hasRegrowthDebuff && isRegrowthAction;
 
-            if (actionData.heal && !hasHealingDebuff) {
+            if (actionData.heal && !shouldBlockHealing) {
               // Verificar si el objetivo está vivo AL MOMENTO de aplicar el efecto
               // (esto permite que la curación falle si el objetivo muere durante la animación)
               if (target.hp > 0) {
@@ -1781,6 +2427,22 @@
         });
       }
 
+      function addPoisonMainEffect(x, y) {
+        console.log("Añadiendo efecto visual de Poison Main en posición", x, y);
+        visualEffects.push({
+          type: "poison_main",
+          x: x,
+          y: y,
+          startTime: currentTime,
+          duration: 1.0, // 1 segundo de duración
+          frame: 0,
+          frameWidth: 96, // Ancho de cada frame
+          frameHeight: 96, // Alto de cada frame
+          totalFrames: 31, // 31 frames en el sprite
+          frameRate: 30, // 30 fps para animación rápida
+        });
+      }
+
       function addCosmicHorrorEffect(x, y) {
         console.log(
           "Añadiendo efecto visual de Cosmic Horror en posición",
@@ -1960,6 +2622,11 @@
             // Actualizar frame del efecto principal de Cthulhu
             const elapsed = currentTime - effect.startTime;
             const frameDuration = effect.duration / effect.frameCount;
+            effect.frame = Math.floor(elapsed / frameDuration);
+          } else if (effect.type === "poison_main") {
+            // Actualizar frame del efecto principal de veneno del Gorgon
+            const elapsed = currentTime - effect.startTime;
+            const frameDuration = effect.duration / effect.totalFrames;
             effect.frame = Math.floor(elapsed / frameDuration);
           } else if (effect.type === "cthulu_special") {
             // Actualizar frame del efecto especial de Cthulhu
@@ -2812,6 +3479,26 @@
                 renderSize
               );
             }
+          } else if (effect.type === "poison_main") {
+            // Renderizar efecto principal de veneno del Gorgon
+            if (effect.frame < effect.totalFrames) {
+              ctx.globalAlpha = 1;
+              const sx = effect.frame * effect.frameWidth; // 31 frames en una sola fila
+              const sy = 0; // Solo una fila
+
+              const renderSize = 96; // Tamaño del efecto (96x96)
+              ctx.drawImage(
+                cthuluMainEffectsImg,
+                sx,
+                sy,
+                effect.frameWidth,
+                effect.frameHeight,
+                effect.x - renderSize / 2,
+                effect.y - renderSize / 2,
+                renderSize,
+                renderSize
+              );
+            }
           } else if (effect.type === "cthulu_special") {
             // Renderizar efecto especial de Cthulhu (Toxic Horror)
             if (effect.frame < effect.frameCount) {
@@ -2887,6 +3574,9 @@
             case "poison":
               existingDebuff.stacks += stacks; // Poison es stackeable sin límite
               break;
+            case "shadows":
+              existingDebuff.stacks += stacks; // Shadows es stackeable sin límite
+              break;
             default:
               existingDebuff.stacks = stacks; // Para otros debuffs, reemplazar stacks
               break;
@@ -2925,6 +3615,8 @@
         switch (type) {
           case "healing":
             return healingDebuffImg;
+          case "regrowth":
+            return healingDebuffImg;
           case "protection":
             return protectionDebuffImg;
           case "combustion":
@@ -2933,6 +3625,8 @@
             return bersekerDebuffImg;
           case "poison":
             return poisonDebuffImg;
+          case "shadows":
+            return shadowsDebuffImg;
           default:
             return null;
         }
@@ -2982,17 +3676,29 @@
         lastTime = time;
         currentTime += delta;
 
+        // Actualizar sonidos pendientes
+        updatePendingSounds();
+
         // Solo ejecutar lógica del juego si no estamos en el menú principal o pantallas informativas
-        if (state !== "main_menu" && state !== "level_info") {
+        if (
+          state !== "main_menu" &&
+          state !== "level_info" &&
+          state !== "book" &&
+          state !== "guide"
+        ) {
           // No hay timer automático para el modal - se controla por botón
-          if (state === "level_completion" && levelCompletionModal.show) {
-            // No ejecutar el resto de la lógica durante el modal
-            draw();
-            requestAnimationFrame(loop);
-            return;
-          }
+          // Eliminado bloqueo por modal de fin de nivel (SDK lo maneja)
           // Update hit numbers
           updateHitNumbers(delta);
+
+          // Manejo de transición entre waves
+          if (waveTransition.active) {
+            waveTransition.timer -= delta;
+            // No pausar lógica: sólo un fade muy leve, sin texto, permitiendo que animaciones existentes terminen naturalmente
+            const t = Math.max(0, waveTransition.timer / waveTransition.delay); // 1 -> 0
+            const alpha = 0.25 * t; // se desvanece rápidamente
+            // Dibujar más tarde tras draw() principal (se aplica después de actualizar todo)
+          }
 
           // Update visual effects
           updateVisualEffects(delta);
@@ -3007,14 +3713,10 @@
               if (b.type === "combustion") {
                 return true; // Mantener hasta que se consuma
               }
+              // Tipos convertidos a sistema por turnos (no usar tiempos)
+              if (["regrowth", "agony", "poison"].includes(b.type)) return true;
 
-              if (b.endTime <= currentTime) {
-                // Remover debuff correspondiente cuando termine el buff
-                if (b.type === "regrowth") {
-                  removeDebuff(h, "healing");
-                } else if (b.type === "agony") {
-                  removeDebuff(h, "protection");
-                }
+              if (b.endTime && b.endTime <= currentTime) {
                 return false;
               }
 
@@ -3039,45 +3741,6 @@
                   );
                 }
                 b.nextTick += 1;
-              } else if (b.type === "regrowth" && b.nextTick <= currentTime) {
-                // Verificar si el héroe puede recibir curación
-                const hasHealingDebuff =
-                  h.debuffs && h.debuffs.some((d) => d.type === "healing");
-
-                if (!hasHealingDebuff && h.hp > 0) {
-                  // Calcular curación aleatoria en el rango 7-9
-                  const healAmount = 7 + Math.floor(Math.random() * 3); // 7, 8, o 9
-                  h.hp = Math.min(h.maxhp, h.hp + healAmount);
-                  validateHP(h);
-                  console.log(
-                    "Regrowth tick para",
-                    h.clazz,
-                    "- curación de",
-                    healAmount
-                  );
-                  playHealingAnim(h);
-                  showHitNumber(h.posx, h.posy - 20, healAmount, true);
-                } else if (hasHealingDebuff) {
-                  console.log(`${h.clazz} regrowth blocked by healing debuff.`);
-                }
-                b.nextTick += b.tickInterval || 2; // Usar tickInterval o 2 segundos por defecto
-              } else if (b.type === "poison" && b.nextTick <= currentTime) {
-                // Aplicar daño de veneno
-                h.hp = Math.max(0, h.hp - b.damage);
-                console.log(
-                  "Poison tick para",
-                  h.clazz,
-                  "- daño de veneno:",
-                  b.damage
-                );
-                showHitNumber(h.posx, h.posy - 20, b.damage, false, false);
-                // addPoisonEffect(h.posx, h.posy); // Efecto visual cada tick - DESACTIVADO
-                b.nextTick += b.tickInterval; // Próximo tick en 3 segundos
-
-                // Verificar si el héroe murió por veneno
-                if (h.hp <= 0) {
-                  console.log(h.clazz, "died from poison!");
-                }
               }
               return true;
             });
@@ -3093,7 +3756,10 @@
               h.animTime -= frameDuration;
               h.frame = (h.frame + 1) % animData.frames;
               if (h.frame === 0 && h.anim !== "idle" && h.anim !== "selected") {
-                if (state === "animate") {
+                // Aplicar efecto si el héroe tiene una acción pendiente (sin depender del estado global)
+                if (h.action && h.targets && h.targets.length > 0) {
+                  // Marcar acción activa de héroe para bloquear ataques enemigos hasta que se aplique
+                  if (!activeAction) activeAction = h;
                   console.log(
                     "Animation completed! Applying effect for hero:",
                     h.clazz,
@@ -3118,8 +3784,10 @@
                     );
                     h.targets = [];
                     h.action = null;
+                    if (activeAction === h) activeAction = null; // liberar acción activa tras aplicar
 
-                    state = "select_hero"; // Volver inmediatamente a selección sin avanzar turno
+                    // NO cambiar estado global, mantener "select_hero" para permitir clicks rápidos
+                    state = "select_hero";
                   } else {
                     console.warn(
                       "Hero",
@@ -3131,16 +3799,90 @@
                     );
                   }
                 }
-                // Solo cambiar a idle si no hay habilidades pendientes
-                if (state !== "animate") {
-                  h.anim = "idle";
+                // Cambiar a idle después de aplicar el efecto (ya no dependemos del estado "animate")
+                h.anim = "idle";
+              }
+            }
+          });
+
+          // Marcar visualmente al héroe cuyo turno está activo con la animación 'selected'
+          // Actualizar timer de delay para secuenciar acciones
+          if (actionDelayTimer > 0) {
+            actionDelayTimer -= delta;
+            if (actionDelayTimer < 0) actionDelayTimer = 0;
+          }
+          // Limpiar entidades muertas de la cola y asegurar que siempre haya un vivo al frente o quede vacía.
+          // Además, no iniciar nueva acción mientras otra está activa o en delay.
+          let safety = 0;
+          while (turnQueue.length > 0 && safety < 50) {
+            safety++;
+            const front = turnQueue[0];
+            if (!front || front.hp === undefined || front.hp <= 0) {
+              turnQueue.shift();
+              lastTurnEntity = null;
+              continue;
+            }
+            // Esperar a que la acción previa termine antes de procesar nuevo turno
+            if (
+              activeAction &&
+              (actionDelayTimer > 0 ||
+                (front !== activeAction && activeAction.animTime > 0))
+            ) {
+              break; // Hay acción en curso, esperamos
+            }
+            if (front !== lastTurnEntity) {
+              processTurnStart(front);
+              if (front.hp <= 0) {
+                turnQueue.shift();
+                lastTurnEntity = null;
+                continue;
+              }
+              lastTurnEntity = front;
+            }
+            break;
+          }
+          const activeEntity = turnQueue.length > 0 ? turnQueue[0] : null;
+          heroes.forEach((h) => {
+            if (h.hp <= 0) return;
+            if (activeEntity === h) {
+              if (h.anim === "idle" || h.anim === "selected") {
+                if (h.anim !== "selected") {
+                  h.anim = "selected";
+                  h.frame = 0;
+                  h.animTime = 0;
                 }
               }
+            } else {
+              // Si estaba en selected pero ya no es su turno y no está ejecutando acción, volver a idle
+              if (h.anim === "selected" && !h.action) {
+                h.anim = "idle";
+                h.frame = 0;
+                h.animTime = 0;
+              }
+            }
+          });
+
+          // Process debuffs for enemies (Shadows, etc.)
+          enemies.forEach((e) => {
+            if (e.hp > 0 && e.debuffs) {
+              // La lógica de expiración y ticks se maneja en processTurnStart ahora
             }
           });
 
           // Update enemy charge and check for automatic attacks
           enemies.forEach((e) => {
+            // Actualizar animaciones de muerte independientemente del estado
+            if (e.anim === "die") {
+              const elapsed = currentTime - e.animStartTime;
+              const frameDuration = 0.12; // Duración por frame para muerte (más fluido: 0.15 -> 0.12)
+              e.frame = Math.floor(elapsed / frameDuration);
+              const deathFrames = e.deathFrames || 6; // Usar frames dinámicos o fallback
+              if (e.frame >= deathFrames) {
+                e.deathAnimComplete = true;
+                e.frame = deathFrames - 1; // Mantener en el último frame
+              }
+            }
+
             if (e.hp > 0 && !e.isDying) {
               // Use the new charge speed rating system, fallback to legacy chargeSpeed for compatibility
               const chargeSpeed = e.chargeSpeedRating
@@ -3148,8 +3890,21 @@
                 : e.chargeSpeed || 20;
               e.charge = Math.min(e.maxcharge, e.charge + delta * chargeSpeed);
 
-              // Auto attack when fully charged
-              if (e.charge >= 100 && e.animTime <= 0) {
+              // Cuando se llena la barra, añadir a la cola si no está
+              if (e.charge >= 100 && !turnQueue.includes(e)) {
+                turnQueue.push(e);
+              }
+
+              // Procesar ataque solo si es su turno (al frente de la cola)
+              if (
+                turnQueue.length > 0 &&
+                turnQueue[0] === e &&
+                e.charge >= 100 &&
+                e.animTime <= 0 &&
+                (!activeAction || activeAction === e) &&
+                actionDelayTimer === 0 &&
+                !heroes.some((h) => h.action) // Esperar resolución de acción de héroe
+              ) {
                 // Lógica especial para Crab Bomb
                 if (e.name === "Crab Bomb") {
                   e.charge = 0; // Reset charge
@@ -3174,6 +3929,8 @@
 
                     // No aplicar daño inmediatamente, se aplicará cuando termine la animación
                   }
+                  // Consumió su turno (aunque no haya explotado aún)
+                  if (turnQueue[0] === e) turnQueue.shift();
                   return; // Salir de la función para evitar el ataque normal
                 }
 
@@ -3188,12 +3945,37 @@
                     : getClosestHero(e, heroes);
 
                 if (target) {
-                  let damage = e.type === "boss" ? 45 : 25; // Boss hace 45 de daño base, enemigos normales 25
+                  // RANGOS BASE SEGÚN ESPECIFICACIÓN
+                  let damage;
+                  if (e.name === "Demon Bat") {
+                    damage = 25 + Math.floor(Math.random() * 11); // 25-35
+                  } else if (e.name === "Fire Worm") {
+                    damage = 30 + Math.floor(Math.random() * 11); // 30-40
+                  } else if (e.name === "Mushroom") {
+                    damage = 10 + Math.floor(Math.random() * 6); // 10-15
+                  } else if (e.name === "Dreadwing") {
+                    damage = 20 + Math.floor(Math.random() * 6); // 20-25 por golpe (cada uno)
+                  } else if (e.name === "Gorgon") {
+                    damage = 20 + Math.floor(Math.random() * 6); // 20-25 (main con poison)
+                  } else if (e.name === "Noctebane") {
+                    damage = 25 + Math.floor(Math.random() * 11); // 25-35 (main/special se reasigna más abajo)
+                  } else if (e.name === "Minotaur") {
+                    damage = 45 + Math.floor(Math.random() * 11); // 45-55 base (se ajusta igual en main/special)
+                  } else if (e.name === "Crab Bomb") {
+                    damage = 0; // explosión aparte
+                  } else {
+                    damage = 25; // fallback
+                  }
                   e.charge = 0; // Reset charge
                   e.animTime = 0.5;
                   e.anim = "attack"; // Activar animación de ataque
                   e.frame = 0; // Reiniciar frame
                   e.animStartTime = currentTime; // Tiempo de inicio de la animación
+                  activeAction = e; // Marcar acción activa
+
+                  // Consumir turno inmediatamente (permite que el siguiente en cola avance mientras anima)
+                  if (turnQueue[0] === e) turnQueue.shift();
+                  actionDelayTimer = 0.4; // delay base tras iniciar animación
 
                   // Manejo de ataques de Boss (Boss Bat y Minotaur)
                   let isSpecialAttack = false;
@@ -3204,34 +3986,33 @@
                       isSpecialAttack = true;
                       e.isSpecialAttack = true; // Marcar el enemigo para renderizado
                       e.attacksUntilSpecial = e.specialAttackCounter; // Reset counter
-
-                      // Ajustar daño según el tipo de boss
-                      if (e.name === "Boss Bat") {
-                        damage = 30 + Math.floor(Math.random() * 11); // Daño entre 30-40 para Blood Storm (AoE)
+                      // ESPECIALES
+                      if (e.name === "Noctebane") {
+                        damage = 25 + Math.floor(Math.random() * 11); // 25-35 AoE
                       } else if (e.name === "Minotaur") {
-                        damage = 30 + Math.floor(Math.random() * 16); // Daño entre 30-45 para Life Steal (AoE)
+                        damage = 45 + Math.floor(Math.random() * 11); // 45-55 AoE Life Steal
                       } else if (e.name === "Gorgon") {
-                        damage = 80; // Ataque especial de Swamp Gorgon hace 80 de daño fijo
+                        damage = 30 + Math.floor(Math.random() * 11); // 30-40 AoE Toxic Horror
                       }
                     } else {
                       // Ataques principales/normales
                       isMainAbility = true;
-                      if (e.name === "Boss Bat") {
-                        damage = 20 + Math.floor(Math.random() * 11); // Daño entre 20-30 para Blood Splat (single target)
+                      if (e.name === "Noctebane") {
+                        damage = 25 + Math.floor(Math.random() * 11); // 25-35 Blood Splat
                       } else if (e.name === "Minotaur") {
-                        damage = 40 + Math.floor(Math.random() * 21); // Daño entre 40-60 para Smash (single target)
+                        damage = 45 + Math.floor(Math.random() * 11); // 45-55 Smash
                       } else if (e.name === "Gorgon") {
-                        damage = 35 + Math.floor(Math.random() * 16); // Daño entre 35-50 para ataque básico con veneno
+                        damage = 20 + Math.floor(Math.random() * 6); // 20-25 poison main
                       }
                     }
                   }
 
                   setTimeout(() => {
                     if (isSpecialAttack) {
-                      if (e.name === "Boss Bat") {
+                      if (e.name === "Noctebane") {
                         // Ataque especial: Blood Storm (daño AoE a todos los héroes)
                         console.log(
-                          "Boss Bat uses Blood Storm special attack (AoE)!"
+                          "Noctebane uses Blood Storm special attack (AoE)!"
                         );
                         heroes.forEach((hero) => {
                           if (hero.hp > 0) {
@@ -3246,23 +4027,22 @@
                               );
 
                             const criticalResult = calculateCritical(damage);
-                            const finalDamage = criticalResult.damage;
+                            let finalDamage = criticalResult.damage;
+                            if (e.name === "Noctebane") {
+                              finalDamage = Math.floor(
+                                finalDamage * (e.damageMultiplier || 1)
+                              );
+                            }
                             let effectiveDamage = Math.max(
                               1,
                               finalDamage - currentDef
                             );
-
-                            // Aplicar reducción de daño por Agony
-                            const agonyBuff = hero.buffs.find(
-                              (b) => b.type === "agony"
-                            );
-                            if (agonyBuff && agonyBuff.damageReduction) {
-                              effectiveDamage = Math.floor(
-                                effectiveDamage *
-                                  (1 - agonyBuff.damageReduction / 100)
-                              );
-                              effectiveDamage = Math.max(1, effectiveDamage); // Mínimo 1 de daño
+                            if (e.name === "Noctebane") {
+                              e.damageMultiplier =
+                                (e.damageMultiplier || 1) * 1.05; // +5% tras especial
                             }
+
+                            // Agony turn-based: mitigación ya reflejada en currentDef via defBonus.
 
                             hero.hp = Math.max(0, hero.hp - effectiveDamage);
                             validateHP(hero);
@@ -3304,23 +4084,13 @@
                               );
 
                             const criticalResult = calculateCritical(damage);
-                            const finalDamage = criticalResult.damage;
+                            let finalDamage = criticalResult.damage;
                             let effectiveDamage = Math.max(
                               1,
                               finalDamage - currentDef
                             );
 
-                            // Aplicar reducción de daño por Agony
-                            const agonyBuff = hero.buffs.find(
-                              (b) => b.type === "agony"
-                            );
-                            if (agonyBuff && agonyBuff.damageReduction) {
-                              effectiveDamage = Math.floor(
-                                effectiveDamage *
-                                  (1 - agonyBuff.damageReduction / 100)
-                              );
-                              effectiveDamage = Math.max(1, effectiveDamage); // Mínimo 1 de daño
-                            }
+                            // Agony turn-based: mitigación ya reflejada en currentDef via defBonus.
 
                             hero.hp = Math.max(0, hero.hp - effectiveDamage);
                             validateHP(hero);
@@ -3370,11 +4140,8 @@
                           );
                         }
 
-                        // Habilidad especial del Minotaur: aumentar velocidad de carga 5% después de cada ataque
+                        // Minotaur: solo velocidad +5%
                         applyChargeSpeedBonus(e, 1.05);
-
-                        // Agregar/actualizar debuff berseker
-                        addDebuff(e, "berseker", 1);
 
                         console.log(
                           `Minotaur's charge speed increased to ${getCurrentChargeSpeed(
@@ -3402,25 +4169,15 @@
                               0
                             );
 
-                          // Toxic Horror hace daño bajo/intermedio a todos (30-45)
+                          // Toxic Horror ajustado: daño 30-40
                           const toxicDamage =
-                            30 + Math.floor(Math.random() * 16);
+                            30 + Math.floor(Math.random() * 11);
                           let effectiveDamage = Math.max(
                             1,
                             toxicDamage - currentDef
                           );
 
-                          // Aplicar reducción de daño por Agony
-                          const agonyBuff = hero.buffs.find(
-                            (b) => b.type === "agony"
-                          );
-                          if (agonyBuff && agonyBuff.damageReduction) {
-                            effectiveDamage = Math.floor(
-                              effectiveDamage *
-                                (1 - agonyBuff.damageReduction / 100)
-                            );
-                            effectiveDamage = Math.max(1, effectiveDamage); // Mínimo 1 de daño
-                          }
+                          // Agony ahora solo otorga defBonus (ya incluido en currentDef)
 
                           hero.hp = Math.max(0, hero.hp - effectiveDamage);
                           validateHP(hero);
@@ -3445,21 +4202,14 @@
                             (b) => b.type === "poison"
                           );
                           if (poisonBuff) {
-                            // Aumentar stack (máximo 5)
-                            poisonBuff.stacks = Math.min(
-                              5,
-                              (poisonBuff.stacks || 1) + 1
-                            );
-                            // Reiniciar duración del poison a 10 segundos
-                            poisonBuff.endTime = currentTime + 10;
-                            poisonBuff.nextTick = currentTime + 3;
-                            // Recalcular daño base con el nuevo stack: daño base 4-6 + 2 por stack adicional
-                            const baseDamage =
-                              4 + Math.floor(Math.random() * 3); // 4-6
-                            poisonBuff.damage =
-                              baseDamage + (poisonBuff.stacks - 1) * 2;
+                            poisonBuff.stacks += 1;
+                            poisonBuff.remainingTurns = 10;
+                            // +2 daño base por stack adicional
+                            poisonBuff.damagePerTick =
+                              (poisonBuff.damagePerTick || 3) + 2;
+                            addDebuff(hero, "poison", 1);
                             console.log(
-                              `${hero.clazz} poison stacks increased to ${poisonBuff.stacks}, damage: ${poisonBuff.damage}`
+                              `${hero.clazz} poison stack -> ${poisonBuff.stacks} daño: ${poisonBuff.damagePerTick}`
                             );
                           } else {
                             // Si no tenía poison, NO se agrega (según especificaciones)
@@ -3470,10 +4220,10 @@
                         });
                       }
                     } else if (isMainAbility) {
-                      if (e.name === "Boss Bat") {
+                      if (e.name === "Noctebane") {
                         // Habilidad principal: Blood Splat (a un solo aliado aleatorio)
                         console.log(
-                          "Boss Bat uses Blood Splat main ability (single target)!"
+                          "Noctebane uses Blood Splat main ability (single target)!"
                         );
                         const aliveHeroes = heroes.filter((h) => h.hp > 0);
                         if (aliveHeroes.length > 0) {
@@ -3483,39 +4233,47 @@
                           );
                           const randomTarget = aliveHeroes[randomIndex];
 
+                          // Validar HP antes del cálculo
+                          if (
+                            isNaN(randomTarget.hp) ||
+                            randomTarget.hp === undefined ||
+                            randomTarget.hp === null
+                          ) {
+                            randomTarget.hp = randomTarget.maxhp || 1;
+                          }
+
                           const currentDef =
-                            randomTarget.def +
-                            randomTarget.buffs.reduce(
+                            (randomTarget.def || 0) +
+                            (randomTarget.buffs || []).reduce(
                               (sum, b) =>
                                 b.type === "protection"
-                                  ? sum + b.defBonus
+                                  ? sum + (b.defBonus || 0)
                                   : sum,
                               0
                             );
 
                           const criticalResult = calculateCritical(damage);
-                          const finalDamage = criticalResult.damage;
+                          let finalDamage = criticalResult.damage;
+                          finalDamage = Math.floor(
+                            finalDamage * (e.damageMultiplier || 1)
+                          );
                           let effectiveDamage = Math.max(
                             1,
                             finalDamage - currentDef
                           );
+                          e.damageMultiplier = (e.damageMultiplier || 1) * 1.05; // +5% tras main
 
-                          // Aplicar reducción de daño por Agony
-                          const agonyBuff = randomTarget.buffs.find(
-                            (b) => b.type === "agony"
-                          );
-                          if (agonyBuff && agonyBuff.damageReduction) {
-                            effectiveDamage = Math.floor(
-                              effectiveDamage *
-                                (1 - agonyBuff.damageReduction / 100)
-                            );
-                            effectiveDamage = Math.max(1, effectiveDamage); // Mínimo 1 de daño
-                          }
+                          // Agony turn-based: defensa ya sumada via defBonus
 
+                          // Validar que el nuevo HP no sea NaN
+                          const newHP = randomTarget.hp - effectiveDamage;
                           randomTarget.hp = Math.max(
                             0,
-                            randomTarget.hp - effectiveDamage
+                            isNaN(newHP) ? 0 : newHP
                           );
+
+                          // Validar HP después del ataque
+                          validateHP(randomTarget);
 
                           console.log(
                             `${
@@ -3551,39 +4309,43 @@
                           );
                           const randomTarget = aliveHeroes[randomIndex];
 
+                          // Validar HP antes del cálculo
+                          if (
+                            isNaN(randomTarget.hp) ||
+                            randomTarget.hp === undefined ||
+                            randomTarget.hp === null
+                          ) {
+                            randomTarget.hp = randomTarget.maxhp || 1;
+                          }
+
                           const currentDef =
-                            randomTarget.def +
-                            randomTarget.buffs.reduce(
+                            (randomTarget.def || 0) +
+                            (randomTarget.buffs || []).reduce(
                               (sum, b) =>
                                 b.type === "protection"
-                                  ? sum + b.defBonus
+                                  ? sum + (b.defBonus || 0)
                                   : sum,
                               0
                             );
 
                           const criticalResult = calculateCritical(damage);
-                          const finalDamage = criticalResult.damage;
+                          let finalDamage = criticalResult.damage;
                           let effectiveDamage = Math.max(
                             1,
                             finalDamage - currentDef
                           );
 
-                          // Aplicar reducción de daño por Agony
-                          const agonyBuff = randomTarget.buffs.find(
-                            (b) => b.type === "agony"
-                          );
-                          if (agonyBuff && agonyBuff.damageReduction) {
-                            effectiveDamage = Math.floor(
-                              effectiveDamage *
-                                (1 - agonyBuff.damageReduction / 100)
-                            );
-                            effectiveDamage = Math.max(1, effectiveDamage); // Mínimo 1 de daño
-                          }
+                          // Agony turn-based: mitigación ya incorporada en currentDef.
 
+                          // Validar que el nuevo HP no sea NaN
+                          const newHP = randomTarget.hp - effectiveDamage;
                           randomTarget.hp = Math.max(
                             0,
-                            randomTarget.hp - effectiveDamage
+                            isNaN(newHP) ? 0 : newHP
                           );
+
+                          // Validar HP después del ataque
+                          validateHP(randomTarget);
 
                           console.log(
                             `${
@@ -3606,11 +4368,8 @@
                             randomTarget.posy
                           );
 
-                          // Habilidad especial del Minotaur: aumentar velocidad de carga 5% después de cada ataque
+                          // Minotaur: solo velocidad +5%
                           applyChargeSpeedBonus(e, 1.05);
-
-                          // Agregar/actualizar debuff berseker
-                          addDebuff(e, "berseker", 1);
 
                           console.log(
                             `Minotaur's charge speed increased to ${getCurrentChargeSpeed(
@@ -3621,8 +4380,9 @@
                           );
                         }
                       } else if (e.name === "Gorgon") {
-                        // Habilidad principal: Poison Strike (daño bajo + veneno)
-                        console.log("Gorgon uses Poison Strike main ability!");
+                        // Gorgon: Ataque principal (más daño + veneno a héroe aleatorio)
+                        console.log("Gorgon uses poison attack!");
+
                         const aliveHeroes = heroes.filter((h) => h.hp > 0);
                         if (aliveHeroes.length > 0) {
                           // Seleccionar héroe aleatorio
@@ -3631,32 +4391,47 @@
                           );
                           const randomTarget = aliveHeroes[randomIndex];
 
+                          // Agregar efecto visual del ataque principal del Gorgon
+                          addPoisonMainEffect(
+                            randomTarget.posx,
+                            randomTarget.posy
+                          );
+
+                          // Calcular defensa del objetivo
                           const currentDef =
-                            randomTarget.def +
-                            randomTarget.buffs.reduce(
+                            (randomTarget.def || 0) +
+                            (randomTarget.buffs || []).reduce(
                               (sum, b) =>
                                 b.type === "protection" || b.type === "agony"
-                                  ? sum + b.defBonus
+                                  ? sum + (b.defBonus || 0)
                                   : sum,
                               0
                             );
 
-                          // Poison Strike hace daño bajo (20-30)
-                          const poisonStrikeDamage =
-                            20 + Math.floor(Math.random() * 11);
-                          const effectiveDamage = Math.max(
+                          // Ataque principal ajustado: daño 20-30
+                          const poisonAttackDamage =
+                            20 + Math.floor(Math.random() * 6); // 20-25
+                          const criticalResult =
+                            calculateCritical(poisonAttackDamage);
+                          const finalDamage = criticalResult.damage;
+                          let effectiveDamage = Math.max(
                             1,
-                            poisonStrikeDamage - currentDef
+                            finalDamage - currentDef
                           );
+
+                          // Agony turn-based: mitigación ya incorporada en currentDef.
+
+                          // Aplicar daño
                           randomTarget.hp = Math.max(
                             0,
                             randomTarget.hp - effectiveDamage
                           );
+                          validateHP(randomTarget);
 
                           console.log(
                             `${
                               randomTarget.clazz || "Hero"
-                            } takes ${effectiveDamage} damage from Poison Strike!`
+                            } takes ${effectiveDamage} damage from Gorgon's poison attack!`
                           );
 
                           // Mostrar número de daño
@@ -3665,83 +4440,169 @@
                             randomTarget.posy - 20,
                             effectiveDamage,
                             false,
-                            false
+                            criticalResult.isCritical
                           );
 
-                          // Aplicar veneno al objetivo
+                          // Aplicar veneno al objetivo atacado
                           const existingPoison = randomTarget.buffs.find(
                             (b) => b.type === "poison"
                           );
                           if (!existingPoison) {
                             randomTarget.buffs.push({
                               type: "poison",
-                              endTime: currentTime + 10, // 10 segundos de duración
-                              nextTick: currentTime + 3, // Primer tick en 3 segundos
-                              damage: 4 + Math.floor(Math.random() * 3), // Daño entre 4-6
-                              tickInterval: 3, // Tick cada 3 segundos
+                              remainingTurns: 10,
                               stacks: 1,
                             });
-
-                            // Agregar icono de veneno
                             addDebuff(randomTarget, "poison", 1);
+                            console.log(
+                              `Gorgon aplica poison a ${randomTarget.clazz}`
+                            );
+                          } else {
+                            existingPoison.stacks += 1;
+                            existingPoison.remainingTurns = 10; // Reinicia duración
+                            addDebuff(randomTarget, "poison", 1); // Actualiza icono (stacks)
+                            console.log(
+                              `Poison stack (${existingPoison.stacks}) en ${randomTarget.clazz}`
+                            );
                           }
-
-                          // Agregar efecto visual de Poison Strike
-                          addTentacleStrikeEffect(
-                            randomTarget.posx,
-                            randomTarget.posy
-                          );
-
-                          console.log(
-                            `Gorgon applies poison to ${randomTarget.clazz}!`
-                          );
                         }
                       }
                     } else {
-                      // Ataque normal a un solo objetivo (el más cercano)
-                      if (target.hp > 0) {
-                        const currentDef =
-                          target.def +
-                          target.buffs.reduce(
+                      // Ataque normal a un solo objetivo
+
+                      // Determinar el objetivo: aleatorio para demonios del nivel 1, más cercano para otros
+                      let attackTarget;
+                      if (e.name === "Demon Bat" || e.name === "Fire Worm") {
+                        // Demonios del nivel 1 atacan a héroe aleatorio
+                        const aliveHeroes = heroes.filter((h) => h.hp > 0);
+                        if (aliveHeroes.length > 0) {
+                          const randomIndex = Math.floor(
+                            Math.random() * aliveHeroes.length
+                          );
+                          attackTarget = aliveHeroes[randomIndex];
+                          console.log(
+                            `${e.name} targets random hero: ${attackTarget.clazz}`
+                          );
+                        } else {
+                          attackTarget = null;
+                        }
+                      } else {
+                        // Otros enemigos atacan al más cercano
+                        attackTarget = target;
+                      }
+
+                      if (attackTarget && attackTarget.hp > 0) {
+                        // Validar propiedades del target antes del cálculo
+                        if (
+                          isNaN(attackTarget.def) ||
+                          attackTarget.def === undefined ||
+                          attackTarget.def === null
+                        ) {
+                          console.error(
+                            "Target defense is NaN or invalid, setting to 3"
+                          );
+                          attackTarget.def = 3; // Valor por defecto
+                        }
+                        if (
+                          isNaN(attackTarget.hp) ||
+                          attackTarget.hp === undefined ||
+                          attackTarget.hp === null
+                        ) {
+                          console.error(
+                            "Target HP is NaN or invalid, setting to 100"
+                          );
+                          attackTarget.hp = 100; // Valor por defecto
+                        }
+
+                        let currentDef =
+                          attackTarget.def +
+                          attackTarget.buffs.reduce(
                             (sum, b) =>
                               b.type === "protection" ? sum + b.defBonus : sum,
                             0
                           );
 
+                        // Validar que currentDef sea un número válido
+                        if (
+                          isNaN(currentDef) ||
+                          currentDef === undefined ||
+                          currentDef === null
+                        ) {
+                          console.error(
+                            "Current defense is NaN or invalid, setting to 0"
+                          );
+                          currentDef = 0;
+                        }
+
+                        // Validar que damage sea un número válido antes del cálculo crítico
+                        if (
+                          isNaN(damage) ||
+                          damage === undefined ||
+                          damage === null
+                        ) {
+                          console.error(
+                            "Damage is NaN or invalid, resetting to default"
+                          );
+                          damage = e.type === "boss" ? 45 : 25; // Valor por defecto
+                        }
+
                         // Calcular crítico para auto-ataque de enemigo
                         const criticalResult = calculateCritical(damage);
-                        const finalDamage = criticalResult.damage;
+                        let finalDamage = criticalResult.damage;
                         const isCritical = criticalResult.isCritical;
+
+                        // Validar que finalDamage sea un número válido
+                        if (
+                          isNaN(finalDamage) ||
+                          finalDamage === undefined ||
+                          finalDamage === null
+                        ) {
+                          console.error(
+                            "Final damage is NaN or invalid, using base damage"
+                          );
+                          finalDamage = damage;
+                        }
 
                         let effectiveDamage = Math.max(
                           1,
                           finalDamage - currentDef
                         );
 
-                        // Aplicar reducción de daño por Agony
-                        const agonyBuff = target.buffs.find(
-                          (b) => b.type === "agony"
-                        );
-                        if (agonyBuff && agonyBuff.damageReduction) {
-                          effectiveDamage = Math.floor(
-                            effectiveDamage *
-                              (1 - agonyBuff.damageReduction / 100)
+                        // Validar que effectiveDamage sea un número válido
+                        if (
+                          isNaN(effectiveDamage) ||
+                          effectiveDamage === undefined ||
+                          effectiveDamage === null
+                        ) {
+                          console.error(
+                            "Effective damage is NaN or invalid, setting to 1"
                           );
-                          effectiveDamage = Math.max(1, effectiveDamage); // Mínimo 1 de daño
+                          effectiveDamage = 1;
                         }
 
-                        target.hp = Math.max(0, target.hp - effectiveDamage);
+                        // Agony turn-based: mitigación ya incorporada en currentDef.
+
+                        attackTarget.hp = Math.max(
+                          0,
+                          attackTarget.hp - effectiveDamage
+                        );
+
+                        // Feedback háptico cuando un héroe recibe daño
+                        triggerHapticFeedback();
+
+                        // Validar que el HP del héroe no sea NaN después del cálculo
+                        validateHP(attackTarget);
 
                         // Validar que el HP no sea NaN después del cálculo
-                        if (isNaN(target.hp)) {
-                          console.error("Enemy HP became NaN, resetting to 0");
-                          target.hp = 0;
+                        if (isNaN(attackTarget.hp)) {
+                          console.error("Hero HP became NaN, resetting to 0");
+                          attackTarget.hp = 0;
                         }
 
                         // Mostrar número de daño del enemigo auto-attack con crítico
                         showHitNumber(
-                          target.posx,
-                          target.posy - 20,
+                          attackTarget.posx,
+                          attackTarget.posy - 20,
                           effectiveDamage,
                           false,
                           isCritical
@@ -3753,23 +4614,25 @@
                           console.log("Mushroom uses poison attack!");
 
                           // Aplicar veneno al objetivo atacado
-                          const existingPoison = target.buffs.find(
+                          const existingPoison = attackTarget.buffs.find(
                             (b) => b.type === "poison"
                           );
                           if (!existingPoison) {
-                            target.buffs.push({
+                            attackTarget.buffs.push({
                               type: "poison",
-                              endTime: currentTime + 10, // 10 segundos de duración
-                              nextTick: currentTime + 3, // Primer tick en 3 segundos
-                              damage: 4 + Math.floor(Math.random() * 3), // Daño entre 4-6
-                              tickInterval: 3, // Tick cada 3 segundos
+                              remainingTurns: 10,
                               stacks: 1,
                             });
-
-                            // Agregar icono de veneno
-                            addDebuff(target, "poison", 1);
+                            addDebuff(attackTarget, "poison", 1);
                             console.log(
-                              `Mushroom applies poison to ${target.clazz}!`
+                              `Mushroom applies poison to ${attackTarget.clazz}!`
+                            );
+                          } else {
+                            existingPoison.stacks += 1;
+                            existingPoison.remainingTurns = 10;
+                            addDebuff(attackTarget, "poison", 1);
+                            console.log(
+                              `Mushroom poison stack -> ${existingPoison.stacks}`
                             );
                           }
                         } else if (e.name === "Dreadwing") {
@@ -3796,25 +4659,16 @@
 
                             const secondCriticalResult =
                               calculateCritical(damage);
+                            // Reducir daño del segundo golpe igual que el primero (ya que damage ajustado se basó en el primero)
+                            let secondBase = 20 + Math.floor(Math.random() * 6); // 20-25 segundo golpe (sin cambios)
+                            const secondCriticalResult2 =
+                              calculateCritical(secondBase);
                             let secondEffectiveDamage = Math.max(
                               1,
-                              secondCriticalResult.damage - secondTargetDef
+                              secondCriticalResult2.damage - secondTargetDef
                             );
 
-                            // Aplicar reducción de daño por Agony
-                            const agonyBuff = secondTarget.buffs.find(
-                              (b) => b.type === "agony"
-                            );
-                            if (agonyBuff && agonyBuff.damageReduction) {
-                              secondEffectiveDamage = Math.floor(
-                                secondEffectiveDamage *
-                                  (1 - agonyBuff.damageReduction / 100)
-                              );
-                              secondEffectiveDamage = Math.max(
-                                1,
-                                secondEffectiveDamage
-                              ); // Mínimo 1 de daño
-                            }
+                            // Agony turn-based: mitigación ya incorporada en DEF.
 
                             secondTarget.hp = Math.max(
                               0,
@@ -3826,7 +4680,7 @@
                               secondTarget.posy - 20,
                               secondEffectiveDamage,
                               false,
-                              secondCriticalResult.isCritical
+                              secondCriticalResult2.isCritical
                             );
 
                             console.log(
@@ -3842,45 +4696,39 @@
                           );
                           // No hay lógica adicional, solo el ataque básico intermedio
                         } else if (e.name === "Minotaur") {
-                          applyChargeSpeedBonus(e, 1.05);
-
-                          // Agregar/actualizar debuff berseker
-                          addDebuff(e, "berseker", 1);
-
-                          console.log(
-                            `Minotaur's charge speed increased to ${getCurrentChargeSpeed(
-                              e
-                            ).toFixed(2)} (rating: ${
-                              e.chargeSpeedRating || "legacy"
-                            }) after basic attack!`
-                          );
+                          applyChargeSpeedBonus(e, 1.05); // solo velocidad
+                          console.log(`Minotaur charge speed buff (basic).`);
                         }
 
                         // Lógica de veneno para enemigos del Dark Swamp (Mushroom y Gorgon)
-                        if (e.name === "Skeleton" || e.name === "Gorgon") {
-                          // Agregar debuff de veneno a un héroe aleatorio
+                        if (e.name === "Gorgon") {
                           const aliveHeroes = heroes.filter((h) => h.hp > 0);
                           if (aliveHeroes.length > 0) {
                             const randomIndex = Math.floor(
                               Math.random() * aliveHeroes.length
                             );
                             const poisonTarget = aliveHeroes[randomIndex];
-
-                            // Agregar buff de veneno
-                            poisonTarget.buffs.push({
-                              type: "poison",
-                              endTime: currentTime + 15, // 15 segundos de duración
-                              nextTick: currentTime + 3, // Primer tick en 3 segundos
-                              damage: 3 + Math.floor(Math.random() * 3), // Daño entre 3-5
-                              tickInterval: 3, // Tick cada 3 segundos
-                            });
-
-                            // Agregar icono de veneno
-                            addDebuff(poisonTarget, "poison", 1);
-
-                            console.log(
-                              `${e.name} applies poison to ${poisonTarget.clazz}!`
+                            const existingPoison = poisonTarget.buffs.find(
+                              (b) => b.type === "poison"
                             );
+                            if (!existingPoison) {
+                              poisonTarget.buffs.push({
+                                type: "poison",
+                                remainingTurns: 10,
+                                stacks: 1,
+                              });
+                              addDebuff(poisonTarget, "poison", 1);
+                              console.log(
+                                `${e.name} applies poison to ${poisonTarget.clazz}!`
+                              );
+                            } else {
+                              existingPoison.stacks += 1;
+                              existingPoison.remainingTurns = 10;
+                              addDebuff(poisonTarget, "poison", 1);
+                              console.log(
+                                `${e.name} poison stack -> ${existingPoison.stacks} on ${poisonTarget.clazz}`
+                              );
+                            }
                           }
                         }
 
@@ -3900,15 +4748,6 @@
                 e.anim = "idle";
                 e.frame = 0; // Reiniciar frame
                 e.animStartTime = currentTime;
-              }
-            } else if (e.anim === "die") {
-              const elapsed = currentTime - e.animStartTime;
-              const frameDuration = 0.12; // Duración por frame para muerte (más fluido: 0.15 -> 0.12)
-              e.frame = Math.floor(elapsed / frameDuration);
-              const deathFrames = e.deathFrames || 6; // Usar frames dinámicos o fallback
-              if (e.frame >= deathFrames) {
-                e.deathAnimComplete = true;
-                e.frame = deathFrames - 1; // Mantener en el último frame
               }
             } else if (e.anim === "attack") {
               const elapsed = currentTime - e.animStartTime;
@@ -3937,7 +4776,7 @@
               if (e.frame >= explodeFrames) {
                 // La animación de explosión ha terminado, aplicar daño ahora
                 if (e.explosionDamagePending) {
-                  const explosionDamage = 75 + Math.floor(Math.random() * 6); // 75-80 daño
+                  const explosionDamage = 65 + Math.floor(Math.random() * 11); // 65-75 daño
 
                   console.log(
                     "Applying explosion damage as animation completes"
@@ -3958,17 +4797,7 @@
                         explosionDamage - currentDef
                       );
 
-                      // Aplicar reducción de daño por Agony
-                      const agonyBuff = hero.buffs.find(
-                        (b) => b.type === "agony"
-                      );
-                      if (agonyBuff && agonyBuff.damageReduction) {
-                        effectiveDamage = Math.floor(
-                          effectiveDamage *
-                            (1 - agonyBuff.damageReduction / 100)
-                        );
-                        effectiveDamage = Math.max(1, effectiveDamage); // Mínimo 1 de daño
-                      }
+                      // Agony turn-based: mitigación ya incorporada en DEF.
 
                       hero.hp = Math.max(0, hero.hp - effectiveDamage);
                       validateHP(hero);
@@ -4020,11 +4849,32 @@
                 h.chargeSpeedRating || 5
               );
               h.charge = Math.min(h.maxcharge, h.charge + delta * chargeSpeed);
+              if (h.charge >= 100 && !turnQueue.includes(h)) {
+                turnQueue.push(h);
+              }
             }
           });
 
           // Verificar si el héroe seleccionado ha muerto durante la selección de objetivo
           checkAndCancelDeadHeroAction();
+
+          // Progresar aparición suave de nuevos enemigos
+          enemies.forEach((e) => {
+            if (e.spawnFadeProgress !== undefined && e.spawnFadeProgress < 1) {
+              e.spawnFadeProgress = Math.min(
+                1,
+                e.spawnFadeProgress + delta * 2
+              ); // 0.5s aprox
+            }
+          });
+          // Liberar acción activa cuando termina animación y no hay delay
+          if (
+            activeAction &&
+            activeAction.anim !== "attack" &&
+            actionDelayTimer === 0
+          ) {
+            activeAction = null;
+          }
         } // Fin del bloque condicional del juego
 
         draw();
@@ -4050,9 +4900,61 @@
           return;
         }
 
-        // Si estamos en la pantalla de finalización de nivel
+        // Si estamos en la pantalla del libro de monstruos
+        if (state === "book") {
+          drawMonsterBook();
+          return;
+        }
+
+        // Si estamos en la pantalla de guía
+        if (state === "guide") {
+          drawGuide();
+          return;
+        }
+
+        // Eliminado: pantalla de finalización gestionada externamente (SDK)
         if (state === "level_completion") {
-          drawLevelCompletion();
+          // Dibujar modal de fin de nivel
+          const modalW = 300;
+          const modalH = 200;
+          const modalX = (designWidth - modalW) / 2;
+          const modalY = (designHeight - modalH) / 2 - 40;
+          ctx.fillStyle = "rgba(0,0,0,0.75)"; // Fondo más oscuro detrás del modal
+          ctx.fillRect(0, 0, designWidth, designHeight);
+          ctx.fillStyle = "#1C140A"; // Panel más oscuro
+          ctx.strokeStyle = "#D3BF8F";
+          ctx.lineWidth = 3;
+          ctx.fillRect(modalX, modalY, modalW, modalH);
+          ctx.strokeRect(modalX, modalY, modalW, modalH);
+
+          ctx.fillStyle = "#D3BF8F";
+          ctx.font = "bold 26px 'Jersey 10'";
+          const title = `Level ${levelCompletionModal.level} Cleared!`;
+          ctx.textAlign = "center";
+          ctx.fillText(title, designWidth / 2, modalY + 48);
+          ctx.font = "16px 'Jacquard 24'";
+          ctx.fillStyle = "#FFFFFF";
+          const bossLine = levelCompletionModal.boss
+            ? `Boss: ${levelCompletionModal.boss}`
+            : "";
+          ctx.fillText(bossLine, designWidth / 2, modalY + 80);
+
+          // Botones
+          const btnW = 120;
+          const btnH = 36;
+          const btnY = modalY + modalH - 70;
+          const continueX = designWidth / 2 - btnW - 10;
+          const surrenderX = designWidth / 2 + 10;
+
+          // Continuar
+          ctx.drawImage(buttonLongBeigeImg, continueX, btnY, btnW, btnH);
+          ctx.fillStyle = "#3D2914";
+          ctx.font = "bold 18px 'Jersey 10'";
+          ctx.fillText("Continue", continueX + btnW / 2, btnY + 24);
+          // Surrender
+          ctx.drawImage(buttonLongBrownImg, surrenderX, btnY, btnW, btnH);
+          ctx.fillStyle = "#3D2914"; // Mismo color que Continue
+          ctx.fillText("Surrender", surrenderX + btnW / 2, btnY + 24);
           return;
         }
 
@@ -4103,7 +5005,7 @@
           // HP bar red
           ctx.fillStyle = "red";
           const hpWidth = 80 * (h.hp / h.maxhp);
-          ctx.fillRect(h.posx - 40, h.posy + 55, hpWidth, 12);
+          ctx.fillRect(h.posx - 40, h.posy + 55, hpWidth, 12); // HP bar
 
           // Texto de HP centrado perfectamente en la barra
           ctx.fillStyle = "white";
@@ -4118,46 +5020,41 @@
           ctx.textAlign = "left"; // Resetear alineación
           ctx.textBaseline = "alphabetic"; // Resetear baseline
 
-          // Charge bar background - dividido en 3 bloques (solo si está vivo)
+          // Charge bar background - una sola barra continua (solo si está vivo)
           if (h.hp > 0) {
+            // Pegar barra de energía justo debajo de HP (sin espacio)
             ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-            ctx.fillRect(h.posx - 40, h.posy + 70, 80, 8);
+            ctx.fillRect(h.posx - 40, h.posy + 67, 80, 8);
 
-            // Charge bar yellow - primer bloque (33.33%)
+            // Charge bar yellow - barra continua hasta el 100%
             ctx.fillStyle = "#FFD700";
-            const firstBlockWidth = Math.min(26.67, 26.67 * (h.charge / 33.33));
+            const chargeWidth = 80 * (h.charge / 100);
             if (h.charge > 0) {
-              ctx.fillRect(h.posx - 40, h.posy + 70, firstBlockWidth, 8);
+              ctx.fillRect(h.posx - 40, h.posy + 67, chargeWidth, 8);
             }
-
-            // Segundo bloque (siguiente 33.33%)
-            if (h.charge > 33.33) {
-              const secondBlockWidth = 26.67 * ((h.charge - 33.33) / 33.33);
-              ctx.fillRect(h.posx - 13.33, h.posy + 70, secondBlockWidth, 8);
-            }
-
-            // Tercer bloque (último 33.34%)
-            if (h.charge > 66.66) {
-              const thirdBlockWidth = 26.67 * ((h.charge - 66.66) / 33.34);
-              ctx.fillRect(h.posx + 13.33, h.posy + 70, thirdBlockWidth, 8);
-            }
-
-            // Separadores entre bloques
-            ctx.strokeStyle = "black";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            // Primer separador (33.33%)
-            ctx.moveTo(h.posx - 13.33, h.posy + 70);
-            ctx.lineTo(h.posx - 13.33, h.posy + 78);
-            // Segundo separador (66.66%)
-            ctx.moveTo(h.posx + 13.33, h.posy + 70);
-            ctx.lineTo(h.posx + 13.33, h.posy + 78);
-            ctx.stroke();
 
             // Borde de la barra de carga
             ctx.strokeStyle = "black";
             ctx.lineWidth = 1;
-            ctx.strokeRect(h.posx - 40, h.posy + 70, 80, 8);
+            ctx.strokeRect(h.posx - 40, h.posy + 67, 80, 8);
+
+            // Número de orden de turno (solo si está en la cola)
+            const heroOrderIndex = turnQueue.indexOf(h);
+            if (heroOrderIndex !== -1) {
+              ctx.save();
+              const orderText = (heroOrderIndex + 1).toString();
+              ctx.font = "bold 8px 'Press Start 2P'";
+              ctx.textAlign = "right";
+              ctx.textBaseline = "middle";
+              ctx.strokeStyle = "#000";
+              ctx.lineWidth = 3;
+              ctx.fillStyle = heroOrderIndex === 0 ? "#FFD700" : "#FFFFFF";
+              const tx = h.posx - 46; // ligera separación extra
+              const ty = h.posy + 71; // centrado vertical nueva barra (67 + 4)
+              ctx.strokeText(orderText, tx, ty);
+              ctx.fillText(orderText, tx, ty);
+              ctx.restore();
+            }
           }
 
           // Borde de la barra de HP
@@ -4168,7 +5065,7 @@
           // Renderizar debuffs debajo de la barra de energía
           if (h.hp > 0) {
             // Solo si está vivo
-            renderDebuffs(h, h.posx, h.posy + 80);
+            renderDebuffs(h, h.posx, h.posy + 77);
           }
         });
 
@@ -4185,6 +5082,9 @@
           ctx.imageSmoothingQuality = "high";
 
           // Seleccionar sprite y calcular posición según animación
+          if (e.spawnFadeProgress !== undefined && e.spawnFadeProgress < 1) {
+            ctx.globalAlpha *= Math.max(0.05, e.spawnFadeProgress); // proteger de alpha 0 absoluto
+          }
           let spriteImg, sx, sy;
 
           // Verificar si es Minotaur (usa sprite sheet completo)
@@ -4382,6 +5282,11 @@
             // Dibujar texto del título
             ctx.fillText(e.name, titleX, titleY);
 
+            // Restaurar alpha previo al HUD (el HUD debe ser siempre 100% visible)
+            if (e.spawnFadeProgress !== undefined && e.spawnFadeProgress < 1) {
+              ctx.globalAlpha = 1;
+            }
+
             // HP bar background - ahora encima del enemigo
             ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
             ctx.fillRect(e.posx - 40, e.posy - hpBarOffset, 80, 12);
@@ -4428,7 +5333,27 @@
               ctx.lineWidth = 1;
               ctx.strokeRect(e.posx - 40, e.posy - hpBarOffset + 12, 80, 8);
 
-              // Mostrar contador de ataque especial como número a la derecha de la barra
+              // Número de orden de turno para enemigo (si está en turnQueue)
+              const enemyOrderIndex = turnQueue.indexOf(e);
+              if (enemyOrderIndex !== -1) {
+                ctx.save();
+                const orderText = (enemyOrderIndex + 1).toString();
+                ctx.font = "bold 8px 'Press Start 2P'";
+                // Alinear a la derecha para posicionarlo similar a héroes (consistencia visual)
+                ctx.textAlign = "right";
+                ctx.textBaseline = "middle";
+                ctx.strokeStyle = "#000";
+                ctx.lineWidth = 3;
+                ctx.fillStyle = enemyOrderIndex === 0 ? "#FFD700" : "#FFFFFF";
+                // Separar un poco más: mover 6 píxeles extra hacia la izquierda (-46 como en héroes)
+                const tx = e.posx - 46;
+                const ty = e.posy - hpBarOffset + 16; // centrado vertical con la barra
+                ctx.strokeText(orderText, tx, ty);
+                ctx.fillText(orderText, tx, ty);
+                ctx.restore();
+              }
+
+              // Mostrar contador de ataque especial dentro de esfera en el lado derecho del HUD
               if (
                 (e.type === "boss" &&
                   e.attacksUntilSpecial !== null &&
@@ -4443,23 +5368,38 @@
                   // Para bosses, mostrar ataques restantes: 3,2,1
                   counterValue = e.attacksUntilSpecial;
                 }
+                // Posicionar esfera en el extremo derecho del HUD enemigo (al final de la barra de carga)
+                const radius = 12;
+                // Barra de carga termina en x = e.posx - 40 + 80 = e.posx + 40
+                // Colocamos la esfera con un pequeño margen (6px)
+                let circleX = e.posx + 40 + radius + 6;
+                const circleY = e.posy - hpBarOffset + 6 + radius; // centrada verticalmente respecto a la HP bar + charge
 
-                // Posición del contador: a la derecha de la barra de energía
-                const counterX = e.posx + 45; // 40 (mitad de barra) + 5 (margen)
-                const counterY = e.posy - hpBarOffset + 16; // Centrado con barra de energía
+                // Si se sale del diseño (designWidth), reposicionar justo antes del borde
+                if (circleX + radius > designWidth - 4) {
+                  circleX = designWidth - 4 - radius;
+                }
 
-                // Dibujar número con borde para mejor visibilidad
-                ctx.fillStyle = "#FFD700"; // Amarillo dorado
-                ctx.strokeStyle = "#000000"; // Borde negro
+                ctx.save();
+                // Esfera con color sólido solicitado
+                ctx.beginPath();
+                ctx.fillStyle = "#D3BF8F";
+                ctx.arc(circleX, circleY, radius, 0, Math.PI * 2);
+                ctx.fill();
                 ctx.lineWidth = 2;
-                ctx.font = "bold 8px 'Press Start 2P'";
-                ctx.textAlign = "left";
-                ctx.textBaseline = "middle";
+                ctx.strokeStyle = "#000";
+                ctx.stroke();
 
-                // Dibujar borde
-                ctx.strokeText(counterValue.toString(), counterX, counterY);
-                // Dibujar número
-                ctx.fillText(counterValue.toString(), counterX, counterY);
+                // Número centrado
+                ctx.font = "bold 10px 'Press Start 2P'";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = "#000";
+                ctx.fillStyle = "#FFF";
+                ctx.strokeText(counterValue.toString(), circleX, circleY + 1);
+                ctx.fillText(counterValue.toString(), circleX, circleY + 1);
+                ctx.restore();
               }
             }
 
@@ -4481,64 +5421,68 @@
 
         // Restaurar el contexto para poder renderizar UI sin restricciones
         ctx.restore();
+        // Overlay de transición (después de render principal) si activo
+        if (waveTransition.active) {
+          const t = Math.max(0, waveTransition.timer / waveTransition.delay);
+          const alpha = 0.25 * t; // leve y decreciente
+          ctx.save();
+          ctx.fillStyle = `rgba(0,0,0,${alpha.toFixed(3)})`;
+          ctx.fillRect(0, 0, designWidth, designHeight);
+          ctx.restore();
+          if (waveTransition.timer <= 0) {
+            waveTransition.active = false;
+            if (pendingLevelInfo) {
+              console.log(
+                "Wave transition finished -> showing next level info screen"
+              );
+              pendingLevelInfo = false;
+              state = "level_info";
+            } else {
+              console.log("Wave transition finished -> starting next wave...");
+              startWave();
+            }
+          }
+        }
 
         // Mostrar indicador de selección de objetivo con ventana modal
         if (state === "select_target_enemy") {
-          // Background que ocupa todo el ancho
+          // Modal que ocupa todo el ancho, centrado verticalmente
           const modalWidth = designWidth;
-          const modalHeight = 40;
+          const modalHeight = 40; // Aumentado para el texto más grande
           const modalX = 0;
-          const modalY = 75;
+          const modalY = (designHeight - modalHeight) / 2 - 50; // Movido 50px hacia arriba
 
           ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
           ctx.fillRect(modalX, modalY, modalWidth, modalHeight);
 
-          // Texto principal - primera letra mayúscula, más pequeño, color menos fuerte
+          // Texto principal - más grande y visible
           ctx.fillStyle = "#E0E0E0";
-          ctx.font = "10px 'Press Start 2P'";
+          ctx.font = "8px 'Press Start 2P'"; // Reducido de 10px a 8px
           ctx.textAlign = "center";
           ctx.fillText(
             "Select enemy",
             designWidth / 2,
             modalY + modalHeight / 2 + 3
           );
-
-          // X de cerrar en la esquina superior derecha del modal
-          const closeX = modalX + modalWidth - 15;
-          const closeY = modalY + 10;
-
-          ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
-          ctx.font = "12px 'Press Start 2P'";
-          ctx.textAlign = "center";
-          ctx.fillText("X", closeX, closeY);
         } else if (state === "select_target_ally") {
-          // Background que ocupa todo el ancho
+          // Modal que ocupa todo el ancho, centrado verticalmente
           const modalWidth = designWidth;
-          const modalHeight = 40;
+          const modalHeight = 40; // Aumentado para el texto más grande
           const modalX = 0;
-          const modalY = 75;
+          const modalY = (designHeight - modalHeight) / 2 - 50; // Movido 50px hacia arriba
 
           ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
           ctx.fillRect(modalX, modalY, modalWidth, modalHeight);
 
-          // Texto principal - primera letra mayúscula, más pequeño, color menos fuerte
+          // Texto principal - más grande y visible
           ctx.fillStyle = "#E0E0E0";
-          ctx.font = "10px 'Press Start 2P'";
+          ctx.font = "10px 'Press Start 2P'"; // Aumentado de 7px a 10px
           ctx.textAlign = "center";
           ctx.fillText(
             "Select ally",
             designWidth / 2,
             modalY + modalHeight / 2 + 3
           );
-
-          // X de cerrar en la esquina superior derecha del modal
-          const closeX = modalX + modalWidth - 15;
-          const closeY = modalY + 10;
-
-          ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
-          ctx.font = "12px 'Press Start 2P'";
-          ctx.textAlign = "center";
-          ctx.fillText("X", closeX, closeY);
         }
         ctx.textAlign = "left"; // Resetear alineación
 
@@ -4549,11 +5493,32 @@
         drawFooter();
       }
 
+      // Función helper para dibujar rectángulos redondeados
+      function drawRoundedRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(
+          x + width,
+          y + height,
+          x + width - radius,
+          y + height
+        );
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        ctx.stroke();
+      }
+
       function drawHeader() {
         // Limpiar completamente el área del header para evitar interferencias
         ctx.clearRect(0, 0, designWidth, HEADER_HEIGHT);
 
-        // Fondo del header - color beige claro
+        // Fondo del header
         ctx.fillStyle = "#D3BF8F";
         ctx.fillRect(0, 0, designWidth, HEADER_HEIGHT);
 
@@ -4565,57 +5530,17 @@
         ctx.lineTo(designWidth, HEADER_HEIGHT);
         ctx.stroke();
 
-        // Score centrado - primera sección (altura: 30px, padding: 7px arriba y abajo)
-        ctx.font = "bold 10px 'Press Start 2P'";
-        ctx.textAlign = "center";
-
-        // Texto "Points" con estilo amarillo y borde
-        const pointsText = " Points";
-        const pointsWidth = ctx.measureText(pointsText).width;
-        const scoreText = score.toString();
-        const scoreWidth = ctx.measureText(scoreText).width;
-        const totalWidth = scoreWidth + pointsWidth;
-
-        // Número del score en marrón sin borde
-        ctx.fillStyle = "#3D2914";
-        ctx.fillText(
-          scoreText,
-          designWidth / 2 - totalWidth / 2 + scoreWidth / 2,
-          22
-        );
-
-        // Texto "Points" en amarillo con borde marrón oscuro
-        ctx.strokeStyle = "#2A1F0F"; // Marrón oscuro para el borde
-        ctx.lineWidth = 3;
-        ctx.strokeText(pointsText, designWidth / 2 + scoreWidth / 2, 22);
-        ctx.fillStyle = "#FFD700"; // Amarillo dorado
-        ctx.fillText(pointsText, designWidth / 2 + scoreWidth / 2, 22);
-
-        // Línea divisora entre score y level/wave - más ancha
-        ctx.strokeStyle = "#3D2914"; // Marrón oscuro
-        ctx.lineWidth = 4; // Aumentado de 2 a 4
+        // Línea divisora horizontal entre score y level/wave
+        ctx.strokeStyle = "#3D2914";
+        ctx.lineWidth = 4;
         ctx.beginPath();
         ctx.moveTo(0, HEADER_HEIGHT / 2);
         ctx.lineTo(designWidth, HEADER_HEIGHT / 2);
         ctx.stroke();
 
-        // Calcular nivel y wave
-        const currentLevel = Math.floor((wave - 1) / 3) + 1;
-        const currentWaveInLevel = ((wave - 1) % 3) + 1;
-
-        // Obtener título de la dungeon desde la configuración de niveles
-        const currentLevelConfig = levelConfig[currentLevel] || levelConfig[1]; // Fallback al nivel 1
-        const dungeonTitle = currentLevelConfig
-          ? currentLevelConfig.name
-          : "Demon Cave";
-
-        // Segunda sección - Level, Dungeon Title y Wave con divisores verticales
-        ctx.font = "bold 9px 'Press Start 2P'";
-        ctx.textAlign = "center";
-
-        // Líneas divisoras verticales - más anchas
+        // Líneas divisoras verticales en la sección inferior
         ctx.strokeStyle = "#3D2914";
-        ctx.lineWidth = 4; // Aumentado de 2 a 4
+        ctx.lineWidth = 4;
         ctx.beginPath();
         // Primera línea divisora (1/3)
         ctx.moveTo(designWidth / 3, HEADER_HEIGHT / 2);
@@ -4625,99 +5550,147 @@
         ctx.lineTo((designWidth * 2) / 3, HEADER_HEIGHT);
         ctx.stroke();
 
-        // Level en la primera sección (0 a 1/3)
-        const levelTextOnly = "Level ";
-        const levelTextWidth = ctx.measureText(levelTextOnly).width;
-        const levelNumber = currentLevel.toString();
-        const levelNumberWidth = ctx.measureText(levelNumber).width;
-        const levelTotalWidth = levelTextWidth + levelNumberWidth;
+        // Marco interno para Score (sección superior completa)
+        const frameMargin = 4; // Padding aumentado para mayor separación
+        const dividerThickness = 4; // Grosor de las líneas divisoras
+        const cornerRadius = 3; // Radio para esquinas redondeadas
 
-        // Dibujar borde marrón oscuro para "Level"
-        ctx.strokeStyle = "#2A1F0F"; // Marrón oscuro para el borde
-        ctx.lineWidth = 3;
-        ctx.strokeText(
-          levelTextOnly,
-          designWidth / 6 - levelTotalWidth / 2 + levelTextWidth / 2,
-          52
-        );
-        // Dibujar texto "Level" en amarillo
-        ctx.fillStyle = "#FFD700"; // Amarillo dorado
-        ctx.fillText(
-          levelTextOnly,
-          designWidth / 6 - levelTotalWidth / 2 + levelTextWidth / 2,
-          52
-        );
-        ctx.fillStyle = "#3D2914"; // Número en marrón
-        ctx.fillText(levelNumber, designWidth / 6 + levelTextWidth / 2, 52);
+        const scoreFrameX = frameMargin;
+        const scoreFrameY = frameMargin;
+        const scoreFrameWidth = designWidth - frameMargin * 2;
+        const scoreFrameHeight =
+          HEADER_HEIGHT / 2 - frameMargin * 2 - dividerThickness / 2; // Respeta frameMargin arriba y abajo + línea divisora
 
-        // Título de la dungeon en la sección central (1/3 a 2/3)
-        // Dibujar borde marrón oscuro
-        ctx.strokeStyle = "#2A1F0F"; // Marrón oscuro para el borde
-        ctx.lineWidth = 3;
-        ctx.strokeText(dungeonTitle, designWidth / 2, 52);
-        // Dibujar texto amarillo
-        ctx.fillStyle = "#FFD700"; // Amarillo dorado
-        ctx.fillText(dungeonTitle, designWidth / 2, 52);
+        ctx.strokeStyle = "#AF9E75";
+        ctx.lineWidth = 2;
+        drawRoundedRect(
+          ctx,
+          scoreFrameX,
+          scoreFrameY,
+          scoreFrameWidth,
+          scoreFrameHeight,
+          cornerRadius
+        );
 
-        // Wave en la tercera sección (2/3 a 1)
-        const waveTextOnly = "Wave ";
-        const waveTextWidth = ctx.measureText(waveTextOnly).width;
-        const waveFirstNumber = currentWaveInLevel.toString();
-        const waveFirstWidth = ctx.measureText(waveFirstNumber).width;
-        const waveBar = "/";
-        const waveBarWidth = ctx.measureText(waveBar).width;
-        const waveSecondNumber = "3";
-        const waveSecondWidth = ctx.measureText(waveSecondNumber).width;
-        const waveTotalWidth =
-          waveTextWidth +
-          waveFirstWidth +
-          2 +
-          waveBarWidth +
-          2 +
-          waveSecondWidth; // +2 píxeles de separación a cada lado de la barra
+        // Marco interno para Level (primera sección inferior)
+        const levelFrameX = frameMargin;
+        const levelFrameY =
+          HEADER_HEIGHT / 2 + dividerThickness / 2 + frameMargin; // Respeta la línea divisora
+        const levelFrameWidth =
+          designWidth / 3 - dividerThickness / 2 - frameMargin * 2; // Respeta el margen izquierdo y la línea divisora
+        const levelFrameHeight =
+          HEADER_HEIGHT / 2 - dividerThickness / 2 - frameMargin * 2;
 
-        const waveStartX = (designWidth * 5) / 6 - waveTotalWidth / 2;
+        ctx.strokeStyle = "#AF9E75";
+        ctx.lineWidth = 2;
+        drawRoundedRect(
+          ctx,
+          levelFrameX,
+          levelFrameY,
+          levelFrameWidth,
+          levelFrameHeight,
+          cornerRadius
+        );
 
-        // Dibujar borde marrón oscuro para "Wave"
-        ctx.strokeStyle = "#2A1F0F"; // Marrón oscuro para el borde
-        ctx.lineWidth = 3;
-        ctx.strokeText(waveTextOnly, waveStartX + waveTextWidth / 2, 52);
-        // Dibujar texto "Wave" en amarillo
-        ctx.fillStyle = "#FFD700"; // Amarillo dorado
-        ctx.fillText(waveTextOnly, waveStartX + waveTextWidth / 2, 52);
-        ctx.fillStyle = "#3D2914"; // Primer número en marrón
-        ctx.fillText(
-          waveFirstNumber,
-          waveStartX + waveTextWidth + waveFirstWidth / 2,
-          52
+        // Marco interno para Título (sección central inferior)
+        const titleFrameX =
+          designWidth / 3 + dividerThickness / 2 + frameMargin;
+        const titleFrameY =
+          HEADER_HEIGHT / 2 + dividerThickness / 2 + frameMargin; // Respeta la línea divisora
+        const titleFrameWidth =
+          designWidth / 3 - dividerThickness - frameMargin * 2;
+        const titleFrameHeight =
+          HEADER_HEIGHT / 2 - dividerThickness / 2 - frameMargin * 2;
+
+        ctx.strokeStyle = "#AF9E75";
+        ctx.lineWidth = 2;
+        drawRoundedRect(
+          ctx,
+          titleFrameX,
+          titleFrameY,
+          titleFrameWidth,
+          titleFrameHeight,
+          cornerRadius
         );
-        ctx.fillStyle = "#3D2914"; // Barra en marrón
-        ctx.strokeStyle = "#3D2914"; // Borde marrón oscuro para la barra
-        ctx.lineWidth = 1; // Línea más fina que los números
-        ctx.strokeText(
-          waveBar,
-          waveStartX + waveTextWidth + waveFirstWidth + 1 + waveBarWidth / 2, // +1 píxel de separación del primer número
-          52
+
+        // Marco interno para Wave (tercera sección inferior)
+        const waveFrameX =
+          (designWidth * 2) / 3 + dividerThickness / 2 + frameMargin;
+        const waveFrameY =
+          HEADER_HEIGHT / 2 + dividerThickness / 2 + frameMargin; // Respeta la línea divisora
+        const waveFrameWidth =
+          designWidth / 3 - dividerThickness / 2 - frameMargin * 2; // Respeta el borde derecho
+        const waveFrameHeight =
+          HEADER_HEIGHT / 2 - dividerThickness / 2 - frameMargin * 2;
+
+        ctx.strokeStyle = "#AF9E75";
+        ctx.lineWidth = 2;
+        drawRoundedRect(
+          ctx,
+          waveFrameX,
+          waveFrameY,
+          waveFrameWidth,
+          waveFrameHeight,
+          cornerRadius
         );
-        ctx.fillText(
-          waveBar,
-          waveStartX + waveTextWidth + waveFirstWidth + 1 + waveBarWidth / 2, // +1 píxel de separación del primer número
-          52
-        );
-        ctx.fillStyle = "#3D2914"; // Segundo número en marrón igual que el primero
-        ctx.fillText(
-          waveSecondNumber,
-          waveStartX +
-            waveTextWidth +
-            waveFirstWidth +
-            2 + // +1 píxel de separación antes de la barra
-            waveBarWidth +
-            1 + // +1 píxel de separación después de la barra
-            waveSecondWidth / 2,
-          52
-        );
+
+        // Score centrado en su marco
+        ctx.font = "bold 9px 'Press Start 2P'"; // Reducido de 10px a 9px
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const pointsText = "Points";
+        const scoreText = score.toString();
+        const totalScoreText = scoreText + " " + pointsText;
+
+        // Centrar verticalmente en el marco del score
+        const scoreCenterY = scoreFrameY + scoreFrameHeight / 2;
+
+        // Texto del score en marrón sin borde
+        ctx.fillStyle = "#3D2914";
+        ctx.fillText(totalScoreText, designWidth / 2, scoreCenterY);
+
+        // Calcular nivel y wave
+        const currentLevel = Math.floor((wave - 1) / 3) + 1;
+        const currentWaveInLevel = ((wave - 1) % 3) + 1;
+
+        // Obtener título de la dungeon desde la configuración de niveles
+        const currentLevelConfig = levelConfig[currentLevel] || levelConfig[1];
+        const dungeonTitle = currentLevelConfig
+          ? currentLevelConfig.name
+          : "Demon Cave";
+
+        // Configurar fuente y alineación para la sección inferior
+        ctx.font = "bold 8px 'Press Start 2P'"; // Reducido de 9px a 8px
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        // Level centrado en su marco
+        const levelCenterX = levelFrameX + levelFrameWidth / 2;
+        const levelCenterY = levelFrameY + levelFrameHeight / 2;
+        const levelText = "Level " + currentLevel.toString();
+
+        ctx.fillStyle = "#3D2914";
+        ctx.fillText(levelText, levelCenterX, levelCenterY);
+
+        // Título de la dungeon centrado en su marco (en marrón sin borde)
+        const titleCenterX = titleFrameX + titleFrameWidth / 2;
+        const titleCenterY = titleFrameY + titleFrameHeight / 2;
+
+        // Dibujar texto en marrón sin borde, igual que el resto
+        ctx.fillStyle = "#3D2914"; // Marrón igual que el resto de textos
+        ctx.fillText(dungeonTitle, titleCenterX, titleCenterY);
+
+        // Wave centrado en su marco
+        const waveCenterX = waveFrameX + waveFrameWidth / 2;
+        const waveCenterY = waveFrameY + waveFrameHeight / 2;
+        const waveText = "Wave " + currentWaveInLevel.toString() + "/3";
+
+        ctx.fillStyle = "#3D2914";
+        ctx.fillText(waveText, waveCenterX, waveCenterY);
 
         ctx.textAlign = "left"; // Resetear alineación
+        ctx.textBaseline = "alphabetic"; // Resetear baseline
       }
 
       function drawFooter() {
@@ -4728,14 +5701,6 @@
         ctx.fillStyle = "rgba(30, 20, 10, 0.9)";
         ctx.fillRect(0, FOOTER_Y, designWidth, FOOTER_HEIGHT);
 
-        // Borde superior del footer
-        ctx.strokeStyle = "#3D2914";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(0, FOOTER_Y);
-        ctx.lineTo(designWidth, FOOTER_Y);
-        ctx.stroke();
-
         // Dividir en 3 columnas
         const columnWidth = designWidth / 3;
         const heroOrder = ["mage", "warlock", "priest"];
@@ -4743,17 +5708,18 @@
         heroOrder.forEach((heroClass, heroIndex) => {
           const hero = heroes.find((h) => h.clazz === heroClass);
           if (!hero) return;
+          // Nota: En sistema de turnos sólo el héroe que está en la primera posición de turnQueue puede usar habilidades (se refleja desactivando botones)
 
           const columnX = heroIndex * columnWidth;
           const centerX = columnX + columnWidth / 2;
 
-          // Dibujar panel para cada héroe - usar brown para todos con menos espacio entre cards
+          // Dibujar panel para cada héroe - usar beige para todos con menos espacio entre cards
           const panelWidth = columnWidth - 5;
           const panelHeight = 110; // Aumentado de 90 a 110
           const panelX = columnX + 2.5;
           const panelY = 525; // Ajustado de 545 a 525
 
-          ctx.drawImage(panelBrownImg, panelX, panelY, panelWidth, panelHeight);
+          ctx.drawImage(panelBeigeImg, panelX, panelY, panelWidth, panelHeight);
 
           // Título del héroe - siempre mismo color sin importar si está muerto
           ctx.fillStyle = "#3D2914"; // Siempre marrón oscuro
@@ -4781,11 +5747,13 @@
             const primaryData = classActions[hero.clazz][primaryAction];
             const buttonY1 = 550; // Ajustado de 567 a 550
             const canUsePrimary = hero.charge >= primaryData.reqCharge;
+            const canActTurn = turnQueue.length > 0 && turnQueue[0] === hero;
+            const canUsePrimaryTurn = canUsePrimary && canActTurn;
 
-            // Usar botón beige si está activo, panel brown si está inactivo
-            const primaryButtonImg = canUsePrimary
+            // Usar botón beige si está activo, botón marrón si está inactivo
+            const primaryButtonImg = canUsePrimaryTurn
               ? buttonLongBeigeImg
-              : panelBrownImg;
+              : buttonLongBrownImg;
             ctx.drawImage(
               primaryButtonImg,
               buttonX,
@@ -4808,10 +5776,11 @@
             const secondaryData = classActions[hero.clazz][secondaryAction];
             const buttonY2 = buttonY1 + buttonHeight + buttonSpacing;
             const canUseSecondary = hero.charge >= secondaryData.reqCharge;
+            const canUseSecondaryTurn = canUseSecondary && canActTurn;
 
-            const secondaryButtonImg = canUseSecondary
+            const secondaryButtonImg = canUseSecondaryTurn
               ? buttonLongBeigeImg
-              : panelBrownImg;
+              : buttonLongBrownImg;
             ctx.drawImage(
               secondaryButtonImg,
               buttonX,
@@ -4834,10 +5803,11 @@
             const tertiaryData = classActions[hero.clazz][tertiaryAction];
             const buttonY3 = buttonY2 + buttonHeight + buttonSpacing;
             const canUseTertiary = hero.charge >= tertiaryData.reqCharge;
+            const canUseTertiaryTurn = canUseTertiary && canActTurn;
 
-            const tertiaryButtonImg = canUseTertiary
+            const tertiaryButtonImg = canUseTertiaryTurn
               ? buttonLongBeigeImg
-              : panelBrownImg;
+              : buttonLongBrownImg;
             ctx.drawImage(
               tertiaryButtonImg,
               buttonX,
@@ -4901,9 +5871,37 @@
       function drawLevelInfo() {
         const levelData = levelInfo[currentLevel];
 
+        // Reproducir música del nivel correspondiente si no está sonando
+        let targetMusic;
+        if (currentLevel === 1) {
+          targetMusic = level1Music;
+        } else if (currentLevel === 2) {
+          targetMusic = level2Music;
+        } else if (currentLevel === 3) {
+          targetMusic = level3Music;
+        } else {
+          targetMusic = level1Music; // Fallback
+        }
+
+        if (currentMusic !== targetMusic) {
+          playMusic(targetMusic);
+        }
+
+        // Seleccionar el background correcto según el nivel
+        let currentLevelBg;
+        if (currentLevel === 1) {
+          currentLevelBg = level1InfoBg;
+        } else if (currentLevel === 2) {
+          currentLevelBg = level2InfoBg;
+        } else if (currentLevel === 3) {
+          currentLevelBg = level3InfoBg;
+        } else {
+          currentLevelBg = level1InfoBg; // Fallback
+        }
+
         // Dibujar fondo de imagen para las pantallas de nivel sin compresión
         ctx.imageSmoothingEnabled = false; // Evitar suavizado/compresión
-        ctx.drawImage(levelInfoBackgroundImg, 0, 0, designWidth, designHeight);
+        ctx.drawImage(currentLevelBg, 0, 0, designWidth, designHeight);
         ctx.imageSmoothingEnabled = true; // Restaurar suavizado para otros elementos
 
         // Oscurecer ligeramente el fondo
@@ -5087,6 +6085,374 @@
         ctx.textAlign = "left";
       }
 
+      // Función para dibujar la pantalla del libro de monstruos
+      function drawMonsterBook() {
+        // Dibujar fondo del libro
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(bookBackgroundImg, 0, 0, designWidth, designHeight);
+
+        // Datos de todos los monstruos organizados por nivel
+        const monstersData = [
+          // Level 1 - The Crypt
+          {
+            name: "Demon Bat",
+            type: "Normal Enemy",
+            level: "The Forgotten Crypt",
+            hp: 80,
+            abilities: ["Basic Attack: Low to medium damage to random hero"],
+            description:
+              "Swift flying creatures that inhabit dark crypts. Their speed makes them dangerous opponents.",
+            sprite: demonBatIdleImg,
+            frameWidth: 81,
+            frameHeight: 71,
+            idleFrames: 4,
+          },
+          {
+            name: "Noctebane (BOSS)",
+            type: "Boss",
+            level: "The Forgotten Crypt",
+            hp: 200,
+            abilities: [
+              "Blood Splat: Normal damage to random hero",
+              "Blood Storm: Damages all heroes (after 3 basic attacks)",
+              "Passive: Each attack increases its damage by 5% (stacks)",
+            ],
+            description:
+              "The Shadow Bat Lord that rules over the forgotten crypt. Master of dark blood magic.",
+            sprite: bossBatIdleImg,
+            frameWidth: 81,
+            frameHeight: 71,
+            idleFrames: 4,
+          },
+          // Level 2 - Red Dunes
+          {
+            name: "Fire Worm",
+            type: "Normal Enemy",
+            level: "The Red Dunes",
+            hp: 80,
+            abilities: ["Basic Attack: Medium damage to random hero"],
+            description:
+              "Desert predators that burrow beneath the crimson sands, emerging to ambush unwary travelers.",
+            sprite: wormIdleImg,
+            frameWidth: 90,
+            frameHeight: 90,
+            idleFrames: 9,
+          },
+          {
+            name: "Crab Bomb",
+            type: "Special Enemy",
+            level: "The Red Dunes",
+            hp: 150,
+            abilities: ["Explode: High damage to all heroes (after 5 charges)"],
+            description:
+              "Volatile crustaceans that sacrifice themselves in devastating explosions. No basic attacks.",
+            sprite: crabBombIdleImg,
+            frameWidth: 80,
+            frameHeight: 80,
+            idleFrames: 13,
+          },
+          {
+            name: "Minotaur (BOSS)",
+            type: "Boss",
+            level: "The Red Dunes",
+            hp: 300,
+            abilities: [
+              "Smash: Heavy damage to random hero",
+              "Life Steal: Damages hero and heals self (after 3 attacks)",
+              "Passive: Gains +5% charge speed after every attack (stacks)",
+            ],
+            description:
+              "The mighty guardian of the Red Dunes. This beast grows stronger as the battle progresses.",
+            sprite: minotaurAllStatesImg,
+            frameWidth: 288,
+            frameHeight: 160,
+            idleFrames: 16,
+          },
+          // Level 3 - Dark Swamp
+          {
+            name: "Mushroom",
+            type: "Normal Enemy",
+            level: "The Dark Swamp",
+            hp: 100,
+            abilities: ["Poison Attack: Damages and poisons target hero"],
+            description:
+              "Toxic fungi that release deadly spores. Their poison can weaken heroes over time.",
+            sprite: mushroomIdleImg,
+            frameWidth: 80,
+            frameHeight: 64,
+            idleFrames: 7,
+          },
+          {
+            name: "Dreadwing",
+            type: "Flying Enemy",
+            level: "The Dark Swamp",
+            hp: 90,
+            abilities: ["Double Strike: Attacks twice in succession"],
+            description:
+              "Sinister flying creatures that patrol the marshlands. Their speed allows for devastating combos.",
+            sprite: dreadwingIdleImg,
+            frameWidth: 64,
+            frameHeight: 64,
+            idleFrames: 8,
+          },
+          {
+            name: "Gorgon (BOSS)",
+            type: "Boss",
+            level: "The Dark Swamp",
+            hp: 400,
+            abilities: [
+              "Basic Attack: Poison attack (identical to Mushroom)",
+              "Toxic Horror: Massive poison damage to all heroes (after 3 attacks)",
+            ],
+            description:
+              "The ancient master of the Dark Swamp. Her toxic presence corrupts everything around her.",
+            sprite: swampGorgonIdleImg,
+            frameWidth: 128,
+            frameHeight: 128,
+            idleFrames: 7,
+          },
+        ];
+
+        // Configuración de las cartas
+        const cardWidth = 320;
+        const cardHeight = 310; // Aumentado (antes 280) para acomodar pasivas adicionales
+        const cardsPerRow = 1; // Una carta por fila para mejor legibilidad
+        const cardSpacing = 15;
+        const startX = (designWidth - cardWidth) / 2;
+        const startY = 60;
+
+        // Título principal (más grande para móviles)
+        ctx.fillStyle = "#4A3728";
+        ctx.font = "bold 32px 'Jacquard 24'"; // Aumentado de 28px a 32px
+        ctx.textAlign = "center";
+        ctx.fillText("Monster Codex", designWidth / 2, 35);
+
+        // Calcular altura total real (incluye desplazamiento inicial y elimina el spacing final sobrante)
+        const totalHeight =
+          startY +
+          monstersData.length * (cardHeight + cardSpacing) -
+          cardSpacing;
+        const headerHeight = 50;
+        const footerHeight = 60;
+        const contentAreaHeight = designHeight - headerHeight - footerHeight;
+        const maxScrollY = Math.max(0, totalHeight - contentAreaHeight);
+
+        // Limitar scroll
+        bookScrollY = Math.max(0, Math.min(bookScrollY, maxScrollY));
+
+        // Área de contenido con scroll - entre header y footer
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, headerHeight, designWidth, contentAreaHeight);
+        ctx.clip();
+
+        monstersData.forEach((monster, index) => {
+          const cardY =
+            startY + index * (cardHeight + cardSpacing) - bookScrollY;
+
+          // Solo dibujar cartas visibles
+          if (cardY > -cardHeight - 50 && cardY < designHeight + 50) {
+            drawMonsterCard(monster, startX, cardY, cardWidth, cardHeight);
+          }
+        });
+
+        ctx.restore();
+
+        // FOOTER FIJO
+        const footerY = designHeight - footerHeight;
+
+        // Fondo del footer - usar la misma textura que el background
+        ctx.drawImage(
+          bookBackgroundImg,
+          0,
+          footerY,
+          designWidth,
+          footerHeight,
+          0,
+          footerY,
+          designWidth,
+          footerHeight
+        );
+
+        // Botón Back centrado en el footer
+        const backButtonWidth = 120;
+        const backButtonHeight = 40;
+        const backButtonX = (designWidth - backButtonWidth) / 2;
+        const backButtonY = footerY + 10;
+
+        ctx.drawImage(
+          buttonLongBeigeImg,
+          backButtonX,
+          backButtonY,
+          backButtonWidth,
+          backButtonHeight
+        );
+
+        ctx.fillStyle = "#4A3728";
+        ctx.font = "bold 16px 'Jersey 10'";
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "Back",
+          backButtonX + backButtonWidth / 2,
+          backButtonY + 25
+        );
+
+        // Indicador de scroll si es necesario (ajustado para el nuevo layout)
+        if (maxScrollY > 0) {
+          const scrollBarHeight = contentAreaHeight - 40;
+          const scrollBarX = designWidth - 15;
+          const scrollBarY = headerHeight + 20;
+          const scrollPosition =
+            (bookScrollY / maxScrollY) * (scrollBarHeight - 20);
+
+          // Barra de scroll de fondo
+          ctx.fillStyle = "rgba(74, 55, 40, 0.3)";
+          ctx.fillRect(scrollBarX, scrollBarY, 8, scrollBarHeight);
+
+          // Indicador de posición
+          ctx.fillStyle = "#4A3728";
+          ctx.fillRect(scrollBarX, scrollBarY + scrollPosition, 8, 20);
+        }
+      }
+
+      function drawMonsterCard(monster, x, y, width, height) {
+        // Border de la carta con esquinas redondeadas
+        ctx.strokeStyle = "#4A3728"; // Marrón oscuro
+        ctx.lineWidth = 3;
+
+        // Crear path con esquinas redondeadas
+        const radius = 10;
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(
+          x + width,
+          y + height,
+          x + width - radius,
+          y + height
+        );
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        ctx.stroke();
+
+        // PRIMERA FILA - 2 columnas
+        const padding = 15;
+        const firstRowHeight = 120; // Aumentado para más espacio
+
+        // Columna 1: Sprite del enemigo (tamaño especial para Minotaur)
+        let spriteSize = 80;
+        if (monster.name.includes("Minotaur")) {
+          spriteSize = 100; // Más grande para el Minotaur
+        }
+        const spriteX = x + padding;
+        const spriteY = y + padding;
+
+        if (monster.sprite) {
+          // Calcular frame para animación idle
+          const frame = Math.floor((currentTime * 8) % monster.idleFrames);
+          const sx = frame * monster.frameWidth;
+          const sy = 0; // Row 0 para idle normalmente
+
+          ctx.drawImage(
+            monster.sprite,
+            sx,
+            sy,
+            monster.frameWidth,
+            monster.frameHeight,
+            spriteX,
+            spriteY,
+            spriteSize,
+            spriteSize
+          );
+        }
+
+        // Columna 2: Nombre y HP
+        const textStartX = spriteX + spriteSize + 20;
+        let currentY = y + padding + 15;
+
+        // Nombre (en marrón oscuro, más grande)
+        ctx.fillStyle = "#4A3728";
+        ctx.font = "bold 22px 'Jersey 10'"; // Aumentado de 18px a 22px
+        ctx.textAlign = "left";
+        ctx.fillText(monster.name, textStartX, currentY);
+        currentY += 35;
+
+        // HP (más grande)
+        ctx.fillStyle = "#B22222";
+        ctx.font = "bold 18px 'Jersey 10'"; // Aumentado de 16px a 18px
+        ctx.fillText(`HP: ${monster.hp}`, textStartX, currentY);
+        currentY += 25;
+
+        // Nivel donde aparece (nuevo)
+        ctx.fillStyle = "#654321";
+        ctx.font = "16px 'Jersey 10'";
+        ctx.fillText(`Level: ${monster.level}`, textStartX, currentY);
+
+        // SEGUNDA FILA - 1 columna completa
+        const secondRowY = y + firstRowHeight + padding;
+        const fullWidth = width - padding * 2;
+        currentY = secondRowY;
+
+        // Título "Abilities" (añadido de vuelta)
+        ctx.fillStyle = "#4A3728";
+        ctx.font = "bold 18px 'Jersey 10'"; // Más grande que antes
+        ctx.fillText("Abilities:", x + padding, currentY);
+        currentY += 25;
+
+        // Habilidades (más grandes)
+        ctx.fillStyle = "#4A3728";
+        ctx.font = "16px 'Jersey 10'"; // Aumentado de 14px a 16px
+
+        monster.abilities.forEach((ability) => {
+          const abilityLines = wrapTextForCard(ability, fullWidth);
+          abilityLines.forEach((line) => {
+            ctx.fillText(`• ${line}`, x + padding, currentY);
+            currentY += 18; // Aumentado el spacing
+          });
+        });
+
+        // Espacio entre habilidades y lore
+        currentY += 15;
+
+        // Lore/Descripción (más grande)
+        ctx.fillStyle = "#654321";
+        ctx.font = "15px 'Jersey 10'"; // Aumentado de 13px a 15px
+        const descLines = wrapTextForCard(monster.description, fullWidth);
+        descLines.forEach((line) => {
+          ctx.fillText(line, x + padding, currentY);
+          currentY += 17; // Aumentado el spacing
+        });
+      }
+
+      function wrapTextForCard(text, maxWidth) {
+        const words = text.split(" ");
+        const lines = [];
+        let currentLine = "";
+
+        for (let word of words) {
+          const testLine = currentLine + (currentLine ? " " : "") + word;
+          const metrics = ctx.measureText(testLine);
+
+          if (metrics.width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = testLine;
+          }
+        }
+
+        if (currentLine) {
+          lines.push(currentLine);
+        }
+
+        return lines;
+      }
+
       // Función auxiliar para envolver texto
       function wrapText(text, maxWidth) {
         const words = text.split(" ");
@@ -5112,11 +6478,417 @@
         return lines;
       }
 
+      // Función para dibujar la pantalla de guía
+      function drawGuide() {
+        // Dibujar fondo usando la misma textura que el book
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(bookBackgroundImg, 0, 0, designWidth, designHeight);
+
+        // Configuración de layout
+        const headerHeight = 50;
+        const footerHeight = 60;
+        const contentAreaHeight = designHeight - headerHeight - footerHeight;
+
+        // Título principal (más grande para móviles)
+        ctx.fillStyle = "#4A3728";
+        ctx.font = "bold 32px 'Jacquard 24'"; // Misma fuente que Monster Codex
+        ctx.textAlign = "center";
+        ctx.fillText("Game Guide", designWidth / 2, 35);
+
+        // Contenido de la guía
+        const guideContent = [
+          {
+            title: "🌀 Turn & Charge System",
+            content:
+              "Combat is turn-based through a shared charge queue. When a hero's bar fills, they may use ANY of their abilities (no individual energy costs). After using one, their bar resets. Enemies act the same way, one at a time.",
+          },
+          {
+            title: "⏳ Status Durations",
+            content:
+              "Effects advance only on turn starts. Shadows: deals damage each turn and gains +1 damage per extra stack. Poison: deals 2 base +1 per extra stack each turn. Regrowth: heals all allies 4–5 HP per turn for 5 turns. Agony: party defense buff for 10 turns.",
+          },
+          {
+            title: "🏹 Enemy Attacks",
+            content:
+              "Enemies act when their charge bar fills. Bosses often prepare powerful specials after a set number of basic attacks—watch their patterns.",
+          },
+          {
+            title: "💀 Special Abilities",
+            content:
+              "Some enemies prepare specials after a fixed number of actions (e.g., 3 attacks). Others (like bombs) charge only to unleash a large effect. Plan around these timers.",
+          },
+          {
+            title: "📈 Difficulty Progression",
+            content:
+              "Each level increases in difficulty with stronger enemies and more challenging encounters.",
+          },
+          {
+            title: "🧠 Strategic Combat",
+            content:
+              "Use abilities at the right moment: finish low HP targets, stack Shadows/Poison efficiently, and time heals before enemy bursts.",
+          },
+          {
+            title: "⚔️ Hero Abilities",
+            content: "",
+          },
+        ];
+
+        // Hero abilities detailed info
+        const heroAbilities = [
+          {
+            hero: "Mage",
+            abilities: [
+              "Fireblast: High single-target damage (never hits allies)",
+              "Combustion: Increases critical chance for the NEXT damage ability only, then the buff is consumed",
+              "Inferno: Lower single-target damage than Fireblast but hits ALL enemies (never allies)",
+            ],
+          },
+          {
+            hero: "Warlock",
+            abilities: [
+              "Dark Slash: Damage + applies 'Shadows' (damage every turn, +1 damage per extra stack)",
+              "Agony: Grants party defense for 10 turns (no damage reflection)",
+              "Immolation: Massive damage to all enemies but removes 60% of Warlock HP",
+            ],
+          },
+          {
+            hero: "Priest",
+            abilities: [
+              "Holy Wave: Strong single-target heal",
+              "Smite: Moderate damage to one enemy",
+              "Regrowth: Heals all allies 4–5 HP each turn for 5 turns",
+            ],
+          },
+        ];
+
+        // Calcular altura total del contenido
+        const sectionSpacing = 25;
+        const lineHeight = 20;
+        const titleHeight = 30;
+        let totalContentHeight = 0;
+
+        // Simular el renderizado para calcular altura real
+        ctx.font = "16px 'Jersey 10'"; // Establecer fuente para medición
+
+        guideContent.forEach((section) => {
+          totalContentHeight += titleHeight + 10; // Título + spacing
+          if (section.content) {
+            const lines = wrapGuideText(section.content, 280);
+            totalContentHeight += lines.length * lineHeight + sectionSpacing;
+          }
+        });
+
+        // Añadir altura para las habilidades de héroes (cálculo más preciso)
+        heroAbilities.forEach((hero) => {
+          totalContentHeight += titleHeight + 10; // Título del héroe
+          hero.abilities.forEach((ability) => {
+            const lines = wrapGuideText(`• ${ability}`, 260);
+            totalContentHeight += lines.length * lineHeight + 5;
+          });
+          totalContentHeight += sectionSpacing;
+        });
+
+        // Añadir padding extra al final para asegurar que se pueda hacer scroll hasta el final
+        totalContentHeight += 40;
+
+        const maxScrollY = Math.max(0, totalContentHeight - contentAreaHeight);
+        guideScrollY = Math.max(0, Math.min(guideScrollY, maxScrollY));
+
+        // Área de contenido con scroll
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, headerHeight, designWidth, contentAreaHeight);
+        ctx.clip();
+
+        let currentY = headerHeight + 20 - guideScrollY;
+        const contentX = 20;
+
+        // Renderizar contenido de la guía
+        guideContent.forEach((section) => {
+          // Título de la sección
+          ctx.fillStyle = "#4A3728";
+          ctx.font = "bold 22px 'Jersey 10'"; // Misma fuente que nombres de monstruos
+          ctx.textAlign = "left";
+          ctx.fillText(section.title, contentX, currentY);
+          currentY += titleHeight + 10;
+
+          // Contenido de la sección
+          if (section.content) {
+            ctx.fillStyle = "#654321"; // Mismo color que el lore en las cartas
+            ctx.font = "16px 'Jersey 10'"; // Misma fuente que el texto de habilidades
+            const lines = wrapGuideText(section.content, 280);
+            lines.forEach((line) => {
+              ctx.fillText(line, contentX + 15, currentY);
+              currentY += lineHeight;
+            });
+            currentY += sectionSpacing;
+          }
+        });
+
+        // Renderizar habilidades de héroes
+        heroAbilities.forEach((hero) => {
+          ctx.fillStyle = "#4A3728";
+          ctx.font = "bold 22px 'Jersey 10'"; // Mismo estilo que títulos de sección
+          ctx.fillText(`${hero.hero}:`, contentX + 15, currentY);
+          currentY += titleHeight;
+
+          hero.abilities.forEach((ability) => {
+            ctx.fillStyle = "#654321"; // Mismo color que el contenido
+            ctx.font = "16px 'Jersey 10'"; // Misma fuente
+            const lines = wrapGuideText(`• ${ability}`, 260);
+            lines.forEach((line) => {
+              ctx.fillText(line, contentX + 30, currentY);
+              currentY += lineHeight;
+            });
+            currentY += 5;
+          });
+          currentY += sectionSpacing;
+        });
+
+        ctx.restore();
+
+        // FOOTER con el mismo estilo que el Book
+        const footerY = designHeight - footerHeight;
+
+        // Fondo del footer usando la misma textura
+        ctx.drawImage(
+          bookBackgroundImg,
+          0,
+          footerY,
+          designWidth,
+          footerHeight,
+          0,
+          footerY,
+          designWidth,
+          footerHeight
+        );
+
+        // Botón Back centrado en el footer
+        const backButtonWidth = 120;
+        const backButtonHeight = 40;
+        const backButtonX = (designWidth - backButtonWidth) / 2;
+        const backButtonY = footerY + 10;
+
+        ctx.drawImage(
+          buttonLongBeigeImg,
+          backButtonX,
+          backButtonY,
+          backButtonWidth,
+          backButtonHeight
+        );
+
+        ctx.fillStyle = "#4A3728";
+        ctx.font = "bold 16px 'Jersey 10'";
+        ctx.textAlign = "center";
+        ctx.fillText(
+          "Back",
+          backButtonX + backButtonWidth / 2,
+          backButtonY + 25
+        );
+
+        // Indicador de scroll si es necesario
+        if (maxScrollY > 0) {
+          const scrollBarHeight = contentAreaHeight - 40;
+          const scrollBarX = designWidth - 15;
+          const scrollBarY = headerHeight + 20;
+          const scrollPosition =
+            (guideScrollY / maxScrollY) * (scrollBarHeight - 20);
+
+          // Barra de scroll de fondo
+          ctx.fillStyle = "rgba(74, 55, 40, 0.3)";
+          ctx.fillRect(scrollBarX, scrollBarY, 8, scrollBarHeight);
+
+          // Indicador de posición
+          ctx.fillStyle = "#4A3728";
+          ctx.fillRect(scrollBarX, scrollBarY + scrollPosition, 8, 20);
+        }
+      }
+
+      // Función auxiliar para envolver texto en la guía
+      function wrapGuideText(text, maxWidth) {
+        const words = text.split(" ");
+        const lines = [];
+        let currentLine = "";
+
+        for (let word of words) {
+          const testLine = currentLine + (currentLine ? " " : "") + word;
+          const metrics = ctx.measureText(testLine);
+
+          if (metrics.width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = testLine;
+          }
+        }
+
+        if (currentLine) {
+          lines.push(currentLine);
+        }
+
+        return lines;
+      }
+
       canvas.addEventListener("touchstart", handleInput);
+      canvas.addEventListener("touchmove", handleTouchMove);
+      canvas.addEventListener("touchend", handleTouchEnd);
       canvas.addEventListener("click", handleInput);
+      canvas.addEventListener("wheel", handleWheel);
+
+      function handleTouchMove(e) {
+        e.preventDefault();
+        if (state === "book" && isDragging) {
+          const rect = canvas.getBoundingClientRect();
+          const touchY =
+            (e.touches[0].clientY - rect.top) * (designHeight / rect.height);
+
+          const deltaY = lastTouchY - touchY;
+          const monstersCount = 8;
+          const cardHeight = 280;
+          const cardSpacing = 15;
+          const totalHeight = monstersCount * (cardHeight + cardSpacing);
+          const headerHeight = 50;
+          const footerHeight = 60;
+          const contentAreaHeight = designHeight - headerHeight - footerHeight;
+          const maxScrollY = Math.max(0, totalHeight - contentAreaHeight);
+
+          bookScrollY = Math.max(0, Math.min(maxScrollY, bookScrollY + deltaY));
+          lastTouchY = touchY;
+        }
+
+        if (state === "guide" && isDragging) {
+          const rect = canvas.getBoundingClientRect();
+          const touchY =
+            (e.touches[0].clientY - rect.top) * (designHeight / rect.height);
+
+          const deltaY = lastTouchY - touchY;
+
+          // Calcular altura del contenido de la guía de forma más precisa
+          const sectionSpacing = 25;
+          const lineHeight = 20;
+          const titleHeight = 30;
+
+          // Simular altura de contenido general
+          const sectionsCount = 7;
+          const avgLinesPerSection = 4; // Promedio de líneas por sección
+          const sectionsHeight =
+            sectionsCount *
+            (titleHeight +
+              10 +
+              avgLinesPerSection * lineHeight +
+              sectionSpacing);
+
+          // Simular altura de habilidades de héroes
+          const heroesCount = 3;
+          const avgAbilitiesPerHero = 3;
+          const avgLinesPerAbility = 2; // Promedio de líneas por habilidad
+          const heroAbilitiesHeight =
+            heroesCount *
+            (titleHeight +
+              10 +
+              avgAbilitiesPerHero * avgLinesPerAbility * lineHeight +
+              sectionSpacing);
+
+          const totalContentHeight = sectionsHeight + heroAbilitiesHeight + 40; // 40 padding extra
+
+          const headerHeight = 50;
+          const footerHeight = 60;
+          const contentAreaHeight = designHeight - headerHeight - footerHeight;
+          const maxScrollY = Math.max(
+            0,
+            totalContentHeight - contentAreaHeight
+          );
+
+          guideScrollY = Math.max(
+            0,
+            Math.min(maxScrollY, guideScrollY + deltaY)
+          );
+          lastTouchY = touchY;
+        }
+      }
+
+      function handleTouchEnd(e) {
+        e.preventDefault();
+        isDragging = false;
+      }
+
+      function handleWheel(e) {
+        e.preventDefault();
+        if (state === "book") {
+          const monstersCount = 8; // Total de monstruos (mantener sincronizado con monstersData)
+          const startY = 60; // Mismo offset usado en drawMonsterBook
+          const cardHeight = 310; // Altura actualizada de la carta
+          const cardSpacing = 15; // Espaciado entre cartas
+          // Altura total real incluyendo offset inicial y sin sumar spacing al final
+          const totalHeight =
+            startY + monstersCount * (cardHeight + cardSpacing) - cardSpacing;
+          const headerHeight = 50;
+          const footerHeight = 60;
+          const contentAreaHeight = designHeight - headerHeight - footerHeight;
+          const maxScrollY = Math.max(0, totalHeight - contentAreaHeight);
+
+          if (e.deltaY > 0) {
+            // Scroll hacia abajo
+            bookScrollY = Math.min(maxScrollY, bookScrollY + bookScrollSpeed);
+          } else {
+            // Scroll hacia arriba
+            bookScrollY = Math.max(0, bookScrollY - bookScrollSpeed);
+          }
+        }
+
+        if (state === "guide") {
+          // Calcular altura del contenido de la guía de forma más precisa
+          const sectionSpacing = 25;
+          const lineHeight = 20;
+          const titleHeight = 30;
+
+          // Simular altura de contenido general
+          const sectionsCount = 7;
+          const avgLinesPerSection = 4; // Promedio de líneas por sección
+          const sectionsHeight =
+            sectionsCount *
+            (titleHeight +
+              10 +
+              avgLinesPerSection * lineHeight +
+              sectionSpacing);
+
+          // Simular altura de habilidades de héroes
+          const heroesCount = 3;
+          const avgAbilitiesPerHero = 3;
+          const avgLinesPerAbility = 2; // Promedio de líneas por habilidad
+          const heroAbilitiesHeight =
+            heroesCount *
+            (titleHeight +
+              10 +
+              avgAbilitiesPerHero * avgLinesPerAbility * lineHeight +
+              sectionSpacing);
+
+          const totalContentHeight = sectionsHeight + heroAbilitiesHeight + 40; // 40 padding extra
+
+          const headerHeight = 50;
+          const footerHeight = 60;
+          const contentAreaHeight = designHeight - headerHeight - footerHeight;
+          const maxScrollY = Math.max(
+            0,
+            totalContentHeight - contentAreaHeight
+          );
+
+          if (e.deltaY > 0) {
+            // Scroll hacia abajo
+            guideScrollY = Math.min(maxScrollY, guideScrollY + bookScrollSpeed);
+          } else {
+            // Scroll hacia arriba
+            guideScrollY = Math.max(0, guideScrollY - bookScrollSpeed);
+          }
+        }
+      }
 
       function handleInput(e) {
         e.preventDefault();
+
+        // Inicializar audio en el primer clic del usuario
+        initializeAudio();
+
         const rect = canvas.getBoundingClientRect();
         let clientX, clientY;
 
@@ -5133,6 +6905,8 @@
 
         // Manejar clics en el menú principal
         if (state === "main_menu") {
+          // NO reproducir música en el menú principal
+
           // Coordenadas de los nuevos botones estilo habilidades
           const buttonWidth = 200;
           const buttonHeight = 40;
@@ -5162,7 +6936,9 @@
             touchY <= guideButtonY + buttonHeight
           ) {
             console.log("Guide button clicked");
-            // TODO: Abrir modal de guía
+            state = "guide";
+            guideScrollY = 0; // Reset scroll al abrir la guía
+            // Mantener música del menú para Guide
             return;
           }
 
@@ -5175,7 +6951,9 @@
             touchY <= bookButtonY + buttonHeight
           ) {
             console.log("Book button clicked");
-            // TODO: Abrir modal del libro de monstruos
+            state = "book";
+            bookScrollY = 0; // Resetear scroll al abrir el libro
+            // Mantener música del menú para Book
             return;
           }
         }
@@ -5201,83 +6979,131 @@
           }
         }
 
-        // Manejar clics en el modal de finalización de nivel
+        // Manejar clics en modal de fin de nivel
         if (state === "level_completion" && levelCompletionModal.show) {
-          // Coordenadas del modal y botones
-          const modalWidth = 300;
-          const modalHeight = 290;
-          const modalX = (designWidth - modalWidth) / 2;
-          const modalY = (designHeight - modalHeight) / 2;
-          const continueButtonY = modalY + 150;
-          const buttonWidth = 160;
-          const buttonHeight = 40;
-          const buttonX = (designWidth - buttonWidth) / 2;
+          const modalW = 300;
+          const modalH = 200;
+          const modalX = (designWidth - modalW) / 2;
+          const modalY = (designHeight - modalH) / 2 - 40;
+          const btnW = 120;
+          const btnH = 36;
+          const btnY = modalY + modalH - 70;
+          const continueX = designWidth / 2 - btnW - 10;
+          const surrenderX = designWidth / 2 + 10;
 
-          // Verificar clic en el botón Continue
+          // Click en Continue
           if (
-            touchX >= buttonX &&
-            touchX <= buttonX + buttonWidth &&
-            touchY >= continueButtonY &&
-            touchY <= continueButtonY + buttonHeight
+            touchX >= continueX &&
+            touchX <= continueX + btnW &&
+            touchY >= btnY &&
+            touchY <= btnY + btnH
           ) {
-            console.log("Continue button clicked");
+            console.log("Continue clicked -> next level info");
+            // Preparar pantalla de información del siguiente nivel
+            currentLevel = levelCompletionModal.level + 1;
+            state = "level_info";
             levelCompletionModal.show = false;
-
-            if (levelCompletionModal.gameCompleted) {
-              // Juego completado, volver al menú principal
-              state = "main_menu";
-              resetGame();
-            } else {
-              // Pasar al siguiente nivel - revivir todos los héroes con vida completa
-              console.log(
-                `Advancing to level ${
-                  currentLevel + 1
-                }! Reviving all heroes with full health.`
-              );
-              heroes.forEach((hero) => {
-                hero.hp = hero.maxhp; // Revivir con vida completa
-                hero.charge = 0; // Resetear carga
-                hero.anim = "idle"; // Asegurar que estén en animación idle
-                hero.frame = 0;
-                // Limpiar buffs al empezar nuevo nivel
-                hero.buffs = [];
-                hero.debuffs = [];
-              });
-
-              currentLevel++;
-              if (currentLevel <= 3) {
-                state = "level_info";
-              } else {
-                // Juego completado (por si acaso)
-                state = "main_menu";
-                resetGame();
-              }
-            }
+            pendingLevelInfo = false; // Ya vamos directamente a la pantalla
             return;
           }
 
-          // Verificar clic en el botón Surrender (solo si no es el final del juego)
-          if (!levelCompletionModal.gameCompleted) {
-            const surrenderButtonY = continueButtonY + buttonHeight + 10;
-            if (
-              touchX >= buttonX &&
-              touchX <= buttonX + buttonWidth &&
-              touchY >= surrenderButtonY &&
-              touchY <= surrenderButtonY + buttonHeight
-            ) {
-              console.log("Surrender button clicked");
-              levelCompletionModal.show = false;
+          // Click en Surrender
+          if (
+            touchX >= surrenderX &&
+            touchX <= surrenderX + btnW &&
+            touchY >= btnY &&
+            touchY <= btnY + btnH
+          ) {
+            console.log("Surrender clicked -> game over");
+            handleGameOver();
+            return;
+          }
+        }
 
-              // TODO: Enviar score al SDK aquí
-              // Volver al menú principal (Game Over)
-              state = "main_menu";
-              resetGame();
-              return;
-            }
+        // Manejar clics en la pantalla del libro de monstruos
+        if (state === "book") {
+          // NO reproducir música en book
+
+          // Inicializar drag para scroll táctil
+          if (e.type === "touchstart") {
+            isDragging = true;
+            lastTouchY = touchY;
           }
 
-          return; // No procesar otros clics durante el modal
+          // Botón de volver (centrado en el footer)
+          const backButtonWidth = 120;
+          const backButtonHeight = 40;
+          const footerHeight = 60;
+          const backButtonX = (designWidth - backButtonWidth) / 2;
+          const backButtonY = designHeight - footerHeight + 10;
+
+          if (
+            touchX >= backButtonX &&
+            touchX <= backButtonX + backButtonWidth &&
+            touchY >= backButtonY &&
+            touchY <= backButtonY + backButtonHeight
+          ) {
+            console.log("Back button clicked");
+            state = "main_menu";
+            isDragging = false; // Cancelar drag al hacer clic en botón
+            return;
+          }
+
+          return;
         }
+
+        // Manejar clics en la pantalla de guía
+        if (state === "guide") {
+          // NO reproducir música en guide
+
+          // Inicializar drag para scroll táctil
+          if (e.type === "touchstart") {
+            isDragging = true;
+            lastTouchY = touchY;
+          }
+
+          // Botón de volver (centrado en el footer)
+          const backButtonWidth = 120;
+          const backButtonHeight = 40;
+          const footerHeight = 60;
+          const backButtonX = (designWidth - backButtonWidth) / 2;
+          const backButtonY = designHeight - footerHeight + 10;
+
+          if (
+            touchX >= backButtonX &&
+            touchX <= backButtonX + backButtonWidth &&
+            touchY >= backButtonY &&
+            touchY <= backButtonY + backButtonHeight
+          ) {
+            console.log("Guide Back button clicked");
+            state = "main_menu";
+            isDragging = false; // Cancelar drag al hacer clic en botón
+            return;
+          }
+
+          // Manejo de scroll vertical (tocar arriba o abajo de la pantalla)
+          const scrollZoneHeight = 100;
+          if (touchY < scrollZoneHeight) {
+            // Scroll hacia arriba
+            bookScrollY = Math.max(0, bookScrollY - bookScrollSpeed);
+          } else if (touchY > designHeight - scrollZoneHeight) {
+            // Scroll hacia abajo
+            const monstersCount = 8; // Total de monstruos
+            const cardHeight = 280; // Actualizado al nuevo tamaño
+            const cardSpacing = 15; // Actualizado al nuevo spacing
+            const totalHeight = monstersCount * (cardHeight + cardSpacing);
+            const headerHeight = 50;
+            const footerHeight = 60;
+            const contentAreaHeight =
+              designHeight - headerHeight - footerHeight;
+            const maxScrollY = Math.max(0, totalHeight - contentAreaHeight);
+            bookScrollY = Math.min(maxScrollY, bookScrollY + bookScrollSpeed);
+          }
+          return;
+        }
+
+        // Interacciones de modal de fin de nivel deshabilitadas (SDK)
+        if (state === "level_completion" && levelCompletionModal.show) return;
 
         // Footer buttons
         if (touchY >= 520 && state === "select_hero") {
@@ -5310,7 +7136,11 @@
             ) {
               const action = actions[0];
               const actionData = classActions[hero.clazz][action];
-              const canUse = hero.charge >= actionData.reqCharge && hero.hp > 0;
+              const canUse =
+                hero.charge >= actionData.reqCharge &&
+                hero.hp > 0 &&
+                turnQueue.length > 0 &&
+                turnQueue[0] === hero;
 
               if (canUse) {
                 selectedHero = hero;
@@ -5319,14 +7149,8 @@
                 const actionType = actionData.type;
                 if (actionType === "single_enemy") {
                   state = "select_target_enemy";
-                  hero.anim = "selected";
-                  hero.frame = 0;
-                  hero.animTime = 0;
                 } else if (actionType === "single_ally") {
                   state = "select_target_ally";
-                  hero.anim = "selected";
-                  hero.frame = 0;
-                  hero.animTime = 0;
                 } else if (actionType === "all_enemy") {
                   if (
                     executeAction(
@@ -5368,7 +7192,11 @@
             ) {
               const action = actions[1];
               const actionData = classActions[hero.clazz][action];
-              const canUse = hero.charge >= actionData.reqCharge && hero.hp > 0;
+              const canUse =
+                hero.charge >= actionData.reqCharge &&
+                hero.hp > 0 &&
+                turnQueue.length > 0 &&
+                turnQueue[0] === hero;
 
               if (canUse) {
                 selectedHero = hero;
@@ -5377,14 +7205,8 @@
                 const actionType = actionData.type;
                 if (actionType === "single_enemy") {
                   state = "select_target_enemy";
-                  hero.anim = "selected";
-                  hero.frame = 0;
-                  hero.animTime = 0;
                 } else if (actionType === "single_ally") {
                   state = "select_target_ally";
-                  hero.anim = "selected";
-                  hero.frame = 0;
-                  hero.animTime = 0;
                 } else if (actionType === "all_enemy") {
                   if (
                     executeAction(
@@ -5426,7 +7248,11 @@
             ) {
               const action = actions[2];
               const actionData = classActions[hero.clazz][action];
-              const canUse = hero.charge >= actionData.reqCharge && hero.hp > 0;
+              const canUse =
+                hero.charge >= actionData.reqCharge &&
+                hero.hp > 0 &&
+                turnQueue.length > 0 &&
+                turnQueue[0] === hero;
 
               if (canUse) {
                 selectedHero = hero;
@@ -5435,14 +7261,8 @@
                 const actionType = actionData.type;
                 if (actionType === "single_enemy") {
                   state = "select_target_enemy";
-                  hero.anim = "selected";
-                  hero.frame = 0;
-                  hero.animTime = 0;
                 } else if (actionType === "single_ally") {
                   state = "select_target_ally";
-                  hero.anim = "selected";
-                  hero.frame = 0;
-                  hero.animTime = 0;
                 } else if (actionType === "all_enemy") {
                   if (
                     executeAction(
@@ -5477,32 +7297,6 @@
           return;
         }
 
-        // Botón X de cerrar - nueva posición en la esquina del modal
-        if (state === "select_target_enemy" || state === "select_target_ally") {
-          const modalWidth = designWidth;
-          const modalX = 0;
-          const modalY = 75;
-          const closeX = modalX + modalWidth - 15;
-          const closeY = modalY + 10;
-
-          if (
-            touchX >= closeX - 10 &&
-            touchX <= closeX + 10 &&
-            touchY >= closeY - 10 &&
-            touchY <= closeY + 10
-          ) {
-            state = "select_hero";
-            if (selectedHero) {
-              selectedHero.anim = "idle"; // Resetear animación a idle
-              selectedHero.frame = 0;
-              selectedHero.animTime = 0;
-            }
-            selectedHero = null;
-            selectedAction = null;
-            return;
-          }
-        }
-
         if (state === "select_hero") {
           heroes.forEach((h) => {
             if (
@@ -5515,6 +7309,7 @@
             }
           });
         } else if (state === "select_target_enemy") {
+          let targetClicked = false;
           enemies.forEach((e) => {
             const size = e.size || 80;
             if (
@@ -5524,11 +7319,26 @@
             ) {
               if (executeAction(selectedHero, selectedAction, e)) {
                 // No resetear selectedHero aquí, se resetea en applyEffect
-                state = "animate";
+                // NO cambiar estado a "animate" para permitir clicks rápidos
+                // state = "animate";
               }
+              targetClicked = true;
             }
           });
+
+          // Si no se hizo clic en ningún enemigo, cerrar el modal
+          if (!targetClicked) {
+            state = "select_hero";
+            if (selectedHero) {
+              selectedHero.anim = "idle";
+              selectedHero.frame = 0;
+              selectedHero.animTime = 0;
+            }
+            selectedHero = null;
+            selectedAction = null;
+          }
         } else if (state === "select_target_ally") {
+          let targetClicked = false;
           heroes.forEach((h) => {
             if (
               Math.abs(touchX - h.posx) < 40 &&
@@ -5536,10 +7346,24 @@
             ) {
               if (executeAction(selectedHero, selectedAction, h)) {
                 // No resetear selectedHero aquí, se resetea en applyEffect
-                state = "animate";
+                // NO cambiar estado a "animate" para permitir clicks rápidos
+                // state = "animate";
               }
+              targetClicked = true;
             }
           });
+
+          // Si no se hizo clic en ningún aliado, cerrar el modal
+          if (!targetClicked) {
+            state = "select_hero";
+            if (selectedHero) {
+              selectedHero.anim = "idle";
+              selectedHero.frame = 0;
+              selectedHero.animTime = 0;
+            }
+            selectedHero = null;
+            selectedAction = null;
+          }
         }
       }
 
@@ -5555,6 +7379,48 @@
         enemies = [];
         hitNumbers = [];
         visualEffects = [];
+        pendingSounds = []; // Limpiar sonidos pendientes
+        // La música se maneja en handleInput cuando se cambia a main_menu
+      }
+
+      // ================================
+      // FARCADE SDK HELPER FUNCTIONS
+      // ================================
+
+      function triggerHapticFeedback() {
+        if (window.FarcadeSDK) {
+          window.FarcadeSDK.singlePlayer.actions.hapticFeedback();
+        }
+      }
+
+      // ================================
+      // FARCADE SDK INTEGRATION
+      // ================================
+
+      // Manejar solicitudes de "play again" desde Farcade
+      if (window.FarcadeSDK) {
+        window.FarcadeSDK.on("play_again", () => {
+          resetGame();
+        });
+
+        // Manejar mute/unmute desde Farcade
+        window.FarcadeSDK.on("toggle_mute", (data) => {
+          if (data.isMuted) {
+            // Pausar toda la música
+            [menuMusic, level1Music, level2Music, level3Music].forEach(
+              (music) => {
+                music.muted = true;
+              }
+            );
+          } else {
+            // Reanudar la música
+            [menuMusic, level1Music, level2Music, level3Music].forEach(
+              (music) => {
+                music.muted = false;
+              }
+            );
+          }
+        });
       }
 
       Promise.all([
@@ -5605,11 +7471,26 @@
         new Promise((r) => (bersekerDebuffImg.onload = r)),
         new Promise((r) => (poisonDebuffImg.onload = r)),
         new Promise((r) => (panelBrownImg.onload = r)),
+        new Promise((r) => (panelBeigeImg.onload = r)),
         new Promise((r) => (buttonLongBeigeImg.onload = r)),
+        new Promise((r) => (buttonLongBrownImg.onload = r)),
+        new Promise((r) => (buttonRoundBeigeImg.onload = r)),
+        new Promise((r) => (iconCrossBrownImg.onload = r)),
         new Promise((r) => (mainMenuImg.onload = r)),
+        new Promise((r) => (bookBackgroundImg.onload = r)),
+        new Promise((r) => (level1InfoBg.onload = r)),
+        new Promise((r) => (level2InfoBg.onload = r)),
+        new Promise((r) => (level3InfoBg.onload = r)),
       ]).then(() => {
         // Asegurar que empezamos en el menú principal
         state = "main_menu";
+        // NO reproducir música al cargar - solo al pulsar START
+
+        // Notificar al SDK de Farcade que el juego está listo
+        if (window.FarcadeSDK) {
+          window.FarcadeSDK.singlePlayer.actions.ready();
+        }
+
         requestAnimationFrame(loop);
       });
     </script>
