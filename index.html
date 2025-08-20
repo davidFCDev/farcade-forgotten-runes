@@ -1056,8 +1056,10 @@
       let levelStartTime = 0;
       // Configuración del nuevo sistema de puntuación
       const SCORE_CONFIG = Object.freeze({
-        waveBase: 100, // Puntos base por wave superada
-        levelCompletion: 500, // Bonus adicional al finalizar cada nivel (cada 3 waves)
+        waveBase: 400, // Puntos base por wave superada (400 × 3 = 1200 base por nivel)
+        levelCompletion: 250, // Bonus adicional al finalizar cada nivel (250 extra)
+        maxWaveGain: 1500, // Límite máximo de puntos por wave
+        maxTotalScore: 500000, // Límite máximo total de puntuación
         // Multiplicador por tiempo (segundos empleados en el nivel actual)
         timeMultiplier(elapsedSec) {
           if (elapsedSec <= 30) return 1.5; // Muy rápido
@@ -1088,6 +1090,72 @@
       let currentLevel = 1; // Nivel actual del juego (1, 2, 3)
       // Sistema de turnos por cola
       let turnQueue = []; // Contendrá referencias directas a héroes o enemigos cuyo charge llegó a 100 en orden de llegada
+      // Control para evitar múltiples procesamientos de wave
+      let waveProcessed = false;
+
+      // Variables de seguridad para el score
+      let lastValidScore = 0;
+      let scoreBackups = [];
+
+      // Función para crear backup del score
+      function backupScore() {
+        if (
+          typeof score === "number" &&
+          !isNaN(score) &&
+          score >= 0 &&
+          score <= SCORE_CONFIG.maxTotalScore
+        ) {
+          lastValidScore = score;
+          scoreBackups.push({
+            score: score,
+            timestamp: Date.now(),
+            wave: wave,
+          });
+          // Mantener solo los últimos 5 backups
+          if (scoreBackups.length > 5) {
+            scoreBackups.shift();
+          }
+        }
+      }
+
+      // Función para restaurar score desde backup
+      function restoreScore() {
+        if (
+          lastValidScore >= 0 &&
+          lastValidScore <= SCORE_CONFIG.maxTotalScore
+        ) {
+          score = lastValidScore;
+          console.log("Score restored from backup:", score);
+          return true;
+        }
+        return false;
+      }
+
+      // Variables para monitoreo continuo
+      let lastScoreCheckTime = 0;
+
+      // Monitoreo continuo del score para detectar anomalías
+      function monitorScore() {
+        const now = performance.now();
+        if (now - lastScoreCheckTime > 1000) {
+          // Verificar cada segundo
+          if (isNaN(score) || score < 0 || score > SCORE_CONFIG.maxTotalScore) {
+            console.error(
+              "Score anomaly detected! Current:",
+              score,
+              "Max allowed:",
+              SCORE_CONFIG.maxTotalScore
+            );
+            if (!restoreScore()) {
+              score = 0; // Último recurso
+              console.warn("Score reset to 0 due to corruption");
+            }
+          } else {
+            backupScore(); // Backup del score válido
+          }
+          lastScoreCheckTime = now;
+        }
+      }
       let activeAction = null; // Acción en curso (animación/delay) bloquea inicio de la siguiente
       let actionDelayTimer = 0; // Pequeño retardo antes de ejecutar el efecto de ataque enemigo
       // Sistema de turnos para debuffs turn-based
@@ -1100,6 +1168,160 @@
       let heroInputLocked = false; // Bloqueo temporal de habilidades entre waves
       // Flag para mostrar pantalla de información del siguiente nivel tras transición
       let pendingLevelInfo = false;
+
+      // Sistema de detección de freeze de turnos
+      let currentTurnStartTime = 0;
+      let lastTurnQueueFront = null;
+      const MAX_TURN_TIMEOUT = 10000; // 10 segundos máximo por turno
+
+      // Función para detectar y resolver turnos congelados
+      function checkTurnTimeout() {
+        const now = performance.now();
+        const currentFront = turnQueue.length > 0 ? turnQueue[0] : null;
+
+        // Si cambió el frente de la cola, resetear timer
+        if (currentFront !== lastTurnQueueFront) {
+          currentTurnStartTime = now;
+          lastTurnQueueFront = currentFront;
+          return;
+        }
+
+        // Si hay una entidad en el frente y ha pasado demasiado tiempo
+        if (currentFront && now - currentTurnStartTime > MAX_TURN_TIMEOUT) {
+          console.error(
+            `Turn timeout detected for ${
+              currentFront.name || currentFront.clazz
+            }! Forcing turn skip.`
+          );
+
+          // Para bosses, hacer limpieza más agresiva de héroes colgados
+          if (currentFront.type === "boss") {
+            console.warn(
+              "Boss timeout - clearing all potential stuck hero actions"
+            );
+            heroes.forEach((h) => {
+              if (h.action) {
+                console.warn(
+                  `Clearing stuck hero action: ${h.clazz} - ${h.action}`
+                );
+                h.action = null;
+                h.targets = null;
+                h.anim = "idle";
+                h.animTime = 0;
+                h.frame = 0;
+                h.actionStartTime = null; // Limpiar timestamp
+              }
+            });
+          }
+
+          // Intentar skip normal primero
+          forceTurnSkip(currentFront);
+
+          // Si después del skip la cola sigue con problemas, hacer recovery completo
+          if (turnQueue.length > 0 && turnQueue[0] === currentFront) {
+            console.error("Turn skip failed, activating emergency recovery");
+            emergencyTurnSystemRecovery();
+          }
+
+          // Resetear timer
+          currentTurnStartTime = now;
+          lastTurnQueueFront = turnQueue.length > 0 ? turnQueue[0] : null;
+        }
+
+        // Verificación adicional: si la cola está vacía pero hay entidades vivas con carga >= 100
+        if (turnQueue.length === 0) {
+          const chargedEntities = [...heroes, ...enemies].filter(
+            (e) => e.hp > 0 && e.charge >= 100
+          );
+
+          if (chargedEntities.length > 0) {
+            console.warn(
+              "Turn queue empty but charged entities exist, rebuilding queue"
+            );
+            chargedEntities.forEach((e) => {
+              if (!turnQueue.includes(e)) {
+                turnQueue.push(e);
+              }
+            });
+          }
+        }
+      }
+
+      // Función para forzar el skip de un turno problemático
+      function forceTurnSkip(entity) {
+        console.warn(`Force skipping turn for ${entity.name || entity.clazz}`);
+
+        // Limpiar estados problemáticos
+        entity.charge = 0;
+        entity.chargeFullTime = null;
+        entity.animTime = 0;
+        entity.anim = "idle";
+        entity.frame = 0;
+        entity.action = null;
+        entity.actionStartTime = null; // Limpiar timestamp si existe
+
+        // Si es la acción activa, limpiarla
+        if (activeAction === entity) {
+          activeAction = null;
+          actionDelayTimer = 0;
+        }
+
+        // Remover de la cola de turnos
+        const index = turnQueue.indexOf(entity);
+        if (index >= 0) {
+          turnQueue.splice(index, 1);
+        }
+
+        // Resetear last turn entity
+        if (lastTurnEntity === entity) {
+          lastTurnEntity = null;
+        }
+
+        // Para enemigos, resetear estados especiales
+        if (!entity.clazz && entity.type === "boss") {
+          if (entity.attacksUntilSpecial !== null) {
+            entity.attacksUntilSpecial = entity.specialAttackCounter || 3;
+          }
+        }
+      }
+
+      // Función de recuperación de emergencia para el sistema de turnos
+      function emergencyTurnSystemRecovery() {
+        console.error("Emergency turn system recovery activated!");
+
+        // Limpiar completamente la cola de turnos
+        turnQueue.length = 0;
+
+        // Resetear todas las variables de estado
+        activeAction = null;
+        actionDelayTimer = 0;
+        lastTurnEntity = null;
+        currentTurnStartTime = 0;
+        lastTurnQueueFront = null;
+
+        // Resetear estados de todas las entidades
+        [...heroes, ...enemies].forEach((entity) => {
+          if (entity.hp > 0) {
+            entity.charge = Math.min(50, entity.charge); // Reducir carga para forzar recarga
+            entity.chargeFullTime = null;
+            entity.animTime = 0;
+            entity.anim = "idle";
+            entity.frame = 0;
+            entity.action = null;
+
+            // Re-agregar a la cola si tiene carga suficiente
+            if (entity.charge >= 100) {
+              turnQueue.push(entity);
+            }
+          }
+        });
+
+        console.log(
+          "Turn system recovery completed. Queue rebuilt with",
+          turnQueue.length,
+          "entities"
+        );
+      }
 
       function processTurnStart(activeEntity) {
         if (!activeEntity) return;
@@ -1138,7 +1360,7 @@
                 if (b.remainingTurns !== undefined) {
                   b.remainingTurns--;
                   if (b.remainingTurns <= 0) {
-                    removeDebuff(h, "protection");
+                    removeDebuff(h, "agony");
                     return false;
                   }
                 }
@@ -1222,6 +1444,17 @@
                   if (d.remainingTurns <= 0) return false;
                 }
                 return true;
+              } else if (
+                d.type === "agony" ||
+                d.type === "dark_protection" ||
+                d.type === "healing"
+              ) {
+                // Debuffs que solo tienen duración pero no causan daño
+                if (d.remainingTurns !== undefined) {
+                  d.remainingTurns--;
+                  if (d.remainingTurns <= 0) return false;
+                }
+                return true;
               }
               return true;
             });
@@ -1276,6 +1509,17 @@
                   triggerHapticFeedback();
                 }
                 validateHP(e);
+                if (d.remainingTurns !== undefined) {
+                  d.remainingTurns--;
+                  if (d.remainingTurns <= 0) return false;
+                }
+                return true;
+              }
+              case "berseker":
+              case "dark_protection":
+              case "agony":
+              case "healing": {
+                // Debuffs que solo tienen duración pero no causan daño
                 if (d.remainingTurns !== undefined) {
                   d.remainingTurns--;
                   if (d.remainingTurns <= 0) return false;
@@ -1431,6 +1675,9 @@
 
       function startWave() {
         /* log removed */
+        // Resetear flag de procesamiento para la nueva wave
+        waveProcessed = false;
+
         // Nota: wave++ se realiza más adelante (tras generar los enemigos) para que aquí "wave"
         // represente las waves completadas. Así wave=0 antes de la primera, 1 tras iniciar la primera, etc.
 
@@ -1826,7 +2073,7 @@
             name: "Fireblast",
             reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "single_enemy",
-            damage: 35,
+            damage: 40,
             anim: "fireblast",
           },
           combustion: {
@@ -1856,7 +2103,7 @@
             name: "Smite",
             reqCharge: 100, // Todas las habilidades requieren barra completa
             type: "single_enemy",
-            damage: 20, // Poco daño
+            damage: 25, // Poco daño
             anim: "smite",
           },
           regrowth: {
@@ -1909,6 +2156,14 @@
       function handleGameOver() {
         if (state === "game_over") return; // Evitar múltiples envíos
         state = "game_over";
+
+        // Score de consolación si es derrotado en la primera wave del nivel 1
+        if (wave === 1) {
+          const consolationScore = 100; // Puntuación de consolación
+          score = Math.max(score, consolationScore);
+          console.log("Score de consolación aplicado:", consolationScore);
+        }
+
         // Limpiar acciones y colas para evitar estados colgados
         activeAction = null;
         actionDelayTimer = 0;
@@ -2026,26 +2281,104 @@
         if (waveTransition.active) return false;
         // Si ya mostramos modal de fin de nivel, no repetir
         if (state === "level_completion") return false;
+        // Si ya procesamos esta wave, no procesar de nuevo
+        if (waveProcessed) return false;
+
         if (enemies.every((e) => e.hp <= 0)) {
+          // Cancelar inmediatamente cualquier acción en progreso para evitar bugs
+          cancelActionsOnWaveCleared();
+
           // Verificar si todos los enemigos han completado su animación de muerte
           const allDeathAnimationsComplete = enemies.every(
             (e) => e.hp > 0 || e.deathAnimComplete
           );
 
           if (allDeathAnimationsComplete) {
+            // Marcar que ya procesamos esta wave para evitar múltiples cálculos
+            waveProcessed = true;
+
+            // Crear backup del score antes de modificarlo
+            backupScore();
+
             /* log removed (wave cleared) */
-            // Nuevo sistema de puntuación
+            // Nuevo sistema de puntuación con validaciones de seguridad
             const alive = heroes.filter((h) => h.hp > 0).length;
             const elapsedSec = levelStartTime
-              ? (performance.now() - levelStartTime) / 1000
+              ? Math.max(0, (performance.now() - levelStartTime) / 1000)
               : 0;
             let base = SCORE_CONFIG.waveBase;
             // Bonus de nivel si wave finaliza nivel (multiplo de 3)
             if (wave % 3 === 0) base += SCORE_CONFIG.levelCompletion;
             const timeMult = SCORE_CONFIG.timeMultiplier(elapsedSec);
             const aliveMult = SCORE_CONFIG.heroesAliveMultiplier(alive);
+
+            // Validar que todos los valores son números válidos
+            if (isNaN(base) || isNaN(timeMult) || isNaN(aliveMult)) {
+              console.error("Invalid score calculation values:", {
+                base,
+                timeMult,
+                aliveMult,
+              });
+              base = SCORE_CONFIG.waveBase; // Fallback seguro
+              timeMult = 1.0;
+              aliveMult = 1.0;
+            }
+
             const waveGain = Math.round(base * timeMult * aliveMult);
-            score += waveGain;
+            const oldScore = score;
+
+            // Validar que waveGain es un número razonable
+            if (
+              isNaN(waveGain) ||
+              waveGain < 0 ||
+              waveGain > SCORE_CONFIG.maxWaveGain
+            ) {
+              console.error(
+                "Invalid wave gain calculated:",
+                waveGain,
+                "Using fallback of",
+                SCORE_CONFIG.waveBase
+              );
+              const fallbackGain = SCORE_CONFIG.waveBase;
+              // Validar que no excedamos el score máximo total
+              if (score + fallbackGain <= SCORE_CONFIG.maxTotalScore) {
+                score += fallbackGain;
+              } else {
+                console.warn("Score would exceed maximum, not adding points");
+              }
+            } else {
+              // Validar que no excedamos el score máximo total
+              if (score + waveGain <= SCORE_CONFIG.maxTotalScore) {
+                score += waveGain;
+              } else {
+                console.warn("Score would exceed maximum, capping at maximum");
+                score = SCORE_CONFIG.maxTotalScore;
+              }
+            }
+
+            // Verificar que el nuevo score es válido
+            if (
+              isNaN(score) ||
+              score < oldScore ||
+              score > SCORE_CONFIG.maxTotalScore
+            ) {
+              console.error(
+                "Score corruption detected! Restoring from backup. Old:",
+                oldScore,
+                "New:",
+                score
+              );
+              if (!restoreScore()) {
+                // Si no se puede restaurar, usar valor seguro
+                score = oldScore;
+              }
+            }
+
+            console.log(
+              `Wave ${wave} completed. Points gained: ${
+                waveGain || SCORE_CONFIG.waveBase
+              }, Total score: ${score}`
+            );
             /* log removed (new scoring applied) */
 
             // Verificar si hemos completado un nivel (wave 3, 6, 9...)
@@ -2140,6 +2473,34 @@
         }
       }
 
+      // Función para cancelar acciones en progreso cuando se elimina la última horda
+      function cancelActionsOnWaveCleared() {
+        if (
+          selectedHero ||
+          selectedAction ||
+          state === "select_target_enemy" ||
+          state === "select_target_ally"
+        ) {
+          console.log(
+            "Wave cleared - canceling any actions in progress to prevent bugs"
+          );
+
+          // Resetear todas las variables de selección
+          selectedHero = null;
+          selectedAction = null;
+
+          // Volver al estado de selección de héroe si estábamos en selección de objetivo
+          if (
+            state === "select_target_enemy" ||
+            state === "select_target_ally"
+          ) {
+            state = "select_hero";
+          }
+
+          console.log("All actions canceled due to wave completion");
+        }
+      }
+
       function executeAction(hero, action, targets) {
         const actionData = classActions[hero.clazz][action];
 
@@ -2180,6 +2541,7 @@
         hero.targets = [];
         hero.targets = Array.isArray(targets) ? targets : [targets];
         hero.action = action;
+        hero.actionStartTime = currentTime; // Marcar tiempo de inicio de la acción
         // NO cambiar estado a "animate" para permitir clicks rápidos
         // state = "animate";
 
@@ -2305,9 +2667,6 @@
               target.animStartTime = currentTime;
               target.hp = Math.max(0, target.hp - effectiveDamage);
               validateHP(target);
-
-              // Sumar puntos por daño hecho a enemigos
-              score += effectiveDamage;
 
               if (target.hp <= 0) {
                 target.isDying = true;
@@ -2469,9 +2828,6 @@
               target.animStartTime = currentTime;
               target.hp = Math.max(0, target.hp - effectiveDamage);
               validateHP(target);
-
-              // Sumar puntos por daño hecho a enemigos
-              score += effectiveDamage;
 
               if (target.hp <= 0) {
                 target.isDying = true;
@@ -2699,6 +3055,7 @@
           if (!target || target.hp <= 0 || isNaN(raw)) return 0;
           const effective = Math.max(min, raw);
           target.hp = Math.max(0, target.hp - effective);
+
           validateHP(target);
           if (show) {
             showHitNumber(
@@ -4765,9 +5122,13 @@
               break;
             case "poison":
               existingDebuff.stacks += stacks; // Poison es stackeable sin límite
+              // Actualizar icono para reflejar nuevo stack count
+              existingDebuff.icon = getDebuffIcon(type);
               break;
             case "shadows":
               existingDebuff.stacks += stacks; // Shadows es stackeable sin límite
+              // Actualizar icono para reflejar nuevo stack count
+              existingDebuff.icon = getDebuffIcon(type);
               break;
             default:
               existingDebuff.stacks = stacks; // Para otros debuffs, reemplazar stacks
@@ -4780,6 +5141,35 @@
             stacks: stacks,
             icon: getDebuffIcon(type), // Usar icon en lugar de iconInfo
           };
+
+          // Asignar duración en turnos según el tipo
+          switch (type) {
+            case "shadows":
+              debuffData.remainingTurns = 10;
+              debuffData.damagePerTick = 2 + (stacks - 1) * 1;
+              break;
+            case "poison":
+              debuffData.remainingTurns = 10;
+              break;
+            case "agony":
+              debuffData.remainingTurns = 10;
+              break;
+            case "healing":
+              debuffData.remainingTurns = 5; // Regrowth dura 5 turnos
+              break;
+            case "dark_protection":
+              debuffData.remainingTurns = 10;
+              break;
+            case "combustion":
+              // Combustion no tiene duración en turnos, se consume al usar
+              break;
+            case "berseker":
+              // Berseker es permanente hasta muerte
+              break;
+            default:
+              break;
+          }
+
           target.debuffs.push(debuffData);
         }
       }
@@ -5089,7 +5479,16 @@
                     heroes.forEach(processDeferredPoisonTick);
                     h.targets = [];
                     h.action = null;
+                    h.actionStartTime = null; // Limpiar timestamp de acción
                     if (activeAction === h) activeAction = null; // liberar acción activa tras aplicar
+
+                    // CRÍTICO: Remover al héroe del turnQueue después de aplicar su efecto
+                    if (turnQueue.length > 0 && turnQueue[0] === h) {
+                      turnQueue.shift();
+                      console.log(
+                        `${h.clazz} removed from turn queue after applying effect`
+                      );
+                    }
 
                     // NO cambiar estado global, mantener "select_hero" para permitir clicks rápidos
                     state = "select_hero";
@@ -5122,19 +5521,50 @@
           while (turnQueue.length > 0 && safety < 50) {
             safety++;
             const front = turnQueue[0];
+
+            // Verificaciones mejoradas de integridad
             if (!front || front.hp === undefined || front.hp <= 0) {
+              console.log(
+                `Removing invalid/dead entity from turn queue: ${
+                  front?.name || front?.clazz || "unknown"
+                }`
+              );
               turnQueue.shift();
               lastTurnEntity = null;
               continue;
             }
+
+            // Verificar que la entidad aún existe en las listas del juego
+            const entityExists = front.clazz
+              ? heroes.includes(front)
+              : enemies.includes(front);
+
+            if (!entityExists) {
+              console.warn(
+                `Entity ${
+                  front.name || front.clazz
+                } no longer exists in game, removing from queue`
+              );
+              turnQueue.shift();
+              lastTurnEntity = null;
+              continue;
+            }
+
             // Watchdog: si activeAction quedó colgado sobre una entidad muerta o sin animación, liberarlo
             if (
               activeAction &&
               (activeAction.hp <= 0 ||
+                (!enemies.includes(activeAction) &&
+                  !heroes.includes(activeAction)) ||
                 (activeAction.anim !== "attack" &&
                   activeAction.anim !== "cast" &&
                   activeAction.animTime <= 0))
             ) {
+              console.warn(
+                `Clearing stuck activeAction for ${
+                  activeAction.name || activeAction.clazz
+                }`
+              );
               activeAction = null;
             }
             // Esperar a que la acción previa termine antes de procesar nuevo turno
@@ -5220,7 +5650,53 @@
               // Cuando se llena la barra, añadir a la cola si no está
               if (e.charge >= 100 && !turnQueue.includes(e)) {
                 turnQueue.push(e);
+                e.chargeFullTime = currentTime; // Marcar cuándo se llenó la carga
               }
+
+              // Verificación de timeout para enemigos con carga llena que no atacan
+              if (
+                e.charge >= 100 &&
+                e.chargeFullTime &&
+                currentTime - e.chargeFullTime > 5000
+              ) {
+                console.warn(
+                  `Enemy ${e.name} has been charged for too long (${
+                    currentTime - e.chargeFullTime
+                  }ms), forcing action reset`
+                );
+                e.charge = 50; // Reducir carga para forzar nueva carga
+                e.chargeFullTime = null;
+                // Remover de cola si está presente
+                const queueIndex = turnQueue.indexOf(e);
+                if (queueIndex >= 0) {
+                  turnQueue.splice(queueIndex, 1);
+                }
+              }
+
+              // Limpiar acciones de héroes que puedan estar colgadas o llevan demasiado tiempo
+              heroes.forEach((h) => {
+                if (h.hp > 0 && h.action) {
+                  const actionAge =
+                    currentTime - (h.actionStartTime || currentTime);
+
+                  // Si la acción lleva más de 3 segundos O el héroe está en idle sin animTime
+                  if (
+                    actionAge > 3000 ||
+                    ((!h.anim || h.anim === "idle") && h.animTime <= 0)
+                  ) {
+                    console.warn(
+                      `Clearing stuck action for hero ${h.clazz}:`,
+                      h.action,
+                      `(age: ${actionAge}ms, anim: ${h.anim}, animTime: ${h.animTime})`
+                    );
+                    h.action = null;
+                    h.targets = null;
+                    h.anim = "idle";
+                    h.animTime = 0;
+                    h.actionStartTime = null;
+                  }
+                }
+              });
 
               // Procesar ataque solo si es su turno (al frente de la cola)
               if (
@@ -5233,6 +5709,11 @@
                 // Solo bloquear si un héroe VIVO tiene acción pendiente
                 !heroes.some((h) => h.hp > 0 && h.action) // Esperar resolución de acción de héroe vivo
               ) {
+                // Debug específico para Minotaur
+                if (e.name === "Minotaur") {
+                  console.log(`Minotaur attack processing - conditions met`);
+                }
+
                 // Lógica especial para Crab Bomb
                 if (e.name === "Crab Bomb") {
                   e.charge = 0; // Reset charge
@@ -5295,6 +5776,7 @@
                     damage = 25; // fallback
                   }
                   e.charge = 0; // Reset charge
+                  e.chargeFullTime = null; // Limpiar timestamp de carga llena
                   e.animTime = 0.5;
                   // Abyss King siempre permanece en IDLE y parpadea durante ataques
                   if (e.name === "Abyss King") {
@@ -6369,6 +6851,53 @@
                       }
                     }
                   }, 100);
+                } else {
+                  // No hay target válido - el enemigo debe consumir su turno y resetear su estado
+                  console.warn(
+                    `Enemy ${e.name} has no valid target, skipping turn`
+                  );
+                  e.charge = 0; // Reset charge para evitar loop infinito
+                  e.chargeFullTime = null; // Limpiar timestamp
+                  e.animTime = 0; // Reset animation time
+                  e.anim = "idle"; // Volver a idle
+                  e.frame = 0;
+
+                  // Consumir turno inmediatamente
+                  if (turnQueue[0] === e) {
+                    turnQueue.shift();
+                    console.log(`${e.name} turn consumed (no target)`);
+                  }
+
+                  // Limpiar estados especiales si existen
+                  if (e.type === "boss" && e.attacksUntilSpecial !== null) {
+                    // Decrementar contador de ataques especiales aunque no ataque
+                    e.attacksUntilSpecial--;
+                    if (e.attacksUntilSpecial <= 0) {
+                      e.attacksUntilSpecial = e.specialAttackCounter || 3;
+                    }
+                  }
+                }
+              } else {
+                // Debug para Minotaur bloqueado - explicar por qué no puede atacar
+                if (
+                  e.name === "Minotaur" &&
+                  turnQueue.length > 0 &&
+                  turnQueue[0] === e
+                ) {
+                  console.warn(`Minotaur blocked from attacking. Conditions:
+                    - In queue front: ${turnQueue[0] === e}
+                    - Charge: ${e.charge}/100
+                    - AnimTime: ${e.animTime}
+                    - ActiveAction: ${
+                      activeAction?.name || activeAction?.clazz || "none"
+                    }
+                    - ActionDelayTimer: ${actionDelayTimer}
+                    - Heroes with action: ${
+                      heroes
+                        .filter((h) => h.hp > 0 && h.action)
+                        .map((h) => `${h.clazz}:${h.action}`)
+                        .join(", ") || "none"
+                    }`);
                 }
               }
             }
@@ -6526,6 +7055,12 @@
             activeAction = null;
           }
         } // Fin del bloque condicional del juego
+
+        // Monitoreo continuo del score
+        monitorScore();
+
+        // Verificar timeout de turnos para evitar freezes
+        checkTurnTimeout();
 
         draw();
         requestAnimationFrame(loop);
@@ -9246,8 +9781,12 @@
 
         // Footer buttons zona principal
         if (touchY >= 520 && state === "select_hero") {
-          if (heroInputLocked || waveTransition.active) {
-            // Ignorar input de habilidades durante transición / spawn
+          if (
+            heroInputLocked ||
+            waveTransition.active ||
+            enemies.every((e) => e.hp <= 0)
+          ) {
+            // Ignorar input de habilidades durante transición / spawn / wave completada
             return;
           }
           // Actualizado de 540 a 520
@@ -9283,7 +9822,8 @@
                 hero.charge >= actionData.reqCharge &&
                 hero.hp > 0 &&
                 turnQueue.length > 0 &&
-                turnQueue[0] === hero;
+                turnQueue[0] === hero &&
+                !enemies.every((e) => e.hp <= 0); // No permitir acciones si todos los enemigos están muertos
 
               if (canUse) {
                 selectedHero = hero;
@@ -9339,7 +9879,8 @@
                 hero.charge >= actionData.reqCharge &&
                 hero.hp > 0 &&
                 turnQueue.length > 0 &&
-                turnQueue[0] === hero;
+                turnQueue[0] === hero &&
+                !enemies.every((e) => e.hp <= 0); // No permitir acciones si todos los enemigos están muertos
 
               if (canUse) {
                 selectedHero = hero;
@@ -9395,7 +9936,8 @@
                 hero.charge >= actionData.reqCharge &&
                 hero.hp > 0 &&
                 turnQueue.length > 0 &&
-                turnQueue[0] === hero;
+                turnQueue[0] === hero &&
+                !enemies.every((e) => e.hp <= 0); // No permitir acciones si todos los enemigos están muertos
 
               if (canUse) {
                 selectedHero = hero;
