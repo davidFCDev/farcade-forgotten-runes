@@ -6,11 +6,63 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>RPG Battle Game</title>
-    <script src="https://cdn.jsdelivr.net/npm/@farcade/game-sdk@latest/dist/index.min.js"></script>
+    <title>Forgotten Path</title>
+    <!-- Preconnect Google Fonts para acelerar -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <!-- Cargar fuentes sin bloquear el render -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jacquard+24&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Preload de imágenes de primera pantalla -->
+    <link
+      rel="preload"
+      as="image"
+      href="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/crypt-PNZ7duhJjKjlUmf5WnW33JBy22gVjQ.png?OGU6"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/imagen_inicio-7nBR9ar51GDJZmfw8MQTlVjwjfM21y.png?5icp"
+    />
+    <!-- Preconnect/DNS-prefetch para acelerar conexiones en móviles -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <link
+      rel="preconnect"
+      href="https://lqy3lriiybxcejon.public.blob.vercel-storage.com"
+    />
+    <link
+      rel="dns-prefetch"
+      href="https://lqy3lriiybxcejon.public.blob.vercel-storage.com"
+    />
+    <!-- Preload del sprite del loader para asegurar arranque fluido -->
+    <link
+      rel="preload"
+      as="image"
+      href="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/zS0QCi0PfUjO/chuckytes2t-a9Hz89icXVQVgOkchS0ssNllYtJfiu.png?RB0F"
+    />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@farcade/game-sdk@latest/dist/index.min.js"
+    ></script>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Jacquard+24&family=Jersey+10&display=swap");
-
       body {
         margin: 0;
         padding: 0;
@@ -30,16 +82,189 @@
         max-width: 100%;
         max-height: 100%;
       }
+
+      /* ===== Loader overlay (sólo primera carga de la sesión) ===== */
+      #loader-overlay-2 {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000; /* sin flash */
+        z-index: 9999;
+      }
+      #loader-overlay-2 .loader-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        width: 100%;
+      }
+      #loader2-canvas {
+        width: 241px;
+        height: 345px;
+        image-rendering: pixelated;
+        transform-origin: center;
+        background: transparent;
+        display: block;
+      }
+      /* Texto de marca */
+      #studio-text-2 {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: "Pixelify Sans", "Press Start 2P", system-ui, monospace;
+        font-weight: 700;
+        color: #ffffff;
+        text-shadow: 3px 3px 0 #000;
+        gap: 6px;
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+        transition: opacity 700ms ease,
+          transform 500ms cubic-bezier(0.2, 0.6, 0.2, 1);
+      }
+      #studio-text-2.show {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      #studio-text-2 .brand-main {
+        font-size: 24px;
+        letter-spacing: 3px;
+        line-height: 1;
+        color: #fff;
+        text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000,
+          2px 2px #000, -2px 2px #000, 2px -2px #000, -2px -2px #000,
+          3px 3px 0 #000;
+      }
+      #studio-text-2 .brand-main::after {
+        content: "";
+        display: block;
+        width: 160px;
+        height: 6px;
+        margin: 8px auto 0;
+        background: #b7ff00;
+        border: 3px solid #000;
+        box-shadow: 4px 4px 0 #000;
+      }
+      #studio-text-2 .brand-sub {
+        font-size: 14px;
+        letter-spacing: 4px;
+        color: #b7ff00;
+        text-shadow: 3px 3px 0 #000, 0 0 10px rgba(183, 255, 0, 0.3);
+        line-height: 1;
+      }
+      #studio-text-2 .brand-tm {
+        position: absolute;
+        top: -6px;
+        right: -16px;
+        font-size: 9px;
+        color: #ffffff;
+        text-shadow: 2px 2px 0 #000;
+        opacity: 0.9;
+      }
+      @media (max-width: 520px) {
+        #loader2-canvas {
+          transform: scale(0.8);
+        }
+        #studio-text-2 .brand-main {
+          font-size: 20px;
+        }
+        #studio-text-2 .brand-main::after {
+          width: 140px;
+          height: 6px;
+          margin-top: 6px;
+        }
+        #studio-text-2 .brand-sub {
+          font-size: 13px;
+        }
+      }
     </style>
   </head>
   <body>
     <canvas id="canvas"></canvas>
+    <!-- Loader overlay (visible de inicio para evitar flash) -->
+    <div id="loader-overlay-2">
+      <div class="loader-content">
+        <canvas id="loader2-canvas" width="241" height="345"></canvas>
+        <div id="studio-text-2">
+          <span class="brand-main">HELLBOUND</span>
+          <span class="brand-sub">STUDIOS</span>
+          <span class="brand-tm">™</span>
+        </div>
+      </div>
+    </div>
     <script>
       /* =============================
       CORE: Canvas & Layout Setup
       ============================= */
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
+
+      // ===== Loader inicial con sprite (primera carga) =====
+      (function initSplash() {
+        try {
+          const overlay = document.getElementById("loader-overlay-2");
+          const lcanvas = document.getElementById("loader2-canvas");
+          const brand = document.getElementById("studio-text-2");
+          if (!overlay || !lcanvas || !brand) return;
+          if (window._splashShown2) {
+            overlay.style.display = "none";
+            return;
+          }
+          window._splashShown2 = true;
+
+          const SPRITE_URL =
+            "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/zS0QCi0PfUjO/chuckytes2t-a9Hz89icXVQVgOkchS0ssNllYtJfiu.png?RB0F";
+          const img = new Image();
+          img.onload = () => {
+            const c2d = lcanvas.getContext("2d");
+            if (c2d && c2d.imageSmoothingEnabled !== undefined)
+              c2d.imageSmoothingEnabled = false;
+            const FRAME_W = 241,
+              FRAME_H = 345,
+              FRAME_COUNT = 18;
+            const DURATION_MS = 2800,
+              FRAME_MS = Math.floor(DURATION_MS / FRAME_COUNT);
+            let frame = 0;
+            const draw = () => {
+              c2d.clearRect(0, 0, FRAME_W, FRAME_H);
+              c2d.drawImage(
+                img,
+                frame * FRAME_W,
+                0,
+                FRAME_W,
+                FRAME_H,
+                0,
+                0,
+                FRAME_W,
+                FRAME_H
+              );
+            };
+            draw();
+            const it = setInterval(() => {
+              if (frame < FRAME_COUNT - 1) {
+                frame++;
+                draw();
+              } else {
+                clearInterval(it);
+                brand.classList.add("show");
+                setTimeout(() => {
+                  brand.classList.remove("show");
+                  setTimeout(() => {
+                    overlay.style.display = "none";
+                  }, 600);
+                }, 1200);
+              }
+            }, FRAME_MS);
+          };
+          img.src = SPRITE_URL;
+        } catch (e) {
+          /* no-op */
+        }
+      })();
       const designWidth = 360;
       const designHeight = 640;
       // Flag de modo desarrollador (botones y utilidades temporales)
@@ -80,7 +305,7 @@
         }),
       });
 
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
 
       // Función para calcular el tamaño responsivo del canvas
       function calculateCanvasSize() {
@@ -404,29 +629,34 @@
 
       // Música de fondo
       const menuMusic = new Audio();
+      menuMusic.preload = "none";
       menuMusic.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/inicio-MQDiXSPNvWEeB155H9x56e222bHZLS.mp3?make";
       menuMusic.loop = true;
       menuMusic.volume = 0.4; // Volumen inicial
 
       const level1Music = new Audio();
+      level1Music.preload = "none";
       level1Music.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/crypt-LZN8TdnXRiyblZvvzcWPzT7uoQYwz7.mp3?Hg5w";
       level1Music.loop = true;
       level1Music.volume = 0.2; // Volumen reducido para niveles
       const level4Music = new Audio();
+      level4Music.preload = "none";
       level4Music.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/level4-PLhuzIrAhqaoh6r5Ei03cec2lyrOcr.mp3?mf0H";
       level4Music.loop = true;
       level4Music.volume = 0.2;
 
       const level2Music = new Audio();
+      level2Music.preload = "none";
       level2Music.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/dunes-ru73QsoLV35gEZQ55A3rk09T8uleBr.mp3?tVGO";
       level2Music.loop = true;
       level2Music.volume = 0.2; // Volumen reducido para niveles
 
       const level3Music = new Audio();
+      level3Music.preload = "none";
       level3Music.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/swamp-UzVNiCOnEhv4JAiX6bpWBSjdpSQ3HR.mp3?fyCd";
       level3Music.loop = true;
@@ -434,31 +664,37 @@
 
       // Efectos de sonido para hechizos
       const mageSpellSound = new Audio();
+      mageSpellSound.preload = "none";
       mageSpellSound.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/fire-4xwSm7LSlrGc8FWd3CFstxoWINubeG.mp3?7yyv";
       mageSpellSound.volume = 0.6;
 
       const healSound = new Audio();
+      healSound.preload = "none";
       healSound.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/heal-TiCdRKJwwC3qIRZnJFOVVBl2QcQlcO.mp3?ZSQJ";
       healSound.volume = 0.6;
 
       const smiteSound = new Audio();
+      smiteSound.preload = "none";
       smiteSound.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/smite-ZK5nk41gDDoOYphPE6NCGNtBM9KeUl.mp3?Wkvu";
       smiteSound.volume = 0.6;
 
       const slashSound = new Audio();
+      slashSound.preload = "none";
       slashSound.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/slash-ODPOGnjPy7ZKZtYaiES5z2YFTjcZ8r.mp3?M7FY";
       slashSound.volume = 0.6;
 
       const inmolationSound = new Audio();
+      inmolationSound.preload = "none";
       inmolationSound.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/inmolation-mVevlPxJHzaIYbV1pteo7O80Ve5UsI.mp3?O3PH";
       inmolationSound.volume = 0.6;
 
       const agonySound = new Audio();
+      agonySound.preload = "none";
       agonySound.src =
         "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/agony-Un5jNoMJYl7yaAjjPGr1FfZoqeue0N.mp3?xV6m";
       agonySound.volume = 0.6;
@@ -2466,7 +2702,10 @@
             // Resetear todas las variables de selección
             selectedHero = null;
             selectedAction = null;
-            state = "select_hero";
+            // NO cambiar estado si estamos en modal de finalización de nivel
+            if (state !== "level_completion") {
+              state = "select_hero";
+            }
 
             console.log("Action canceled. Returning to hero selection.");
           }
@@ -2490,9 +2729,11 @@
           selectedAction = null;
 
           // Volver al estado de selección de héroe si estábamos en selección de objetivo
+          // PERO NO si estamos en modal de finalización de nivel
           if (
-            state === "select_target_enemy" ||
-            state === "select_target_ally"
+            (state === "select_target_enemy" ||
+              state === "select_target_ally") &&
+            state !== "level_completion"
           ) {
             state = "select_hero";
           }
@@ -5363,6 +5604,14 @@
         // Actualizar sonidos pendientes
         updatePendingSounds();
 
+        // PROTECCIÓN CRÍTICA: Si estamos en modal de finalización de nivel, no ejecutar lógica que pueda cambiar el estado
+        if (state === "level_completion" && levelCompletionModal.show) {
+          // Solo dibujar y manejar el modal, no ejecutar otra lógica del juego
+          draw();
+          requestAnimationFrame(loop);
+          return;
+        }
+
         // Solo ejecutar lógica del juego si no estamos en el menú principal o pantallas informativas
         if (
           state !== "main_menu" &&
@@ -5490,8 +5739,10 @@
                       );
                     }
 
-                    // NO cambiar estado global, mantener "select_hero" para permitir clicks rápidos
-                    state = "select_hero";
+                    // NO cambiar estado global si estamos en modal de finalización de nivel
+                    if (state !== "level_completion") {
+                      state = "select_hero";
+                    }
                   } else {
                     console.warn(
                       "Hero",
@@ -7098,17 +7349,17 @@
         }
 
         // Eliminado: pantalla de finalización gestionada externamente (SDK)
-        if (state === "level_completion") {
-          // Dibujar modal de fin de nivel
+        if (state === "level_completion" && levelCompletionModal.show) {
+          // Dibujar modal de fin de nivel - PRIORIDAD MÁXIMA
           const modalW = 300;
           const modalH = 200;
           const modalX = (designWidth - modalW) / 2;
           const modalY = (designHeight - modalH) / 2 - 40;
-          ctx.fillStyle = "rgba(0,0,0,0.75)"; // Fondo más oscuro detrás del modal
+          ctx.fillStyle = "rgba(0,0,0,0.85)"; // Fondo más oscuro para mayor contraste
           ctx.fillRect(0, 0, designWidth, designHeight);
           ctx.fillStyle = "#000000"; // Fondo negro solicitado
           ctx.strokeStyle = "#D3BF8F";
-          ctx.lineWidth = 3;
+          ctx.lineWidth = 4; // Borde más grueso para mayor visibilidad
           ctx.fillRect(modalX, modalY, modalW, modalH);
           ctx.strokeRect(modalX, modalY, modalW, modalH);
 
@@ -9633,8 +9884,9 @@
           }
         }
 
-        // Manejar clics en modal de fin de nivel
+        // Manejar clics en modal de fin de nivel - PRIORIDAD MÁXIMA
         if (state === "level_completion" && levelCompletionModal.show) {
+          console.log("Click detected in level completion modal area");
           const modalW = 300;
           const modalH = 200;
           const modalX = (designWidth - modalW) / 2;
@@ -9646,7 +9898,7 @@
           const continueX = designWidth / 2 - btnW - 10;
           const surrenderX = designWidth / 2 + 10;
 
-          // Click en Continue
+          // Click en Continue - GARANTIZAR FUNCIONAMIENTO
           if (
             touchX >= continueX &&
             touchX <= continueX + btnW &&
@@ -9662,7 +9914,7 @@
             return;
           }
 
-          // Click en Surrender
+          // Click en Surrender - GARANTIZAR FUNCIONAMIENTO
           if (
             touchX >= surrenderX &&
             touchX <= surrenderX + btnW &&
@@ -9673,6 +9925,12 @@
             handleGameOver();
             return;
           }
+
+          // Si se hizo clic en el modal pero no en los botones, mantener modal abierto
+          console.log(
+            "Click in modal area but not on buttons - keeping modal open"
+          );
+          return;
         }
 
         // Manejar clics en la pantalla del libro de monstruos
@@ -9757,8 +10015,8 @@
           return;
         }
 
-        // Interacciones de modal de fin de nivel deshabilitadas (SDK)
-        if (state === "level_completion" && levelCompletionModal.show) return;
+        // Interacciones de modal de fin de nivel deshabilitadas (SDK) - COMENTADO PARA PERMITIR CLICS
+        // if (state === "level_completion" && levelCompletionModal.show) return;
 
         // Detección botón NEXT (puede estar por encima de 520)
         if (state === "select_hero") {
