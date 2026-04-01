@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -42,8 +42,8 @@
       href="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/74a152a9-f7b9-4583-9d0d-f2480d681702/imagen_inicio-7nBR9ar51GDJZmfw8MQTlVjwjfM21y.png?5icp"
     />
     <!-- Preconnect/DNS-prefetch para acelerar conexiones en móviles -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+    <link rel="preconnect" href="https://remix.gg" />
+    <link rel="dns-prefetch" href="https://remix.gg" />
     <link
       rel="preconnect"
       href="https://lqy3lriiybxcejon.public.blob.vercel-storage.com"
@@ -56,12 +56,228 @@
     <link
       rel="preload"
       as="image"
-      href="https://lqy3lriiybxcejon.public.blob.vercel-storage.com/zS0QCi0PfUjO/chuckytes2t-a9Hz89icXVQVgOkchS0ssNllYtJfiu.png?RB0F"
+      href="https://remix.gg/blob/13e738d9-e135-454e-9d2a-e456476a0c5e/sprite-start-oVCq0bchsVLwbLqAPbLgVOrQqxcVh5.webp?Cbzd"
     />
-    <script
-      defer
-      src="https://cdn.jsdelivr.net/npm/@farcade/game-sdk@latest/dist/index.min.js"
-    ></script>
+    <!-- Farcade/Remix SDK inlined to avoid external resource restrictions -->
+    <script>
+      (() => {
+        var __defProp = Object.defineProperty;
+        var __getOwnPropNames = Object.getOwnPropertyNames;
+        var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+        var __hasOwnProp = Object.prototype.hasOwnProperty;
+        var __moduleCache = new WeakMap();
+        var __toCommonJS = (from) => {
+          var entry = __moduleCache.get(from),
+            desc;
+          if (entry) return entry;
+          entry = __defProp({}, "__esModule", { value: true });
+          if ((from && typeof from === "object") || typeof from === "function")
+            __getOwnPropNames(from).map(
+              (key) =>
+                !__hasOwnProp.call(entry, key) &&
+                __defProp(entry, key, {
+                  get: () => from[key],
+                  enumerable:
+                    !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+                }),
+            );
+          __moduleCache.set(from, entry);
+          return entry;
+        };
+        var __export = (target, all) => {
+          for (var name in all)
+            __defProp(target, name, {
+              get: all[name],
+              enumerable: true,
+              configurable: true,
+              set: (newValue) => (all[name] = () => newValue),
+            });
+        };
+        var exports_src = {};
+        __export(exports_src, {
+          sdk: () => sdk,
+          FarcadeSDK: () => FarcadeSDK,
+        });
+        class FarcadeSDK {
+          isClient;
+          target = null;
+          eventListeners = new Map();
+          readyPromiseResolve = null;
+          purchasePromiseResolve = null;
+          _gameInfo;
+          _gameState;
+          constructor() {
+            this.isClient = typeof window !== "undefined";
+            this.target = this.isClient ? window.parent : null;
+            if (this.isClient) {
+              window.addEventListener("message", this.handleMessage);
+              window.addEventListener("error", this.handleGlobalError);
+              window.addEventListener(
+                "unhandledrejection",
+                this.handleUnhandledRejection,
+              );
+              this.sendMessage("ready", undefined);
+            }
+          }
+          on(eventType, callback) {
+            if (!this.eventListeners.has(eventType)) {
+              this.eventListeners.set(eventType, new Set());
+            }
+            this.eventListeners.get(eventType)?.add(callback);
+          }
+          off(eventType, callback) {
+            this.eventListeners.get(eventType)?.delete(callback);
+          }
+          onPlayAgain(callback) {
+            this.on("play_again", () => callback());
+          }
+          onToggleMute(callback) {
+            this.on("toggle_mute", (data) => callback(data));
+          }
+          onGameStateUpdated(callback) {
+            this.on("game_state_updated", (data) => callback(data));
+          }
+          onGameInfo(callback) {
+            this.on("game_info", (data) => callback(data));
+          }
+          onPurchaseComplete(callback) {
+            this.on("purchase_complete", (data) => callback(data));
+          }
+          setTarget(target) {
+            this.target = target;
+          }
+          get purchasedItems() {
+            return this._gameInfo?.player.purchasedItems || [];
+          }
+          get gameInfo() {
+            return this._gameInfo;
+          }
+          get gameState() {
+            return this._gameState;
+          }
+          get players() {
+            return this._gameInfo?.players;
+          }
+          get player() {
+            return this._gameInfo?.player;
+          }
+          get isReady() {
+            return !!this._gameInfo;
+          }
+          ready = () => {
+            if (this._gameInfo) return Promise.resolve(this._gameInfo);
+            return new Promise((resolve) => {
+              this.readyPromiseResolve = resolve;
+            });
+          };
+          purchase = (data) => {
+            this.sendMessage("purchase", data);
+            return new Promise((resolve) => {
+              this.purchasePromiseResolve = resolve;
+            });
+          };
+          reportError = (data) => {
+            this.sendMessage("error", data);
+          };
+          hapticFeedback = () => {
+            this.sendMessage("haptic_feedback", undefined);
+          };
+          hasItem = (item) => {
+            return (
+              this._gameInfo?.player.purchasedItems.includes(item) || false
+            );
+          };
+          singlePlayer = {
+            actions: {
+              ready: this.ready,
+              hapticFeedback: this.hapticFeedback,
+              reportError: this.reportError,
+              purchase: this.purchase,
+              gameOver: (data) => {
+                this.sendMessage("game_over", data);
+              },
+              saveGameState: (data) => {
+                this.sendMessage("save_game_state", data);
+              },
+            },
+          };
+          multiplayer = {
+            actions: {
+              ...this.singlePlayer.actions,
+              gameOver: (data) => {
+                this.sendMessage("multiplayer_game_over", data);
+              },
+              refuteGameState: (data) => {
+                this.sendMessage("refute_game_state", data);
+              },
+              saveGameState: (data) => {
+                this.sendMessage("multiplayer_save_game_state", data);
+              },
+            },
+          };
+          emit(eventType, data) {
+            if (eventType === "game_info") {
+              const eventData = data;
+              this._gameInfo = eventData;
+              if (!this._gameState && eventData.initialGameState) {
+                this._gameState = eventData.initialGameState.gameState;
+              }
+              if (this.readyPromiseResolve) {
+                this.readyPromiseResolve(this._gameInfo);
+                this.readyPromiseResolve = null;
+              }
+            }
+            if (
+              eventType === "purchase_complete" &&
+              this.purchasePromiseResolve
+            ) {
+              this.purchasePromiseResolve(data);
+              this.purchasePromiseResolve = null;
+            }
+            if (eventType === "game_state_updated") {
+              const eventData = data;
+              if (eventData) {
+                this._gameState = eventData.gameState;
+              } else {
+                this._gameState = null;
+              }
+            }
+            for (const callback of this.eventListeners.get(eventType) || []) {
+              callback(data);
+            }
+          }
+          handleMessage = (event) => {
+            if (event.data?.type !== "game_event") return;
+            this.emit(event.data.event.type, event.data.event.data);
+          };
+          sendMessage = (type, data) => {
+            if (!this.isClient || !this.target) return;
+            const gameEvent = { type: "game_event", event: { type, data } };
+            this.target.postMessage(gameEvent, "*");
+          };
+          handleGlobalError = (event) => {
+            this.sendMessage("error", {
+              message: event.message || "Unknown error",
+              source: event.filename,
+              lineno: event.lineno,
+              colno: event.colno,
+              error: event.error,
+            });
+          };
+          handleUnhandledRejection = (event) => {
+            const error =
+              event.reason instanceof Error
+                ? event.reason
+                : new Error(String(event.reason));
+            this.sendMessage("error", { message: error.message, error });
+          };
+        }
+        var sdk = new FarcadeSDK();
+        if (typeof window !== "undefined") {
+          window.FarcadeSDK = sdk;
+        }
+      })();
+    </script>
     <style>
       body {
         margin: 0;
@@ -77,10 +293,7 @@
       canvas {
         display: block;
         image-rendering: pixelated;
-        width: 100%;
-        height: 100%;
-        max-width: 100%;
-        max-height: 100%;
+        /* JS controla el tamaño vía resizeCanvas() */
       }
 
       /* ===== Loader overlay (sólo primera carga de la sesión) ===== */
@@ -109,76 +322,9 @@
         background: transparent;
         display: block;
       }
-      /* Texto de marca */
-      #studio-text-2 {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-family: "Pixelify Sans", "Press Start 2P", system-ui, monospace;
-        font-weight: 700;
-        color: #ffffff;
-        text-shadow: 3px 3px 0 #000;
-        gap: 6px;
-        opacity: 0;
-        transform: translateY(8px) scale(0.98);
-        transition: opacity 700ms ease,
-          transform 500ms cubic-bezier(0.2, 0.6, 0.2, 1);
-      }
-      #studio-text-2.show {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-      #studio-text-2 .brand-main {
-        font-size: 24px;
-        letter-spacing: 3px;
-        line-height: 1;
-        color: #fff;
-        text-shadow: 2px 0 #000, -2px 0 #000, 0 2px #000, 0 -2px #000,
-          2px 2px #000, -2px 2px #000, 2px -2px #000, -2px -2px #000,
-          3px 3px 0 #000;
-      }
-      #studio-text-2 .brand-main::after {
-        content: "";
-        display: block;
-        width: 160px;
-        height: 6px;
-        margin: 8px auto 0;
-        background: #b7ff00;
-        border: 3px solid #000;
-        box-shadow: 4px 4px 0 #000;
-      }
-      #studio-text-2 .brand-sub {
-        font-size: 14px;
-        letter-spacing: 4px;
-        color: #b7ff00;
-        text-shadow: 3px 3px 0 #000, 0 0 10px rgba(183, 255, 0, 0.3);
-        line-height: 1;
-      }
-      #studio-text-2 .brand-tm {
-        position: absolute;
-        top: -6px;
-        right: -16px;
-        font-size: 9px;
-        color: #ffffff;
-        text-shadow: 2px 2px 0 #000;
-        opacity: 0.9;
-      }
       @media (max-width: 520px) {
         #loader2-canvas {
           transform: scale(0.8);
-        }
-        #studio-text-2 .brand-main {
-          font-size: 20px;
-        }
-        #studio-text-2 .brand-main::after {
-          width: 140px;
-          height: 6px;
-          margin-top: 6px;
-        }
-        #studio-text-2 .brand-sub {
-          font-size: 13px;
         }
       }
     </style>
@@ -189,11 +335,6 @@
     <div id="loader-overlay-2">
       <div class="loader-content">
         <canvas id="loader2-canvas" width="241" height="345"></canvas>
-        <div id="studio-text-2">
-          <span class="brand-main">HELLBOUND</span>
-          <span class="brand-sub">STUDIOS</span>
-          <span class="brand-tm">™</span>
-        </div>
       </div>
     </div>
     <script>
@@ -203,21 +344,21 @@
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
 
-      // ===== Loader inicial con sprite (primera carga) =====
+      // ===== Loader inicial con sprite (primera carga, sin texto) =====
       (function initSplash() {
         try {
           const overlay = document.getElementById("loader-overlay-2");
           const lcanvas = document.getElementById("loader2-canvas");
-          const brand = document.getElementById("studio-text-2");
-          if (!overlay || !lcanvas || !brand) return;
+          if (!overlay || !lcanvas) return;
           if (window._splashShown2) {
             overlay.style.display = "none";
             return;
           }
           window._splashShown2 = true;
 
+          // Mismo sprite y tiempos que PreloadSceneBase.ts
           const SPRITE_URL =
-            "https://lqy3lriiybxcejon.public.blob.vercel-storage.com/zS0QCi0PfUjO/chuckytes2t-a9Hz89icXVQVgOkchS0ssNllYtJfiu.png?RB0F";
+            "https://remix.gg/blob/13e738d9-e135-454e-9d2a-e456476a0c5e/sprite-start-oVCq0bchsVLwbLqAPbLgVOrQqxcVh5.webp?Cbzd";
           const img = new Image();
           img.onload = () => {
             const c2d = lcanvas.getContext("2d");
@@ -226,8 +367,8 @@
             const FRAME_W = 241,
               FRAME_H = 345,
               FRAME_COUNT = 18;
-            const DURATION_MS = 2800,
-              FRAME_MS = Math.floor(DURATION_MS / FRAME_COUNT);
+            // 12 fps = ~83ms por frame (igual que PreloadSceneBase)
+            const FRAME_MS = Math.round(1000 / 12);
             let frame = 0;
             const draw = () => {
               c2d.clearRect(0, 0, FRAME_W, FRAME_H);
@@ -240,7 +381,7 @@
                 0,
                 0,
                 FRAME_W,
-                FRAME_H
+                FRAME_H,
               );
             };
             draw();
@@ -250,13 +391,10 @@
                 draw();
               } else {
                 clearInterval(it);
-                brand.classList.add("show");
+                // Último frame dura 500ms extra (igual que PreloadSceneBase)
                 setTimeout(() => {
-                  brand.classList.remove("show");
-                  setTimeout(() => {
-                    overlay.style.display = "none";
-                  }, 600);
-                }, 1200);
+                  overlay.style.display = "none";
+                }, 500);
               }
             }, FRAME_MS);
           };
@@ -307,29 +445,22 @@
 
       const dpr = Math.min(2, window.devicePixelRatio || 1);
 
+      // --- Aspect ratio detection (ver ASPECT-RATIO-GUIDE.md) ---
+      // isTallScreen: pantalla más alta que 2:3 (notch, barras, etc.)
+      let isTallScreen = false;
+
       // Función para calcular el tamaño responsivo del canvas
       function calculateCanvasSize() {
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
+        const aspectRatio = windowWidth / windowHeight;
 
-        // Calcular la escala manteniendo la proporción del diseño original (360x640)
-        const designAspectRatio = designWidth / designHeight;
-        const windowAspectRatio = windowWidth / windowHeight;
+        // Detectar si es pantalla más alta que 2:3 (tolerancia ~0.02)
+        const is2by3 = Math.abs(aspectRatio - 2 / 3) < 0.02;
+        isTallScreen = !is2by3 && aspectRatio < 2 / 3;
 
-        let canvasWidth, canvasHeight;
-
-        // Escalar al máximo manteniendo relación de aspecto (letterbox si sobra espacio)
-        if (windowAspectRatio > designAspectRatio) {
-          // Ventana más ancha: llenamos altura completa
-          canvasHeight = windowHeight;
-          canvasWidth = canvasHeight * designAspectRatio;
-        } else {
-          // Ventana más alta: llenamos anchura completa
-          canvasWidth = windowWidth;
-          canvasHeight = canvasWidth / designAspectRatio;
-        }
-
-        return { width: canvasWidth, height: canvasHeight };
+        // Siempre llenar toda la pantalla (sin letterbox)
+        return { width: windowWidth, height: windowHeight };
       }
 
       // Función para redimensionar el canvas
@@ -339,6 +470,7 @@
         canvas.width = designWidth * dpr;
         canvas.height = designHeight * dpr;
         ctx.scale(dpr, dpr);
+        // Llenar viewport completo: el canvas se estira para cubrir toda la pantalla
         canvas.style.width = size.width + "px";
         canvas.style.height = size.height + "px";
       }
@@ -747,6 +879,7 @@
       }
 
       function playMusicNow(audioElement) {
+        if (!audioElement) return;
         // Detener música actual si existe
         if (currentMusic && currentMusic !== audioElement) {
           currentMusic.pause();
@@ -775,6 +908,7 @@
       }
 
       function playMusic(audioElement) {
+        if (!audioElement) return;
         if (!userHasInteracted) {
           // Si el usuario no ha interactuado, guardar la música para reproducir después
           pendingMusicToPlay = audioElement;
@@ -789,9 +923,11 @@
       function stopAllMusic() {
         [menuMusic, level1Music, level2Music, level3Music, level4Music].forEach(
           (music) => {
-            music.pause();
-            music.currentTime = 0;
-          }
+            if (music) {
+              music.pause();
+              music.currentTime = 0;
+            }
+          },
         );
         currentMusic = null;
       }
@@ -808,7 +944,7 @@
           document.removeEventListener(
             "touchstart",
             handleFirstInteraction,
-            true
+            true,
           );
           document.removeEventListener("keydown", handleFirstInteraction, true);
         }
@@ -1298,8 +1434,10 @@
         maxTotalScore: 500000, // Límite máximo total de puntuación
         // Multiplicador por tiempo (segundos empleados en el nivel actual)
         timeMultiplier(elapsedSec) {
-          if (elapsedSec <= 30) return 1.5; // Muy rápido
-          else if (elapsedSec <= 50) return 1.25; // Rápido
+          if (elapsedSec <= 30)
+            return 1.5; // Muy rápido
+          else if (elapsedSec <= 50)
+            return 1.25; // Rápido
           else if (elapsedSec <= 70) return 1.1; // Aceptable
           return 1.0; // Lento
         },
@@ -1380,7 +1518,7 @@
               "Score anomaly detected! Current:",
               score,
               "Max allowed:",
-              SCORE_CONFIG.maxTotalScore
+              SCORE_CONFIG.maxTotalScore,
             );
             if (!restoreScore()) {
               score = 0; // Último recurso
@@ -1427,18 +1565,18 @@
           console.error(
             `Turn timeout detected for ${
               currentFront.name || currentFront.clazz
-            }! Forcing turn skip.`
+            }! Forcing turn skip.`,
           );
 
           // Para bosses, hacer limpieza más agresiva de héroes colgados
           if (currentFront.type === "boss") {
             console.warn(
-              "Boss timeout - clearing all potential stuck hero actions"
+              "Boss timeout - clearing all potential stuck hero actions",
             );
             heroes.forEach((h) => {
               if (h.action) {
                 console.warn(
-                  `Clearing stuck hero action: ${h.clazz} - ${h.action}`
+                  `Clearing stuck hero action: ${h.clazz} - ${h.action}`,
                 );
                 h.action = null;
                 h.targets = null;
@@ -1467,12 +1605,12 @@
         // Verificación adicional: si la cola está vacía pero hay entidades vivas con carga >= 100
         if (turnQueue.length === 0) {
           const chargedEntities = [...heroes, ...enemies].filter(
-            (e) => e.hp > 0 && e.charge >= 100
+            (e) => e.hp > 0 && e.charge >= 100,
           );
 
           if (chargedEntities.length > 0) {
             console.warn(
-              "Turn queue empty but charged entities exist, rebuilding queue"
+              "Turn queue empty but charged entities exist, rebuilding queue",
             );
             chargedEntities.forEach((e) => {
               if (!turnQueue.includes(e)) {
@@ -1555,7 +1693,7 @@
         console.log(
           "Turn system recovery completed. Queue rebuilt with",
           turnQueue.length,
-          "entities"
+          "entities",
         );
       }
 
@@ -2093,7 +2231,7 @@
           lastTurnEntity = null; // Forzar processTurnStart
           console.log(
             "[WaveTransition] Turno restaurado para",
-            preservedTurnEntity.clazz || preservedTurnEntity.name
+            preservedTurnEntity.clazz || preservedTurnEntity.name,
           );
         }
         preservedTurnEntity = null;
@@ -2131,7 +2269,7 @@
             type,
             "level",
             currentLevel,
-            " -> fallback basic placeholder"
+            " -> fallback basic placeholder",
           );
           enemyConfig = {
             name: type,
@@ -2276,7 +2414,7 @@
           // Para el nuevo sistema, aumentar el rating pero mantener límites
           character.chargeSpeedRating = Math.min(
             10,
-            character.chargeSpeedRating * multiplier
+            character.chargeSpeedRating * multiplier,
           );
         } else {
           // Compatibilidad con el sistema legacy
@@ -2478,7 +2616,7 @@
         if (state === "game_over" || waveTransition.active) return;
         console.log(
           "[NEXT] BEFORE rotation queue=",
-          turnQueue.map((e) => e.clazz || e.name)
+          turnQueue.map((e) => e.clazz || e.name),
         );
         // Si solo hay 0 elementos, no hacemos nada
         if (turnQueue.length === 0) return;
@@ -2499,7 +2637,7 @@
         lastTurnEntity = null; // Forzar que el nuevo frente reprocese start turn
         console.log(
           "[NEXT] AFTER rotation queue=",
-          turnQueue.map((e) => e.clazz || e.name)
+          turnQueue.map((e) => e.clazz || e.name),
         );
       }
 
@@ -2511,8 +2649,13 @@
         return false;
       }
       function checkWaveCleared() {
-        // Evitar chequear limpieza de wave mientras estamos en pantallas no jugables
-        if (state === "level_info" || state === "main_menu") return false;
+        // Evitar chequear limpieza de wave mientras estamos en pantallas no jugables o game over
+        if (
+          state === "level_info" ||
+          state === "main_menu" ||
+          state === "game_over"
+        )
+          return false;
         // Si ya estamos en transición, no volver a dispararla
         if (waveTransition.active) return false;
         // Si ya mostramos modal de fin de nivel, no repetir
@@ -2526,7 +2669,7 @@
 
           // Verificar si todos los enemigos han completado su animación de muerte
           const allDeathAnimationsComplete = enemies.every(
-            (e) => e.hp > 0 || e.deathAnimComplete
+            (e) => e.hp > 0 || e.deathAnimComplete,
           );
 
           if (allDeathAnimationsComplete) {
@@ -2573,7 +2716,7 @@
                 "Invalid wave gain calculated:",
                 waveGain,
                 "Using fallback of",
-                SCORE_CONFIG.waveBase
+                SCORE_CONFIG.waveBase,
               );
               const fallbackGain = SCORE_CONFIG.waveBase;
               // Validar que no excedamos el score máximo total
@@ -2602,7 +2745,7 @@
                 "Score corruption detected! Restoring from backup. Old:",
                 oldScore,
                 "New:",
-                score
+                score,
               );
               if (!restoreScore()) {
                 // Si no se puede restaurar, usar valor seguro
@@ -2613,7 +2756,7 @@
             console.log(
               `Wave ${wave} completed. Points gained: ${
                 waveGain || SCORE_CONFIG.waveBase
-              }, Total score: ${score}`
+              }, Total score: ${score}`,
             );
             /* log removed (new scoring applied) */
 
@@ -2626,7 +2769,7 @@
               if (!levelData) {
                 console.error(
                   "Level data not found for level:",
-                  completedLevel
+                  completedLevel,
                 );
               }
 
@@ -2642,10 +2785,10 @@
                   h._pendingPoisonBuff = null;
                 });
                 console.log(
-                  `Cleared all buffs/debuffs after completing level ${completedLevel}`
+                  `Cleared all buffs/debuffs after completing level ${completedLevel}`,
                 );
                 console.log(
-                  `Level ${completedLevel} completed -> showing completion modal`
+                  `Level ${completedLevel} completed -> showing completion modal`,
                 );
                 levelCompletionModal.show = true;
                 levelCompletionModal.level = completedLevel;
@@ -2675,7 +2818,7 @@
           preservedTurnEntity = turnQueue[0];
           console.log(
             "[WaveTransition] Preservando turno de",
-            preservedTurnEntity.clazz || preservedTurnEntity.name
+            preservedTurnEntity.clazz || preservedTurnEntity.name,
           );
         } else {
           preservedTurnEntity = null;
@@ -2696,14 +2839,14 @@
             state === "select_target_ally"
           ) {
             console.log(
-              `${selectedHero.clazz} died during target selection. Canceling action: ${selectedAction}`
+              `${selectedHero.clazz} died during target selection. Canceling action: ${selectedAction}`,
             );
 
             // Resetear todas las variables de selección
             selectedHero = null;
             selectedAction = null;
-            // NO cambiar estado si estamos en modal de finalización de nivel
-            if (state !== "level_completion") {
+            // NO cambiar estado si estamos en modal de finalización de nivel o game over
+            if (state !== "level_completion" && state !== "game_over") {
               state = "select_hero";
             }
 
@@ -2721,7 +2864,7 @@
           state === "select_target_ally"
         ) {
           console.log(
-            "Wave cleared - canceling any actions in progress to prevent bugs"
+            "Wave cleared - canceling any actions in progress to prevent bugs",
           );
 
           // Resetear todas las variables de selección
@@ -2729,11 +2872,12 @@
           selectedAction = null;
 
           // Volver al estado de selección de héroe si estábamos en selección de objetivo
-          // PERO NO si estamos en modal de finalización de nivel
+          // PERO NO si estamos en modal de finalización de nivel o game over
           if (
             (state === "select_target_enemy" ||
               state === "select_target_ally") &&
-            state !== "level_completion"
+            state !== "level_completion" &&
+            state !== "game_over"
           ) {
             state = "select_hero";
           }
@@ -2760,7 +2904,7 @@
             "Required:",
             requiredCharge,
             "Current:",
-            hero.charge
+            hero.charge,
           );
           return false;
         }
@@ -2793,7 +2937,7 @@
           hero.clazz,
           "with targets:",
           hero.targets.length,
-          "charge reset to 0"
+          "charge reset to 0",
         );
         return true;
       }
@@ -2826,7 +2970,7 @@
           "to targets:",
           targets.length,
           "action type:",
-          actionData.type
+          actionData.type,
         );
 
         // Reproducir sonido del hechizo inmediatamente
@@ -2840,7 +2984,7 @@
           console.error(
             "ERROR: Acción de enemigo aplicada a héroes!",
             action,
-            targets
+            targets,
           );
           return;
         }
@@ -2848,7 +2992,7 @@
           console.error(
             "ERROR: Acción de aliado aplicada a enemigos!",
             action,
-            targets
+            targets,
           );
           return;
         }
@@ -2866,7 +3010,7 @@
           console.log(
             "Combustion buff applied to",
             hero.clazz,
-            "- next attack will have high critical chance"
+            "- next attack will have high critical chance",
           );
           // Agregar efecto visual de combustion en el propio mago
           addCombustionEffect(hero.posx, hero.posy);
@@ -2888,7 +3032,7 @@
                 "Agony (turn-based) aplicado a",
                 target.clazz,
                 "defBonus:",
-                defBonus
+                defBonus,
               );
               addWarlockAgonyEffect(target.posx, target.posy);
             }
@@ -2921,17 +3065,17 @@
                 target.posy - 20,
                 effectiveDamage,
                 false,
-                isCritical
+                isCritical,
               );
               clearEffectsByTypeAndPosition(
                 "warlock_inmolation1",
                 target.posx,
-                target.posy
+                target.posy,
               );
               clearEffectsByTypeAndPosition(
                 "warlock_inmolation2",
                 target.posx,
-                target.posy
+                target.posy,
               );
               addWarlockInmolationEffect(target.posx, target.posy);
             }
@@ -2939,7 +3083,7 @@
 
           // Auto-daño al warlock (60% de su vida)
           const selfDamage = Math.floor(
-            hero.maxhp * (actionData.selfDamage / 100)
+            hero.maxhp * (actionData.selfDamage / 100),
           );
           hero.hp = Math.max(0, hero.hp - selfDamage); // Puede autodestruirse
           validateHP(hero);
@@ -2950,7 +3094,7 @@
             false,
             false,
             "damage",
-            hero
+            hero,
           );
           console.log("Inmolation self-damage:", selfDamage, "to", hero.clazz);
         } else if (action === "regrowth") {
@@ -2987,12 +3131,12 @@
                 target.posy - 20,
                 finalDamage,
                 false,
-                isCritical
+                isCritical,
               );
 
               // Aplicar o stackear debuff Shadows
               const existingShadows = target.debuffs.find(
-                (d) => d.type === "shadows"
+                (d) => d.type === "shadows",
               );
               if (existingShadows) {
                 existingShadows.stacks = (existingShadows.stacks || 1) + 1;
@@ -3004,7 +3148,7 @@
                 console.log(
                   `Shadows stack (${existingShadows.stacks}) en ${
                     target.type || target.clazz
-                  }. Daño por tick: ${existingShadows.damagePerTick}`
+                  }. Daño por tick: ${existingShadows.damagePerTick}`,
                 );
               } else {
                 target.debuffs.push({
@@ -3015,7 +3159,7 @@
                   icon: getDebuffIcon("shadows"),
                 });
                 console.log(
-                  `Shadows aplicado a ${target.type || target.clazz}`
+                  `Shadows aplicado a ${target.type || target.clazz}`,
                 );
               }
 
@@ -3023,7 +3167,7 @@
               clearEffectsByTypeAndPosition(
                 "warlock_darkslash",
                 target.posx,
-                target.posy
+                target.posy,
               );
               addWarlockDarkSlashEffect(target.posx, target.posy);
 
@@ -3047,7 +3191,7 @@
               // Aplicar buff de combustion si existe
               let criticalChance = 15; // Base 15%
               const combustionBuff = hero.buffs.find(
-                (b) => b.type === "combustion"
+                (b) => b.type === "combustion",
               );
               if (combustionBuff) {
                 criticalChance += combustionBuff.critBonus;
@@ -3082,7 +3226,7 @@
                 target.posy - 20,
                 effectiveDamage,
                 false,
-                isCritical
+                isCritical,
               );
 
               // Efectos visuales específicos por habilidad
@@ -3090,28 +3234,28 @@
                 clearEffectsByTypeAndPosition(
                   "mage_fireblast",
                   target.posx,
-                  target.posy
+                  target.posy,
                 );
                 addMageFireblastEffect(target.posx, target.posy);
               } else if (action === "inferno") {
                 clearEffectsByTypeAndPosition(
                   "conflagration",
                   target.posx,
-                  target.posy
+                  target.posy,
                 );
                 addConflagrationEffect(target.posx, target.posy);
               } else if (action === "darkslash") {
                 clearEffectsByTypeAndPosition(
                   "warlock_darkslash",
                   target.posx,
-                  target.posy
+                  target.posy,
                 );
                 addWarlockDarkSlashEffect(target.posx, target.posy);
               } else if (action === "smite") {
                 clearEffectsByTypeAndPosition(
                   "smite",
                   target.posx,
-                  target.posy
+                  target.posy,
                 );
                 addSmiteEffect(target.posx, target.posy);
               }
@@ -3165,7 +3309,7 @@
               }
             } else if (hasHealingDebuff) {
               console.log(
-                `${target.clazz} cannot be healed due to healing debuff.`
+                `${target.clazz} cannot be healed due to healing debuff.`,
               );
             }
           });
@@ -3181,7 +3325,7 @@
             removeDebuff(hero, "combustion");
             console.log(
               "Combustion buff consumed and removed from",
-              hero.clazz
+              hero.clazz,
             );
             return false;
           }
@@ -3213,7 +3357,7 @@
         isHealing = false,
         isCritical = false,
         type = null,
-        baseEntity = null // pasar héroe/enemigo para posicionamiento relativo
+        baseEntity = null, // pasar héroe/enemigo para posicionamiento relativo
       ) {
         let finalType = type;
         if (!finalType) {
@@ -3291,7 +3435,7 @@
             crit = false,
             type = "damage",
             source = null,
-          } = {}
+          } = {},
         ) {
           if (!target || target.hp <= 0 || isNaN(raw)) return 0;
           const effective = Math.max(min, raw);
@@ -3306,7 +3450,7 @@
               false,
               crit,
               type,
-              target
+              target,
             );
           }
           return effective;
@@ -3327,7 +3471,7 @@
               true,
               false,
               type,
-              target
+              target,
             );
           }
           return gained;
@@ -3350,7 +3494,7 @@
         const removedCount = initialCount - visualEffects.length;
         if (removedCount > 0) {
           console.log(
-            `Eliminados ${removedCount} efectos de tipo ${effectType} en posición ${x},${y}`
+            `Eliminados ${removedCount} efectos de tipo ${effectType} en posición ${x},${y}`,
           );
         }
       }
@@ -4460,7 +4604,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "conflagration") {
@@ -4480,7 +4624,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "slash") {
@@ -4500,7 +4644,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "healing") {
@@ -4530,7 +4674,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "combustion") {
@@ -4550,7 +4694,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "smite") {
@@ -4580,7 +4724,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "holy_wave") {
@@ -4614,7 +4758,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "regrowth_new") {
@@ -4648,7 +4792,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "inmolation") {
@@ -4668,7 +4812,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "lava") {
@@ -4917,7 +5061,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "blood_storm") {
@@ -4947,7 +5091,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "minotaur_smash") {
@@ -4971,7 +5115,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "minotaur_life_steal") {
@@ -4995,7 +5139,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "cthulu_main") {
@@ -5015,7 +5159,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "poison_main") {
@@ -5035,7 +5179,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "cthulu_special") {
@@ -5055,7 +5199,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "summon_portal") {
@@ -5079,7 +5223,7 @@
               -effect.w / 2,
               -effect.h / 2,
               effect.w,
-              effect.h
+              effect.h,
             );
             ctx.restore();
           } else if (effect.type === "voidspecter_darkbolt") {
@@ -5099,7 +5243,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "thehand_darkprotection") {
@@ -5122,7 +5266,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "abyss_main_ability") {
@@ -5145,7 +5289,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "warlock_agony") {
@@ -5168,7 +5312,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "warlock_darkslash") {
@@ -5191,7 +5335,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "warlock_inmolation1") {
@@ -5214,7 +5358,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "warlock_inmolation2") {
@@ -5237,7 +5381,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "mage_fireblast") {
@@ -5260,7 +5404,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "gorgon_main_ability") {
@@ -5283,7 +5427,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           } else if (effect.type === "gorgon_special_ability") {
@@ -5306,7 +5450,7 @@
                 effect.x - renderSize / 2,
                 effect.y - renderSize / 2,
                 renderSize,
-                renderSize
+                renderSize,
               );
             }
           }
@@ -5358,7 +5502,7 @@
             case "berseker":
               existingDebuff.stacks = Math.min(
                 existingDebuff.stacks + stacks,
-                10
+                10,
               ); // Máximo 10 stacks (30%)
               break;
             case "poison":
@@ -5503,7 +5647,7 @@
         width,
         height,
         fillRatio,
-        options = {}
+        options = {},
       ) {
         const bgColor = options.bgColor || "rgba(0,0,0,0.5)";
         const fillColor = options.fillColor || "#FF0000";
@@ -5545,7 +5689,7 @@
             x + width,
             y + height,
             x + width - r,
-            y + height
+            y + height,
           );
           ctx.lineTo(x + r, y + height);
           ctx.quadraticCurveTo(x, y + height, x, y + height - r);
@@ -5558,7 +5702,7 @@
             x + innerPadding,
             y + innerPadding,
             fillW,
-            height - innerPadding * 2
+            height - innerPadding * 2,
           );
           ctx.restore();
         }
@@ -5596,7 +5740,7 @@
           heroes.every((h) => h.hp <= 0)
         ) {
           console.warn(
-            "[Watchdog] All heroes dead but state!=game_over. Forcing handleGameOver()."
+            "[Watchdog] All heroes dead but state!=game_over. Forcing handleGameOver().",
           );
           handleGameOver();
         }
@@ -5612,12 +5756,13 @@
           return;
         }
 
-        // Solo ejecutar lógica del juego si no estamos en el menú principal o pantallas informativas
+        // Solo ejecutar lógica del juego si no estamos en el menú principal, pantallas informativas o game over
         if (
           state !== "main_menu" &&
           state !== "level_info" &&
           state !== "book" &&
-          state !== "guide"
+          state !== "guide" &&
+          state !== "game_over"
         ) {
           // No hay timer automático para el modal - se controla por botón
           // Eliminado bloqueo por modal de fin de nivel (SDK lo maneja)
@@ -5664,7 +5809,7 @@
                   console.log(
                     "Rejuvenation tick para",
                     h.clazz,
-                    "- creando efecto visual de curación"
+                    "- creando efecto visual de curación",
                   );
                   playHealingAnim(h);
                   showHitNumber(
@@ -5674,11 +5819,11 @@
                     true,
                     false,
                     "heal",
-                    h
+                    h,
                   );
                 } else if (hasHealingDebuff) {
                   console.log(
-                    `${h.clazz} rejuvenation blocked by healing debuff.`
+                    `${h.clazz} rejuvenation blocked by healing debuff.`,
                   );
                 }
                 b.nextTick += 1;
@@ -5711,7 +5856,7 @@
                     "target types:",
                     h.targets
                       ? h.targets.map((t) => t.clazz || "enemy").join(",")
-                      : "none"
+                      : "none",
                   );
 
                   // Verificar que tenemos una acción válida antes de aplicar efectos
@@ -5721,7 +5866,7 @@
                     // Limpiar propiedades de acción SOLO para este héroe después de aplicar el efecto
                     console.log(
                       "Limpiando propiedades de acción para",
-                      h.clazz
+                      h.clazz,
                     );
                     // Ahora aplicamos (si existe) el tick diferido de poison - la curación/acción ya ocurrió
                     // Aplicar ticks de poison aplazados de todos los héroes (primero se resolvió la acción: curas, etc.)
@@ -5735,12 +5880,12 @@
                     if (turnQueue.length > 0 && turnQueue[0] === h) {
                       turnQueue.shift();
                       console.log(
-                        `${h.clazz} removed from turn queue after applying effect`
+                        `${h.clazz} removed from turn queue after applying effect`,
                       );
                     }
 
-                    // NO cambiar estado global si estamos en modal de finalización de nivel
-                    if (state !== "level_completion") {
+                    // NO cambiar estado global si estamos en modal de finalización de nivel o game over
+                    if (state !== "level_completion" && state !== "game_over") {
                       state = "select_hero";
                     }
                   } else {
@@ -5750,7 +5895,7 @@
                       "has no valid action or targets to apply. Action:",
                       h.action,
                       "Targets length:",
-                      h.targets ? h.targets.length : 0
+                      h.targets ? h.targets.length : 0,
                     );
                   }
                 }
@@ -5778,7 +5923,7 @@
               console.log(
                 `Removing invalid/dead entity from turn queue: ${
                   front?.name || front?.clazz || "unknown"
-                }`
+                }`,
               );
               turnQueue.shift();
               lastTurnEntity = null;
@@ -5794,7 +5939,7 @@
               console.warn(
                 `Entity ${
                   front.name || front.clazz
-                } no longer exists in game, removing from queue`
+                } no longer exists in game, removing from queue`,
               );
               turnQueue.shift();
               lastTurnEntity = null;
@@ -5814,7 +5959,7 @@
               console.warn(
                 `Clearing stuck activeAction for ${
                   activeAction.name || activeAction.clazz
-                }`
+                }`,
               );
               activeAction = null;
             }
@@ -5865,7 +6010,7 @@
           if (heroInputLocked) {
             const allSpawned = enemies.every(
               (e) =>
-                e.spawnFadeProgress === undefined || e.spawnFadeProgress >= 1
+                e.spawnFadeProgress === undefined || e.spawnFadeProgress >= 1,
             );
             if (!waveTransition.active && allSpawned) heroInputLocked = false;
           }
@@ -5913,7 +6058,7 @@
                 console.warn(
                   `Enemy ${e.name} has been charged for too long (${
                     currentTime - e.chargeFullTime
-                  }ms), forcing action reset`
+                  }ms), forcing action reset`,
                 );
                 e.charge = 50; // Reducir carga para forzar nueva carga
                 e.chargeFullTime = null;
@@ -5938,7 +6083,7 @@
                     console.warn(
                       `Clearing stuck action for hero ${h.clazz}:`,
                       h.action,
-                      `(age: ${actionAge}ms, anim: ${h.anim}, animTime: ${h.animTime})`
+                      `(age: ${actionAge}ms, anim: ${h.anim}, animTime: ${h.animTime})`,
                     );
                     h.action = null;
                     h.targets = null;
@@ -5972,7 +6117,7 @@
                   // Incrementar esferas de carga
                   e.sphereCharges = (e.sphereCharges || 0) + 1;
                   console.log(
-                    `Crab Bomb sphere charge: ${e.sphereCharges}/${e.maxSphereCharges}`
+                    `Crab Bomb sphere charge: ${e.sphereCharges}/${e.maxSphereCharges}`,
                   );
 
                   // Si llegó a 5 esferas, explotar
@@ -6102,7 +6247,7 @@
                       if (e.name === "Noctebane") {
                         // Ataque especial: Blood Storm (daño AoE a todos los héroes)
                         console.log(
-                          "Noctebane uses Blood Storm special attack (AoE)!"
+                          "Noctebane uses Blood Storm special attack (AoE)!",
                         );
                         heroes.forEach((hero) => {
                           if (hero.hp > 0) {
@@ -6113,19 +6258,19 @@
                                   b.type === "protection" || b.type === "agony"
                                     ? sum + b.defBonus
                                     : sum,
-                                0
+                                0,
                               );
 
                             const criticalResult = calculateCritical(damage);
                             let finalDamage = criticalResult.damage;
                             if (e.name === "Noctebane") {
                               finalDamage = Math.floor(
-                                finalDamage * (e.damageMultiplier || 1)
+                                finalDamage * (e.damageMultiplier || 1),
                               );
                             }
                             let effectiveDamage = Math.max(
                               1,
-                              finalDamage - currentDef
+                              finalDamage - currentDef,
                             );
                             if (e.name === "Noctebane") {
                               e.damageMultiplier =
@@ -6140,7 +6285,7 @@
                             console.log(
                               `${
                                 hero.clazz || "Hero"
-                              } takes ${effectiveDamage} AoE damage from Blood Storm!`
+                              } takes ${effectiveDamage} AoE damage from Blood Storm!`,
                             );
 
                             // Mostrar número de daño para cada héroe afectado
@@ -6149,7 +6294,7 @@
                               hero.posy - 20,
                               effectiveDamage,
                               false,
-                              criticalResult.isCritical
+                              criticalResult.isCritical,
                             );
 
                             // Agregar efecto visual de Blood Storm para cada héroe
@@ -6170,14 +6315,14 @@
                                   b.type === "protection" || b.type === "agony"
                                     ? sum + b.defBonus
                                     : sum,
-                                0
+                                0,
                               );
 
                             const criticalResult = calculateCritical(damage);
                             let finalDamage = criticalResult.damage;
                             let effectiveDamage = Math.max(
                               1,
-                              finalDamage - currentDef
+                              finalDamage - currentDef,
                             );
 
                             // Agony turn-based: mitigación ya reflejada en currentDef via defBonus.
@@ -6189,7 +6334,7 @@
                             console.log(
                               `${
                                 hero.clazz || "Hero"
-                              } takes ${effectiveDamage} AoE damage from Life Steal!`
+                              } takes ${effectiveDamage} AoE damage from Life Steal!`,
                             );
 
                             // Mostrar número de daño para cada héroe afectado
@@ -6198,7 +6343,7 @@
                               hero.posy - 20,
                               effectiveDamage,
                               false,
-                              criticalResult.isCritical
+                              criticalResult.isCritical,
                             );
 
                             // Agregar efecto visual de Life Steal para cada héroe
@@ -6217,7 +6362,7 @@
                           e.hp = Math.min(e.maxhp, isNaN(newHP) ? e.hp : newHP);
 
                           console.log(
-                            `Minotaur steals ${lifeSteal} HP from Life Steal attack!`
+                            `Minotaur steals ${lifeSteal} HP from Life Steal attack!`,
                           );
 
                           // Mostrar número de curación para el Minotaur
@@ -6226,21 +6371,21 @@
                             e.posy - 20,
                             lifeSteal,
                             true,
-                            false
+                            false,
                           );
                         }
 
                         // Minotaur: gana 1 stack de Berseker (+3% velocidad de carga visible, hasta 10 stacks)
                         addDebuff(e, "berseker", 1);
                         const bersLS = e.debuffs.find(
-                          (d) => d.type === "berseker"
+                          (d) => d.type === "berseker",
                         );
                         console.log(
                           `Minotaur gains Berseker stack after Life Steal (total: ${
                             bersLS?.stacks || 1
                           }) -> current charge speed ${getCurrentChargeSpeed(
-                            e
-                          ).toFixed(2)}`
+                            e,
+                          ).toFixed(2)}`,
                         );
                       } else if (e.name === "Abyss King") {
                         // Ataque especial: Invocación de aliado (si hay espacio)
@@ -6248,19 +6393,19 @@
                         // Contar aliados actuales (excluir al propio boss)
                         const currentAllies = enemies.filter(
                           (en) =>
-                            en !== e && en.type !== "projectile" && en.hp > 0
+                            en !== e && en.type !== "projectile" && en.hp > 0,
                         );
                         if (currentAllies.length >= 2) {
                           console.log(
-                            "Both ally slots occupied -> no summon this turn"
+                            "Both ally slots occupied -> no summon this turn",
                           );
                         } else {
                           // Determinar slots objetivo (izq: posx < boss.posx, der: posx > boss.posx)
                           const leftOccupied = currentAllies.some(
-                            (en) => en.posx < e.posx
+                            (en) => en.posx < e.posx,
                           );
                           const rightOccupied = currentAllies.some(
-                            (en) => en.posx > e.posx
+                            (en) => en.posx > e.posx,
                           );
                           const availableSides = [];
                           if (!leftOccupied) availableSides.push("left");
@@ -6271,7 +6416,7 @@
                             const side =
                               availableSides[
                                 Math.floor(
-                                  Math.random() * availableSides.length
+                                  Math.random() * availableSides.length,
                                 )
                               ];
                             const summonType = "voidspecter"; // Solo invoca Voidspecter
@@ -6288,7 +6433,7 @@
                                 sx,
                                 sy,
                                 hpMap[summonType] || 100,
-                                summonType
+                                summonType,
                               );
                               // Marcar dependencia del invocador (Abyss King)
                               summoned.summoner = e;
@@ -6301,7 +6446,7 @@
                                 true,
                                 false,
                                 "buff",
-                                summoned
+                                summoned,
                               );
                             });
                           }
@@ -6324,7 +6469,7 @@
                                 b.type === "protection" || b.type === "agony"
                                   ? sum + b.defBonus
                                   : sum,
-                              0
+                              0,
                             );
 
                           // Toxic Horror ajustado: daño 30-40
@@ -6332,7 +6477,7 @@
                             30 + Math.floor(Math.random() * 11);
                           let effectiveDamage = Math.max(
                             1,
-                            toxicDamage - currentDef
+                            toxicDamage - currentDef,
                           );
 
                           // Agony ahora solo otorga defBonus (ya incluido en currentDef)
@@ -6343,7 +6488,7 @@
                           console.log(
                             `${
                               hero.clazz || "Hero"
-                            } takes ${effectiveDamage} damage from Toxic Horror!`
+                            } takes ${effectiveDamage} damage from Toxic Horror!`,
                           );
 
                           // Mostrar número de daño
@@ -6352,12 +6497,12 @@
                             hero.posy - 20,
                             effectiveDamage,
                             false,
-                            false
+                            false,
                           );
 
                           // Si el héroe tiene poison, aumentar stacks y reiniciar duración
                           const poisonBuff = hero.buffs.find(
-                            (b) => b.type === "poison"
+                            (b) => b.type === "poison",
                           );
                           if (poisonBuff) {
                             poisonBuff.stacks += 1;
@@ -6367,12 +6512,12 @@
                               (poisonBuff.damagePerTick || 3) + 2;
                             addDebuff(hero, "poison", 1);
                             console.log(
-                              `${hero.clazz} poison stack -> ${poisonBuff.stacks} daño: ${poisonBuff.damagePerTick}`
+                              `${hero.clazz} poison stack -> ${poisonBuff.stacks} daño: ${poisonBuff.damagePerTick}`,
                             );
                           } else {
                             // Si no tenía poison, NO se agrega (según especificaciones)
                             console.log(
-                              `${hero.clazz} had no poison, so no stack accumulated`
+                              `${hero.clazz} had no poison, so no stack accumulated`,
                             );
                           }
                         });
@@ -6381,13 +6526,13 @@
                       if (e.name === "Noctebane") {
                         // Habilidad principal: Blood Splat (a un solo aliado aleatorio)
                         console.log(
-                          "Noctebane uses Blood Splat main ability (single target)!"
+                          "Noctebane uses Blood Splat main ability (single target)!",
                         );
                         const aliveHeroes = heroes.filter((h) => h.hp > 0);
                         if (aliveHeroes.length > 0) {
                           // Seleccionar héroe aleatorio en lugar del más cercano
                           const randomIndex = Math.floor(
-                            Math.random() * aliveHeroes.length
+                            Math.random() * aliveHeroes.length,
                           );
                           const randomTarget = aliveHeroes[randomIndex];
 
@@ -6407,17 +6552,17 @@
                                 b.type === "protection" || b.type === "agony"
                                   ? sum + (b.defBonus || 0)
                                   : sum,
-                              0
+                              0,
                             );
 
                           const criticalResult = calculateCritical(damage);
                           let finalDamage = criticalResult.damage;
                           finalDamage = Math.floor(
-                            finalDamage * (e.damageMultiplier || 1)
+                            finalDamage * (e.damageMultiplier || 1),
                           );
                           let effectiveDamage = Math.max(
                             1,
-                            finalDamage - currentDef
+                            finalDamage - currentDef,
                           );
                           e.damageMultiplier = (e.damageMultiplier || 1) * 1.05; // +5% tras main
 
@@ -6427,7 +6572,7 @@
                           const newHP = randomTarget.hp - effectiveDamage;
                           randomTarget.hp = Math.max(
                             0,
-                            isNaN(newHP) ? 0 : newHP
+                            isNaN(newHP) ? 0 : newHP,
                           );
 
                           // Validar HP después del ataque
@@ -6436,7 +6581,7 @@
                           console.log(
                             `${
                               randomTarget.clazz || "Hero"
-                            } takes ${effectiveDamage} damage from Blood Splat!`
+                            } takes ${effectiveDamage} damage from Blood Splat!`,
                           );
 
                           // Mostrar número de daño
@@ -6445,25 +6590,25 @@
                             randomTarget.posy - 20,
                             effectiveDamage,
                             false,
-                            criticalResult.isCritical
+                            criticalResult.isCritical,
                           );
 
                           // Agregar efecto visual de Blood Splat
                           addBloodSplatEffect(
                             randomTarget.posx,
-                            randomTarget.posy
+                            randomTarget.posy,
                           );
                         }
                       } else if (e.name === "Minotaur") {
                         // Habilidad principal: Smash (ataque devastador a un solo héroe)
                         console.log(
-                          "Minotaur uses Smash main ability (single target)!"
+                          "Minotaur uses Smash main ability (single target)!",
                         );
                         const aliveHeroes = heroes.filter((h) => h.hp > 0);
                         if (aliveHeroes.length > 0) {
                           // Seleccionar héroe aleatorio
                           const randomIndex = Math.floor(
-                            Math.random() * aliveHeroes.length
+                            Math.random() * aliveHeroes.length,
                           );
                           const randomTarget = aliveHeroes[randomIndex];
 
@@ -6483,14 +6628,14 @@
                                 b.type === "protection" || b.type === "agony"
                                   ? sum + (b.defBonus || 0)
                                   : sum,
-                              0
+                              0,
                             );
 
                           const criticalResult = calculateCritical(damage);
                           let finalDamage = criticalResult.damage;
                           let effectiveDamage = Math.max(
                             1,
-                            finalDamage - currentDef
+                            finalDamage - currentDef,
                           );
 
                           // Agony turn-based: mitigación ya incorporada en currentDef.
@@ -6499,7 +6644,7 @@
                           const newHP = randomTarget.hp - effectiveDamage;
                           randomTarget.hp = Math.max(
                             0,
-                            isNaN(newHP) ? 0 : newHP
+                            isNaN(newHP) ? 0 : newHP,
                           );
 
                           // Validar HP después del ataque
@@ -6508,7 +6653,7 @@
                           console.log(
                             `${
                               randomTarget.clazz || "Hero"
-                            } takes ${effectiveDamage} massive damage from Smash!`
+                            } takes ${effectiveDamage} massive damage from Smash!`,
                           );
 
                           // Mostrar número de daño
@@ -6517,26 +6662,26 @@
                             randomTarget.posy - 20,
                             effectiveDamage,
                             false,
-                            criticalResult.isCritical
+                            criticalResult.isCritical,
                           );
 
                           // Agregar efecto visual de Smash
                           addMinotaurSmashEffect(
                             randomTarget.posx,
-                            randomTarget.posy
+                            randomTarget.posy,
                           );
 
                           // Minotaur: gana 1 stack de Berseker (+3% velocidad de carga visible, hasta 10 stacks)
                           addDebuff(e, "berseker", 1);
                           const bersSmash = e.debuffs.find(
-                            (d) => d.type === "berseker"
+                            (d) => d.type === "berseker",
                           );
                           console.log(
                             `Minotaur gains Berseker stack after Smash (total: ${
                               bersSmash?.stacks || 1
                             }) -> current charge speed ${getCurrentChargeSpeed(
-                              e
-                            ).toFixed(2)}`
+                              e,
+                            ).toFixed(2)}`,
                           );
                         }
                       } else if (e.name === "Gorgon") {
@@ -6547,14 +6692,14 @@
                         if (aliveHeroes.length > 0) {
                           // Seleccionar héroe aleatorio
                           const randomIndex = Math.floor(
-                            Math.random() * aliveHeroes.length
+                            Math.random() * aliveHeroes.length,
                           );
                           const randomTarget = aliveHeroes[randomIndex];
 
                           // Agregar efecto visual del ataque principal del Gorgon
                           addGorgonMainAbilityEffect(
                             randomTarget.posx,
-                            randomTarget.posy
+                            randomTarget.posy,
                           );
 
                           // Calcular defensa del objetivo
@@ -6565,7 +6710,7 @@
                                 b.type === "protection" || b.type === "agony"
                                   ? sum + (b.defBonus || 0)
                                   : sum,
-                              0
+                              0,
                             );
 
                           // Ataque principal ajustado: daño 20-30
@@ -6576,7 +6721,7 @@
                           const finalDamage = criticalResult.damage;
                           let effectiveDamage = Math.max(
                             1,
-                            finalDamage - currentDef
+                            finalDamage - currentDef,
                           );
 
                           // Agony turn-based: mitigación ya incorporada en currentDef.
@@ -6584,14 +6729,14 @@
                           // Aplicar daño
                           randomTarget.hp = Math.max(
                             0,
-                            randomTarget.hp - effectiveDamage
+                            randomTarget.hp - effectiveDamage,
                           );
                           validateHP(randomTarget);
 
                           console.log(
                             `${
                               randomTarget.clazz || "Hero"
-                            } takes ${effectiveDamage} damage from Gorgon's poison attack!`
+                            } takes ${effectiveDamage} damage from Gorgon's poison attack!`,
                           );
 
                           // Mostrar número de daño
@@ -6600,12 +6745,12 @@
                             randomTarget.posy - 20,
                             effectiveDamage,
                             false,
-                            criticalResult.isCritical
+                            criticalResult.isCritical,
                           );
 
                           // Aplicar veneno al objetivo atacado
                           const existingPoison = randomTarget.buffs.find(
-                            (b) => b.type === "poison"
+                            (b) => b.type === "poison",
                           );
                           if (!existingPoison) {
                             randomTarget.buffs.push({
@@ -6615,26 +6760,26 @@
                             });
                             addDebuff(randomTarget, "poison", 1);
                             console.log(
-                              `Gorgon aplica poison a ${randomTarget.clazz}`
+                              `Gorgon aplica poison a ${randomTarget.clazz}`,
                             );
                           } else {
                             existingPoison.stacks += 1;
                             existingPoison.remainingTurns = 10; // Reinicia duración
                             addDebuff(randomTarget, "poison", 1); // Actualiza icono (stacks)
                             console.log(
-                              `Poison stack (${existingPoison.stacks}) en ${randomTarget.clazz}`
+                              `Poison stack (${existingPoison.stacks}) en ${randomTarget.clazz}`,
                             );
                           }
                         }
                       } else if (e.name === "Abyss King") {
                         // Habilidad principal: Abyss Strike (daño alto a un solo héroe)
                         console.log(
-                          "Abyss King uses Abyss Strike main ability (single target)!"
+                          "Abyss King uses Abyss Strike main ability (single target)!",
                         );
                         const aliveHeroes = heroes.filter((h) => h.hp > 0);
                         if (aliveHeroes.length > 0) {
                           const randomIndex = Math.floor(
-                            Math.random() * aliveHeroes.length
+                            Math.random() * aliveHeroes.length,
                           );
                           const randomTarget = aliveHeroes[randomIndex];
                           if (
@@ -6652,27 +6797,27 @@
                                 b.type === "protection" || b.type === "agony"
                                   ? sum + (b.defBonus || 0)
                                   : sum,
-                              0
+                              0,
                             );
 
                           const criticalResult = calculateCritical(damage);
                           const finalDamage = criticalResult.damage;
                           let effectiveDamage = Math.max(
                             1,
-                            finalDamage - currentDef
+                            finalDamage - currentDef,
                           );
 
                           const newHP = randomTarget.hp - effectiveDamage;
                           randomTarget.hp = Math.max(
                             0,
-                            isNaN(newHP) ? 0 : newHP
+                            isNaN(newHP) ? 0 : newHP,
                           );
                           validateHP(randomTarget);
 
                           console.log(
                             `${
                               randomTarget.clazz || "Hero"
-                            } takes ${effectiveDamage} damage from Abyss Strike!`
+                            } takes ${effectiveDamage} damage from Abyss Strike!`,
                           );
 
                           showHitNumber(
@@ -6680,13 +6825,13 @@
                             randomTarget.posy - 20,
                             effectiveDamage,
                             false,
-                            criticalResult.isCritical
+                            criticalResult.isCritical,
                           );
 
                           // Añadir efecto visual del Abyss Strike
                           addAbyssKingMainAbilityEffect(
                             randomTarget.posx,
-                            randomTarget.posy
+                            randomTarget.posy,
                           );
                         }
                       }
@@ -6705,11 +6850,11 @@
                         const aliveHeroes = heroes.filter((h) => h.hp > 0);
                         if (aliveHeroes.length > 0) {
                           const randomIndex = Math.floor(
-                            Math.random() * aliveHeroes.length
+                            Math.random() * aliveHeroes.length,
                           );
                           attackTarget = aliveHeroes[randomIndex];
                           console.log(
-                            `${e.name} targets random hero: ${attackTarget.clazz}`
+                            `${e.name} targets random hero: ${attackTarget.clazz}`,
                           );
                         } else {
                           attackTarget = null;
@@ -6727,7 +6872,7 @@
                           attackTarget.def === null
                         ) {
                           console.error(
-                            "Target defense is NaN or invalid, setting to 3"
+                            "Target defense is NaN or invalid, setting to 3",
                           );
                           attackTarget.def = 3; // Valor por defecto
                         }
@@ -6737,7 +6882,7 @@
                           attackTarget.hp === null
                         ) {
                           console.error(
-                            "Target HP is NaN or invalid, setting to 100"
+                            "Target HP is NaN or invalid, setting to 100",
                           );
                           attackTarget.hp = 100; // Valor por defecto
                         }
@@ -6749,7 +6894,7 @@
                               b.type === "protection" || b.type === "agony"
                                 ? sum + b.defBonus
                                 : sum,
-                            0
+                            0,
                           );
 
                         // Validar que currentDef sea un número válido
@@ -6759,7 +6904,7 @@
                           currentDef === null
                         ) {
                           console.error(
-                            "Current defense is NaN or invalid, setting to 0"
+                            "Current defense is NaN or invalid, setting to 0",
                           );
                           currentDef = 0;
                         }
@@ -6771,7 +6916,7 @@
                           damage === null
                         ) {
                           console.error(
-                            "Damage is NaN or invalid, resetting to default"
+                            "Damage is NaN or invalid, resetting to default",
                           );
                           damage = e.type === "boss" ? 45 : 25; // Valor por defecto
                         }
@@ -6788,14 +6933,14 @@
                           finalDamage === null
                         ) {
                           console.error(
-                            "Final damage is NaN or invalid, using base damage"
+                            "Final damage is NaN or invalid, using base damage",
                           );
                           finalDamage = damage;
                         }
 
                         let effectiveDamage = Math.max(
                           1,
-                          finalDamage - currentDef
+                          finalDamage - currentDef,
                         );
 
                         // Validar que effectiveDamage sea un número válido
@@ -6805,7 +6950,7 @@
                           effectiveDamage === null
                         ) {
                           console.error(
-                            "Effective damage is NaN or invalid, setting to 1"
+                            "Effective damage is NaN or invalid, setting to 1",
                           );
                           effectiveDamage = 1;
                         }
@@ -6814,7 +6959,7 @@
 
                         attackTarget.hp = Math.max(
                           0,
-                          attackTarget.hp - effectiveDamage
+                          attackTarget.hp - effectiveDamage,
                         );
 
                         // Feedback háptico cuando un héroe recibe daño
@@ -6835,7 +6980,7 @@
                           attackTarget.posy - 20,
                           effectiveDamage,
                           false,
-                          isCritical
+                          isCritical,
                         );
 
                         // Implementar habilidades específicas de enemigos del Dark Swamp
@@ -6845,7 +6990,7 @@
 
                           // Aplicar veneno al objetivo atacado
                           const existingPoison = attackTarget.buffs.find(
-                            (b) => b.type === "poison"
+                            (b) => b.type === "poison",
                           );
                           if (!existingPoison) {
                             attackTarget.buffs.push({
@@ -6855,14 +7000,14 @@
                             });
                             addDebuff(attackTarget, "poison", 1);
                             console.log(
-                              `Mushroom applies poison to ${attackTarget.clazz}!`
+                              `Mushroom applies poison to ${attackTarget.clazz}!`,
                             );
                           } else {
                             existingPoison.stacks += 1;
                             existingPoison.remainingTurns = 10;
                             addDebuff(attackTarget, "poison", 1);
                             console.log(
-                              `Mushroom poison stack -> ${existingPoison.stacks}`
+                              `Mushroom poison stack -> ${existingPoison.stacks}`,
                             );
                           }
                         } else if (e.name === "Dreadwing") {
@@ -6884,7 +7029,7 @@
                                   b.type === "protection" || b.type === "agony"
                                     ? sum + b.defBonus
                                     : sum,
-                                0
+                                0,
                               );
 
                             const secondCriticalResult =
@@ -6895,14 +7040,14 @@
                               calculateCritical(secondBase);
                             let secondEffectiveDamage = Math.max(
                               1,
-                              secondCriticalResult2.damage - secondTargetDef
+                              secondCriticalResult2.damage - secondTargetDef,
                             );
 
                             // Agony turn-based: mitigación ya incorporada en DEF.
 
                             secondTarget.hp = Math.max(
                               0,
-                              secondTarget.hp - secondEffectiveDamage
+                              secondTarget.hp - secondEffectiveDamage,
                             );
 
                             showHitNumber(
@@ -6910,11 +7055,11 @@
                               secondTarget.posy - 20,
                               secondEffectiveDamage,
                               false,
-                              secondCriticalResult2.isCritical
+                              secondCriticalResult2.isCritical,
                             );
 
                             console.log(
-                              `Dreadwing's second strike hits ${secondTarget.clazz} for ${secondEffectiveDamage} damage!`
+                              `Dreadwing's second strike hits ${secondTarget.clazz} for ${secondEffectiveDamage} damage!`,
                             );
 
                             checkGameOver();
@@ -6922,7 +7067,7 @@
                         } else if (e.name === "Fire Worm") {
                           // Fire Worm: Ataque intermedio básico (ya aplicado en damage base)
                           console.log(
-                            "Fire Worm uses basic intermediate attack!"
+                            "Fire Worm uses basic intermediate attack!",
                           );
                           // No hay lógica adicional, solo el ataque básico intermedio
                         } else if (e.name === "Minotaur") {
@@ -6935,11 +7080,11 @@
                           const aliveHeroes = heroes.filter((h) => h.hp > 0);
                           if (aliveHeroes.length > 0) {
                             const randomIndex = Math.floor(
-                              Math.random() * aliveHeroes.length
+                              Math.random() * aliveHeroes.length,
                             );
                             const poisonTarget = aliveHeroes[randomIndex];
                             const existingPoison = poisonTarget.buffs.find(
-                              (b) => b.type === "poison"
+                              (b) => b.type === "poison",
                             );
                             if (!existingPoison) {
                               poisonTarget.buffs.push({
@@ -6949,14 +7094,14 @@
                               });
                               addDebuff(poisonTarget, "poison", 1);
                               console.log(
-                                `${e.name} applies poison to ${poisonTarget.clazz}!`
+                                `${e.name} applies poison to ${poisonTarget.clazz}!`,
                               );
                             } else {
                               existingPoison.stacks += 1;
                               existingPoison.remainingTurns = 10;
                               addDebuff(poisonTarget, "poison", 1);
                               console.log(
-                                `${e.name} poison stack -> ${existingPoison.stacks} on ${poisonTarget.clazz}`
+                                `${e.name} poison stack -> ${existingPoison.stacks} on ${poisonTarget.clazz}`,
                               );
                             }
                           }
@@ -6967,7 +7112,7 @@
                           const targets = [];
                           if (aliveHeroes.length > 0) {
                             const firstIndex = Math.floor(
-                              Math.random() * aliveHeroes.length
+                              Math.random() * aliveHeroes.length,
                             );
                             targets.push(aliveHeroes[firstIndex]);
                             if (aliveHeroes.length > 1) {
@@ -6976,7 +7121,7 @@
                                 second =
                                   aliveHeroes[
                                     Math.floor(
-                                      Math.random() * aliveHeroes.length
+                                      Math.random() * aliveHeroes.length,
                                     )
                                   ];
                               } while (
@@ -6995,7 +7140,7 @@
                                   b.type === "protection" || b.type === "agony"
                                     ? sum + b.defBonus
                                     : sum,
-                                0
+                                0,
                               );
                             // Daño ajustado: reducción adicional (antes 25-35, ahora 20-30)
                             let vdmg = 20 + Math.floor(Math.random() * 11); // 20-30
@@ -7017,7 +7162,7 @@
                         } else if (e.name === "The Hand") {
                           // The Hand: aplica Dark Protection a UN aliado aleatorio que no sea él mismo
                           const candidates = enemies.filter(
-                            (en) => en !== e && en.hp > 0
+                            (en) => en !== e && en.hp > 0,
                           );
                           if (candidates.length > 0) {
                             const targetBuff =
@@ -7031,13 +7176,14 @@
                               const stacks = targetBuff.darkProtectionStacks;
                               // 20% primer stack +5% cada adicional => 1.2 + 0.05*(stacks-1)
                               targetBuff.def = Math.round(
-                                targetBuff.baseDef * (1.2 + 0.05 * (stacks - 1))
+                                targetBuff.baseDef *
+                                  (1.2 + 0.05 * (stacks - 1)),
                               );
                             }
                             // Actualizar/añadir debuff para mostrar icono y stacks
                             if (!targetBuff.debuffs) targetBuff.debuffs = [];
                             const dpDebuff = targetBuff.debuffs.find(
-                              (d) => d.type === "dark_protection"
+                              (d) => d.type === "dark_protection",
                             );
                             if (dpDebuff) {
                               dpDebuff.stacks = targetBuff.darkProtectionStacks;
@@ -7057,13 +7203,13 @@
                               true,
                               false,
                               "buff",
-                              targetBuff
+                              targetBuff,
                             );
 
                             // Añadir efecto visual de Dark Protection
                             addTheHandDarkProtectionEffect(
                               targetBuff.posx,
-                              targetBuff.posy
+                              targetBuff.posy,
                             );
                           }
                         } else if (e.name === "Abyss King") {
@@ -7082,7 +7228,7 @@
                                   b.type === "protection" || b.type === "agony"
                                     ? sum + b.defBonus
                                     : sum,
-                                0
+                                0,
                               );
                             let abdmg = 45 + Math.floor(Math.random() * 16); // 45-60
                             const crit = calculateCritical(abdmg);
@@ -7105,7 +7251,7 @@
                 } else {
                   // No hay target válido - el enemigo debe consumir su turno y resetear su estado
                   console.warn(
-                    `Enemy ${e.name} has no valid target, skipping turn`
+                    `Enemy ${e.name} has no valid target, skipping turn`,
                   );
                   e.charge = 0; // Reset charge para evitar loop infinito
                   e.chargeFullTime = null; // Limpiar timestamp
@@ -7192,7 +7338,7 @@
                   const explosionDamage = 65 + Math.floor(Math.random() * 11); // 65-75 daño
 
                   console.log(
-                    "Applying explosion damage as animation completes"
+                    "Applying explosion damage as animation completes",
                   );
 
                   heroes.forEach((hero) => {
@@ -7204,12 +7350,12 @@
                             b.type === "protection" || b.type === "agony"
                               ? sum + b.defBonus
                               : sum,
-                          0
+                          0,
                         );
 
                       let effectiveDamage = Math.max(
                         1,
-                        explosionDamage - currentDef
+                        explosionDamage - currentDef,
                       );
 
                       // Agony turn-based: mitigación ya incorporada en DEF.
@@ -7222,10 +7368,10 @@
                         hero.posy - 20,
                         effectiveDamage,
                         false,
-                        false
+                        false,
                       );
                       console.log(
-                        `${hero.clazz} takes ${effectiveDamage} explosion damage!`
+                        `${hero.clazz} takes ${effectiveDamage} explosion damage!`,
                       );
                     }
                   });
@@ -7243,7 +7389,7 @@
                 e.hp = 0;
                 e.isDying = true;
                 console.log(
-                  "Explosion animation completed, switching to death"
+                  "Explosion animation completed, switching to death",
                 );
               }
             } else if (e.anim === "idle" && e.hp > 0) {
@@ -7264,7 +7410,7 @@
             if (h.hp > 0) {
               // Use the new charge speed rating system
               const chargeSpeed = getChargeSpeedFromRating(
-                h.chargeSpeedRating || 5
+                h.chargeSpeedRating || 5,
               );
               h.charge = Math.min(h.maxcharge, h.charge + delta * chargeSpeed);
               if (h.charge >= 100 && !turnQueue.includes(h)) {
@@ -7281,7 +7427,7 @@
             if (e.spawnFadeProgress !== undefined && e.spawnFadeProgress < 1) {
               e.spawnFadeProgress = Math.min(
                 1,
-                e.spawnFadeProgress + delta * 2
+                e.spawnFadeProgress + delta * 2,
               ); // 0.5s aprox
             }
             // Si depende de un invocador y este ha muerto, forzar muerte
@@ -7461,7 +7607,7 @@
             h.posx - size / 2,
             h.posy - size / 2,
             size,
-            size
+            size,
           );
 
           if (h.hp <= 0) {
@@ -7496,7 +7642,7 @@
                 h.posx - skullSize / 2,
                 h.posy + 55 + 6 - skullSize / 2,
                 skullSize,
-                skullSize
+                skullSize,
               );
             } else {
               ctx.fillText("X", h.posx, h.posy + 55 + 6);
@@ -7616,7 +7762,7 @@
               sy = 0;
               const deathProgress = Math.min(
                 1,
-                (currentTime - e.animStartTime) / 1.0
+                (currentTime - e.animStartTime) / 1.0,
               );
               ctx.globalAlpha = 1 - deathProgress;
               ctx.filter = "grayscale(60%) brightness(0.6) blur(1px)";
@@ -7717,7 +7863,7 @@
                 sy = 0;
                 const deathProgress = Math.min(
                   1,
-                  (currentTime - e.animStartTime) / 1.0
+                  (currentTime - e.animStartTime) / 1.0,
                 );
                 ctx.globalAlpha = 1 - deathProgress;
                 ctx.filter = "grayscale(60%) brightness(0.6) blur(1px)";
@@ -7734,8 +7880,8 @@
                 e.sprites && e.sprites.attack
                   ? e.sprites.attack
                   : e.sprites
-                  ? e.sprites.idle
-                  : goblinIdleImg;
+                    ? e.sprites.idle
+                    : goblinIdleImg;
               sx =
                 (e.frame % (e.attackFrames || e.idleFrames || 1)) *
                 e.frameWidth;
@@ -7745,7 +7891,7 @@
                 ctx.translate(0, Math.sin(currentTime * 40) * 4);
                 ctx.scale(
                   1 + 0.05 * Math.sin(currentTime * 30),
-                  1 + 0.05 * Math.sin(currentTime * 30)
+                  1 + 0.05 * Math.sin(currentTime * 30),
                 );
               }
             } else {
@@ -7796,7 +7942,7 @@
                 e.posx - drawWidth / 2,
                 e.posy + posYOffset - drawHeight / 2,
                 drawWidth,
-                drawHeight
+                drawHeight,
               );
             } catch (err) {
               console.warn("drawImage failed for", e.name, err);
@@ -7811,7 +7957,7 @@
               e.posy + posYOffset - drawHeight / 2 + drawHeight / 2,
               drawWidth / 2,
               0,
-              Math.PI * 2
+              Math.PI * 2,
             );
             ctx.fill();
             ctx.restore();
@@ -7890,7 +8036,7 @@
               e.posx,
               // IMPORTANTE: usar la misma referencia vertical que la barra (eBarY + eBarH/2) para todos los enemigos.
               // Antes faltaba posYOffset, provocando que el enemigo central (con posYOffset=18) dibujara el número 18px por encima de la barra.
-              e.posy + posYOffset - hpBarOffset + 6
+              e.posy + posYOffset - hpBarOffset + 6,
             );
             ctx.textAlign = "left"; // Resetear alineación
             ctx.textBaseline = "alphabetic"; // Resetear baseline
@@ -8031,7 +8177,7 @@
           ctx.fillText(
             "Select enemy",
             designWidth / 2,
-            modalY + modalHeight / 2 + 3
+            modalY + modalHeight / 2 + 3,
           );
         } else if (state === "select_target_ally") {
           // Modal que ocupa todo el ancho, centrado verticalmente
@@ -8051,7 +8197,7 @@
           ctx.fillText(
             "Select ally",
             designWidth / 2,
-            modalY + modalHeight / 2 + 3
+            modalY + modalHeight / 2 + 3,
           );
         }
         ctx.textAlign = "left"; // Resetear alineación
@@ -8074,7 +8220,7 @@
           x + width,
           y + height,
           x + width - radius,
-          y + height
+          y + height,
         );
         ctx.lineTo(x + radius, y + height);
         ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
@@ -8139,7 +8285,7 @@
           scoreFrameY,
           scoreFrameWidth,
           scoreFrameHeight,
-          cornerRadius
+          cornerRadius,
         );
 
         // Marco interno para Level (primera sección inferior)
@@ -8159,7 +8305,7 @@
           levelFrameY,
           levelFrameWidth,
           levelFrameHeight,
-          cornerRadius
+          cornerRadius,
         );
 
         // Marco interno para Título (sección central inferior)
@@ -8180,7 +8326,7 @@
           titleFrameY,
           titleFrameWidth,
           titleFrameHeight,
-          cornerRadius
+          cornerRadius,
         );
 
         // Marco interno para Wave (tercera sección inferior)
@@ -8201,7 +8347,7 @@
           waveFrameY,
           waveFrameWidth,
           waveFrameHeight,
-          cornerRadius
+          cornerRadius,
         );
 
         // Score centrado en su marco
@@ -8343,28 +8489,28 @@
               containerX + containerW,
               containerY,
               containerX + containerW,
-              containerY + r
+              containerY + r,
             );
             ctx.lineTo(containerX + containerW, containerY + containerH - r);
             ctx.quadraticCurveTo(
               containerX + containerW,
               containerY + containerH,
               containerX + containerW - r,
-              containerY + containerH
+              containerY + containerH,
             );
             ctx.lineTo(containerX + r, containerY + containerH);
             ctx.quadraticCurveTo(
               containerX,
               containerY + containerH,
               containerX,
-              containerY + containerH - r
+              containerY + containerH - r,
             );
             ctx.lineTo(containerX, containerY + r);
             ctx.quadraticCurveTo(
               containerX,
               containerY,
               containerX + r,
-              containerY
+              containerY,
             );
             ctx.closePath();
             ctx.fill();
@@ -8374,7 +8520,7 @@
               nextBtnX,
               nextBtnY,
               nextBtnWidth,
-              nextBtnHeight
+              nextBtnHeight,
             );
             ctx.fillStyle = "#3D2914";
             ctx.font = "bold 14px 'Jersey 10'"; // Más grande
@@ -8405,7 +8551,7 @@
                 skullX,
                 skullY,
                 skullSizePanel,
-                skullSizePanel
+                skullSizePanel,
               );
             } else {
               ctx.fillStyle = "red";
@@ -8448,7 +8594,7 @@
               buttonX,
               buttonY1,
               buttonWidth,
-              buttonHeight
+              buttonHeight,
             );
 
             // Texto del botón principal - resaltar si seleccionado y en fase de selección de objetivo
@@ -8481,7 +8627,7 @@
               buttonX,
               buttonY2,
               buttonWidth,
-              buttonHeight
+              buttonHeight,
             );
 
             // Texto del botón secundario - resaltar si seleccionado
@@ -8514,7 +8660,7 @@
               buttonX,
               buttonY3,
               buttonWidth,
-              buttonHeight
+              buttonHeight,
             );
 
             // Texto del botón terciario - resaltar si seleccionado
@@ -8557,7 +8703,7 @@
             buttonX,
             buttonY,
             buttonWidth,
-            buttonHeight
+            buttonHeight,
           );
 
           // Texto del botón con estilo similar a las habilidades
@@ -8669,7 +8815,7 @@
           buttonX,
           buttonY,
           buttonWidth,
-          buttonHeight
+          buttonHeight,
         );
 
         // Texto del botón con estilo similar a las habilidades
@@ -8754,7 +8900,7 @@
           buttonX,
           continueButtonY,
           buttonWidth,
-          buttonHeight
+          buttonHeight,
         );
 
         // Texto del botón Continue
@@ -8781,7 +8927,7 @@
             buttonX,
             surrenderButtonY,
             buttonWidth,
-            buttonHeight
+            buttonHeight,
           );
 
           // Texto del botón Surrender en rojo
@@ -9044,7 +9190,7 @@
           0,
           footerY,
           designWidth,
-          footerHeight
+          footerHeight,
         );
 
         // Botón Back centrado en el footer
@@ -9058,7 +9204,7 @@
           backButtonX,
           backButtonY,
           backButtonWidth,
-          backButtonHeight
+          backButtonHeight,
         );
 
         ctx.fillStyle = "#4A3728";
@@ -9067,7 +9213,7 @@
         ctx.fillText(
           "Back",
           backButtonX + backButtonWidth / 2,
-          backButtonY + 25
+          backButtonY + 25,
         );
 
         // Indicador de scroll si es necesario (ajustado para el nuevo layout)
@@ -9104,7 +9250,7 @@
           x + width,
           y + height,
           x + width - radius,
-          y + height
+          y + height,
         );
         ctx.lineTo(x + radius, y + height);
         ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
@@ -9140,7 +9286,7 @@
             spriteX,
             spriteY,
             spriteSize,
-            spriteSize
+            spriteSize,
           );
         }
 
@@ -9448,7 +9594,7 @@
                   contentX + 5,
                   currentY - 16,
                   iconSize,
-                  iconSize
+                  iconSize,
                 );
               }
               const lines = wrapGuideText(d.text, 280 - textOffset);
@@ -9508,7 +9654,7 @@
           0,
           footerY,
           designWidth,
-          footerHeight
+          footerHeight,
         );
 
         // Botón Back centrado en el footer
@@ -9522,7 +9668,7 @@
           backButtonX,
           backButtonY,
           backButtonWidth,
-          backButtonHeight
+          backButtonHeight,
         );
 
         ctx.fillStyle = "#4A3728";
@@ -9531,7 +9677,7 @@
         ctx.fillText(
           "Back",
           backButtonX + backButtonWidth / 2,
-          backButtonY + 25
+          backButtonY + 25,
         );
 
         // Indicador de scroll si es necesario
@@ -9677,11 +9823,11 @@
           const contentAreaHeight = designHeight - headerHeight - footerHeight;
           const maxScrollY = Math.max(
             0,
-            totalContentHeight - contentAreaHeight
+            totalContentHeight - contentAreaHeight,
           );
           guideScrollY = Math.max(
             0,
-            Math.min(maxScrollY, guideScrollY + deltaY)
+            Math.min(maxScrollY, guideScrollY + deltaY),
           );
           lastTouchY = touchY;
         }
@@ -9767,7 +9913,7 @@
           const contentAreaHeight = designHeight - headerHeight - footerHeight;
           const maxScrollY = Math.max(
             0,
-            totalContentHeight - contentAreaHeight
+            totalContentHeight - contentAreaHeight,
           );
           if (e.deltaY > 0) {
             guideScrollY = Math.min(maxScrollY, guideScrollY + bookScrollSpeed);
@@ -9928,7 +10074,7 @@
 
           // Si se hizo clic en el modal pero no en los botones, mantener modal abierto
           console.log(
-            "Click in modal area but not on buttons - keeping modal open"
+            "Click in modal area but not on buttons - keeping modal open",
           );
           return;
         }
@@ -9957,7 +10103,7 @@
             touchY <= backButtonY + backButtonHeight
           ) {
             console.log("Back button clicked");
-            state = "main_menu";
+            startGame();
             isDragging = false; // Cancelar drag al hacer clic en botón
             return;
           }
@@ -9989,7 +10135,7 @@
             touchY <= backButtonY + backButtonHeight
           ) {
             console.log("Guide Back button clicked");
-            state = "main_menu";
+            startGame();
             isDragging = false; // Cancelar drag al hacer clic en botón
             return;
           }
@@ -10097,7 +10243,7 @@
                     executeAction(
                       selectedHero,
                       action,
-                      enemies.filter((e) => e.hp > 0)
+                      enemies.filter((e) => e.hp > 0),
                     )
                   ) {
                     selectedHero = null;
@@ -10108,7 +10254,7 @@
                     executeAction(
                       selectedHero,
                       action,
-                      heroes.filter((h) => h.hp > 0)
+                      heroes.filter((h) => h.hp > 0),
                     )
                   ) {
                     selectedHero = null;
@@ -10154,7 +10300,7 @@
                     executeAction(
                       selectedHero,
                       action,
-                      enemies.filter((e) => e.hp > 0)
+                      enemies.filter((e) => e.hp > 0),
                     )
                   ) {
                     selectedHero = null;
@@ -10165,7 +10311,7 @@
                     executeAction(
                       selectedHero,
                       action,
-                      heroes.filter((h) => h.hp > 0)
+                      heroes.filter((h) => h.hp > 0),
                     )
                   ) {
                     selectedHero = null;
@@ -10211,7 +10357,7 @@
                     executeAction(
                       selectedHero,
                       action,
-                      enemies.filter((e) => e.hp > 0)
+                      enemies.filter((e) => e.hp > 0),
                     )
                   ) {
                     selectedHero = null;
@@ -10222,7 +10368,7 @@
                     executeAction(
                       selectedHero,
                       action,
-                      heroes.filter((h) => h.hp > 0)
+                      heroes.filter((h) => h.hp > 0),
                     )
                   ) {
                     selectedHero = null;
@@ -10311,7 +10457,7 @@
       }
 
       function resetGame() {
-        state = "main_menu";
+        // Reiniciar y volver directo al nivel 1 (sin menú principal)
         currentLevel = 1;
         wave = 0;
         score = 0;
@@ -10323,7 +10469,7 @@
         hitNumbers = [];
         visualEffects = [];
         pendingSounds = []; // Limpiar sonidos pendientes
-        // La música se maneja en handleInput cuando se cambia a main_menu
+        startGame();
       }
 
       // ================================
@@ -10350,18 +10496,26 @@
         window.FarcadeSDK.on("toggle_mute", (data) => {
           if (data.isMuted) {
             // Pausar toda la música
-            [menuMusic, level1Music, level2Music, level3Music].forEach(
-              (music) => {
-                music.muted = true;
-              }
-            );
+            [
+              menuMusic,
+              level1Music,
+              level2Music,
+              level3Music,
+              level4Music,
+            ].forEach((music) => {
+              if (music) music.muted = true;
+            });
           } else {
             // Reanudar la música
-            [menuMusic, level1Music, level2Music, level3Music].forEach(
-              (music) => {
-                music.muted = false;
-              }
-            );
+            [
+              menuMusic,
+              level1Music,
+              level2Music,
+              level3Music,
+              level4Music,
+            ].forEach((music) => {
+              if (music) music.muted = false;
+            });
           }
         });
       }
@@ -10430,15 +10584,13 @@
         new Promise((r) => (backgroundLevel4Img.onload = r)),
         new Promise((r) => (level4InfoBg.onload = r)),
       ]).then(() => {
-        // Asegurar que empezamos en el menú principal
-        state = "main_menu";
-        // NO reproducir música al cargar - solo al pulsar START
-
         // Notificar al SDK de Farcade que el juego está listo
         if (window.FarcadeSDK) {
           window.FarcadeSDK.singlePlayer.actions.ready();
         }
 
+        // Ir directo al nivel 1 (sin menú principal)
+        startGame();
         requestAnimationFrame(loop);
       });
     </script>
